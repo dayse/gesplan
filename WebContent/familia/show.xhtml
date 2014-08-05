@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/familia_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.familia}</ui:define>
+	<ui:define name="descricao">#{prompt.familia_descList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.familia_Mostrar}</ui:define>
+	<ui:define name="corpo">
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{familia.descrFamilia}
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="#{prompt.codigo}" />:
+				<h:outputText	value="#{familiaActions.familia.codFamilia}" />
+				
+				<h:outputText value="#{prompt.descricao}" />:
+				<h:outputText value="#{familiaActions.familia.descrFamilia}" />
+				
+				<h:outputText value="#{prompt.cobertura}" />:
+				<h:outputText value="#{familiaActions.familia.cobertura}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+				</h:outputText>
+				
+				<h:outputText value="#{prompt.estqInic}" />:
+				<h:outputText value="#{familiaActions.familia.estqInicFam}" >
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+				</h:outputText>
+				
+				<h:outputText value="#{prompt.familia_tmuc}" />:
+				<h:outputText value="#{familiaActions.familia.tmuc}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+				</h:outputText>
+				
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			<h:commandButton value="#{prompt.voltar}" immediate="true" action="#{familiaActions.cancela}"/>
+
+		</h:form>
+		<a4j:keepAlive beanName="familiaActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

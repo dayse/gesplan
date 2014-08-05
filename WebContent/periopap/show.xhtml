@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/periopap_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.perioPAPs}</ui:define>
+	<ui:define name="descricao">#{prompt.recurso_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.perioPAP_Mostrar}</ui:define>
+	<ui:define name="corpo">
+		
+		<h:form>
+			
+			<rich:simpleTogglePanel>
+			
+					<h:panelGrid columns="3">
+					
+						<h:outputText value="#{prompt.perioPAP_Agregado}" /> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.periodoPAP}" />
+							
+						<h:outputText value="#{prompt.perioPAP_periodoPMInic}" /> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.periodoPMInic}" />
+
+						<h:outputText value="#{prompt.perioPAP_PeriodoPMFinal}" /> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.periodoPMFinal}" />
+
+
+						<h:outputText value="#{prompt.dataInicial}"/> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.dataInicial.time}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/> 
+							</h:outputText>
+							
+						<h:outputText value="#{prompt.dataFinal}" /> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.dataFinal.time}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/> 
+							</h:outputText>
+							
+						<h:outputText value="#{prompt.numDiasUteisMatriz}" /> : 
+							<h:outputText value="#{perioPAPActions.perioPAPCorrente.numDiasUteis}" >
+								<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+							</h:outputText>
+							
+							
+					</h:panelGrid>
+					
+			</rich:simpleTogglePanel>
+			
+			<h:commandButton value="#{prompt.voltar}" immediate="true" action="#{perioPAPActions.cancela}"/>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

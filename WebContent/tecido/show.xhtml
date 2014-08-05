@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/tecido_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecido}</ui:define>
+	<ui:define name="descricao">#{prompt.descricaoListTecido}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.tecido_Mostrar}</ui:define>
+	<a4j:keepAlive beanName="tecidoActions" />
+	
+	<ui:define name="corpo">
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{tecido.descrTecido}
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+				<h:outputText value="#{prompt.codigo}" />:<h:outputText
+					value="#{tecidoActions.tecido.codTecido}" />
+					
+				<h:outputText value="#{prompt.descricao}" />:<h:outputText
+					value="#{tecidoActions.tecido.descrTecido}" />
+					
+				<h:outputText value="#{prompt.UM}" />:<h:outputText
+					value="#{tecidoActions.tecido.UM}" />
+					
+				<h:outputText value="#{prompt.custoUnit}" />:
+				<h:outputText value="#{tecidoActions.tecido.custoUnit}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+				</h:outputText>
+				
+				<h:outputText value="#{prompt.tecidoLeadTimeUnidade2}" />:
+				<h:outputText value="#{tecidoActions.tecido.leadTimeUnidade2}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+				</h:outputText>
+				
+				<h:outputText value="#{prompt.tecidoFatorDeRendimento}" />:
+				<h:outputText value="#{tecidoActions.tecido.fatorDeRendimento}" >
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+				</h:outputText>
+				
+				<h:outputText value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />:
+				<h:outputText value="#{tecidoActions.tecido.producaoDiariaMaxUnidade2}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+				</h:outputText>
+				
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			<h:commandButton value="#{prompt.voltar}" immediate="true" action="listTecido"/>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

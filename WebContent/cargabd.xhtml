@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/template_principal.xhtml">
+
+	<ui:define name="menu"/>
+	<ui:define name="corpo">
+	
+	
+	<f:loadBundle basename="prompt" var="prompt" />
+	<f:loadBundle basename="mensagens" var="mensagemSistema" />
+	<h:form>
+	
+		<center>
+		<rich:panel >
+			<f:facet name="header" >
+			#{prompt.carga}
+			</f:facet>
+
+			<h:panelGrid columns="3">
+	
+				<h:panelGroup>
+					<h:outputText value="#{prompt.carga_Selecionada}:" />
+				</h:panelGroup>
+				
+				<h:selectOneMenu id="comboTiposDeCarga" value="#{cargaActions.comboTiposDeCarga.selecao}"
+				 valueChangeListener="#{cargaActions.alteraDescAjax}" immediate="true" rendered="true" >
+						<f:selectItems value="#{cargaActions.comboTiposDeCarga.listaSelecao}" />             
+             			<a4j:support event="onchange" reRender="desc"  immediate="true" ajaxSingle="true"/>  
+				</h:selectOneMenu>
+				<rich:messages for="comboTiposDeCarga" styleClass="error" />
+				
+				<h:panelGroup>
+					<h:outputText value="#{prompt.carga_Descricao}:" />
+				</h:panelGroup>
+				
+				<h:panelGroup id="desc">
+					<h:outputText value="#{cargaActions.descCarga}" escape="false"/>
+				</h:panelGroup>
+				<h:outputText value="" />
+				
+				<h:panelGroup>
+					<h:outputText value="#{prompt.senha}" />
+				</h:panelGroup>
+				
+				<h:inputSecret id="senhabd" value="#{cargaActions.senha}"
+					size="20">
+				</h:inputSecret>				
+				<h:message for="senhabd" styleClass="error" warnClass="warn" />
+				
+			</h:panelGrid>
+
+			<br/>
+			<a4j:commandButton styleClass="button" value="#{prompt.ok}" action="#{cargaActions.executarCarga}" onclick="this.disabled=true" oncomplete="this.disabled=false" /> 
+			
+
+			<br/>
+			<br/>
+			<h:commandLink value="Ir para Login" action="login" styleClass="button"/>
+		</rich:panel>
+			
+		
+	
+		</center>
+		
+	</h:form>
+
+  </ui:define>
+
+</ui:composition>
+
+</html>

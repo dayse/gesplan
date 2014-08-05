@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/usuario_list_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.usuario}</ui:define>
+	<ui:define name="descricao">#{prompt.usuario_descList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.usuario_Mostrar}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="usuarioActions" />
+		
+		<h:form id="formUsuarioNew">
+
+			<rich:panel>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.usuario}" />
+				</f:facet>
+
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+					
+						<h:outputText value="#{prompt.usuario_nome}" />:
+						<h:outputText id="nome" value="#{usuarioActions.usuarioCorrente.nome}"  
+							maxlength="#{constantes.lUsuarioNome}" size="20" required="true"/>
+						
+					
+						<h:outputText value="#{prompt.login}" />:
+						<h:outputText id="login" value="#{usuarioActions.usuarioCorrente.login}" 
+							maxlength="#{constantes.lUsuarioLogin}" size="20" required="true"/>
+										
+					
+					<h:outputText value="#{prompt.usuario_tipo}" />:
+					<h:selectOneMenu value="#{usuarioActions.comboTiposUsuario.selecao}" disabled="true">
+						<f:selectItems value="#{usuarioActions.comboTiposUsuario.listaSelecao}"/>
+					</h:selectOneMenu>
+						
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+			<h:commandButton id="botaoCancelar" value="#{prompt.voltar}"
+				action="#{usuarioActions.cancelar}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

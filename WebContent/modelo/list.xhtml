@@ -1,0 +1,322 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/modelo_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.modelo}</ui:define>
+	<ui:define name="descricao">#{prompt.modelo_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.modelo_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.areaDeBusca} -</span> #{help.modelo_Buscar}
+		<br /><br />
+		<span class="negrito">#{prompt.modelo_dataEstqInic} -</span> #{help.modelo_DataRelativa}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.modelo_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.modelo_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="modeloActions"/>
+		<a4j:keepAlive beanName="parametrosActions"/>
+		
+		<h:form id="formModeloList">
+			
+			<br/>
+
+			<h:panelGrid columns="5">
+
+				<h:outputText value="#{prompt.areaDeBusca}" /> 
+				<h:inputText value="#{modeloActions.campoDeBusca}"/>
+					<h:selectOneMenu id="comboBusca" value="#{modeloActions.comboTiposDeBusca.selecao}">
+						<f:selectItems value="#{modeloActions.comboTiposDeBusca.listaSelecao}" />
+					</h:selectOneMenu>
+				<h:commandButton value="#{prompt.buscar}" action="#{modeloActions.buscaModelo}" />
+				<a4j:commandButton value="#{prompt.voltarListagemCompleta}" 
+							action="#{modeloActions.cancelar}" rendered="#{modeloActions.buscaEfetuada}"/>
+			</h:panelGrid>
+			<h:panelGrid columns="3">
+				<h:outputText value="#{prompt.modelo_dataEstqInic}: " />
+				
+				<rich:calendar id="dataEstqInic" datePattern="dd/MM/yyyy" 
+				value="#{modeloActions.dataEstqInic}" required="true" disabled="true"/>
+				<a4j:commandButton value="#{prompt.alterar}" 
+						onclick="Richfaces.showModalPanel('panelConfirmacaoAlteracaoParametro',{width:650, top:300, height: 280})"/> 
+						
+			</h:panelGrid>
+			<br />
+			<br />
+
+			<rich:datascroller id="scrTabelaModelos" for="tabelaModelos" align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="tabelaModelos" var="modelo"	align="center" 
+				value="#{modeloActions.listaModelos}" rows="10" width="700px" reRender="#{modeloActions.buscaEfetuada}">
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_Codigo}"  value="#{prompt.modelo_codigo}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.modelo_descricao}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.familia_Codigo}" value="#{prompt.codigoFamilia}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.descricaoFamilia}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_FlagProducao}" value="#{prompt.modelo_flagProducao}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="#{prompt.modelo_indiceCobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TUC}" value="#{prompt.modelo_tuc}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TAMLote}" value="#{prompt.modelo_tamLote}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TR}" value="#{prompt.modelo_tr}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_Cobertura}" value="#{prompt.modelo_cobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_EstoqueInicial}" value="#{prompt.modelo_estoqueInicial}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_VendaNaoAtendida}" value="#{prompt.modelo_estoqueEmFalta}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_RecebimentoPendente}" value="#{prompt.modelo_recebimentoPendente}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="#{prompt.editar}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="#{prompt.excluir}" />
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:commandLink value="#{modelo.codModelo}" action="#{modeloActions.mostra}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{modelo.descrModelo}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{modelo.familia.codFamilia}"  styleClass="campoNumerico" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{modelo.familia.descrFamilia}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{modelo.flagProducaoModel ? 'Livre' : 'Fixo'}" />
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.indiceCob}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tuc}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tamLote}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tr}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>					
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.cobertura}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.estqInicModel}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.estqEmFalta}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.recebimentoPendente}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.editar}"
+						action="#{modeloActions.preparaAlteracao}" />
+				</rich:column>
+				
+				<rich:column>
+					<a4j:commandButton value="#{prompt.excluir}"
+						action="#{modeloActions.preparaExclusao}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" />
+				</rich:column>
+
+				<f:facet name="footer">
+					
+					<h:panelGrid columns="2">
+					
+						<h:outputText value="#{prompt.numeroDeModelos} = #{modeloActions.listaModelos.rowCount}"/>
+						
+					</h:panelGrid>
+					
+				</f:facet>
+
+			</rich:dataTable>
+
+			<br />
+			<b><h:outputText value="#{prompt.msgDetalharModelo}" style="font:13px" /></b>
+
+		</h:form>
+
+		<h:form id="formExclusao">
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.confirmacaoExclusaoModelo}"/>
+
+				<center><br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{modeloActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}"
+						action="Richfaces.hideModalPanel('panelConfirmacaoExclusao')">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+				</h:panelGrid>
+				
+				</center>
+
+			</rich:modalPanel>
+			
+		</h:form>
+
+		<a4j:form id="formAlteracaoParametro">
+		
+			<rich:modalPanel id="panelConfirmacaoAlteracaoParametro">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.parametros_AlterarDataEstqInic}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+				
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoAlteracaoParametro')" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup >
+						<h:outputText value="#{prompt.novoValor}: "/>
+					</h:panelGroup>
+						<rich:calendar id="altDataEstqInic" datePattern="dd/MM/yyyy" 
+						value="#{modeloActions.dataEstqInic}" required="true" />
+						<rich:message for="altDataEstqInic" styleClass="error" />
+						
+					<br/>
+					<br/>
+					
+					<h:panelGrid columns="2" cellpadding="5">
+					
+						<a4j:commandButton id="ok" value="#{prompt.alterar}"
+							action="#{modeloActions.alteraDataEstqInic}" styleClass="botao">
+							<rich:componentControl for="panelConfirmacaoAlteracaoParametro"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+	
+						<a4j:commandButton id="cancelar" value="#{prompt.cancelar}"
+							action="Richfaces.hideModalPanel('panelConfirmacaoAlteracaoParametro')">
+							<rich:componentControl for="panelConfirmacaoAlteracaoParametro"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+						
+					</h:panelGrid>	
+
+				</h:panelGrid>
+
+			</rich:modalPanel>
+		
+		</a4j:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

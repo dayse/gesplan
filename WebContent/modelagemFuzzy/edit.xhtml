@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descEdicaoModelagem}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_Editar}</ui:define>
+	<ui:define name="corpo">
+	
+		<h:form>
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelagemFuzzy_Incluir}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.codigo}" />:
+			   		</h:panelGroup>
+			   		
+					<h:inputText id="codigo" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeModelagemFuzzy}"
+						maxlength="#{constantes.lModelagemfuzzyNomeModelagemFuzzy}" size="30" required="true" disabled="true">
+					</h:inputText>
+					<rich:messages for="codigo" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.descricao}" />:
+					</h:panelGroup>
+					
+					<h:inputText id="descricao" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.descrModelagemFuzzy}"
+						maxlength="#{constantes.lModelagemfuzzyDescrModelagemFuzzy}" size="30" required="true">
+					</h:inputText>	
+					<rich:messages for="descricao" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_nomeArquivoModelagem}" />:
+			   		</h:panelGroup>
+					
+					<h:inputText id="nomeArquivo" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeArquivo}"
+						maxlength="#{constantes.lModelagemfuzzyDescrModelagemFuzzy}" size="30" required="true" disabled="true">
+					</h:inputText>	
+					<rich:messages for="nomeArquivo" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.finalidadeModelagem}" />:
+					</h:panelGroup>
+					
+					<h:selectOneMenu id="comboModelagemFuzzy" value="#{modelagemFuzzyActions.comboModelagemFuzzy.selecao}" required="true" disabled="true">
+							<f:selectItems value="#{modelagemFuzzyActions.comboModelagemFuzzy.listaSelecao}" />
+					</h:selectOneMenu>
+					<rich:messages for="comboModelagemFuzzy" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.autor}" />:
+					</h:panelGroup>
+					
+					<h:inputText id="autor" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.autor}"
+						maxlength="#{constantes.lModelagemfuzzyDescrModelagemFuzzy}" size="30" required="true" disabled="true">
+					</h:inputText>	
+					<rich:messages for="autor" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.dataUpload}" />:
+					</h:panelGroup>
+					
+					<h:inputText id="data" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.dataCriacao.time}"
+						maxlength="#{constantes.lModelagemfuzzyDescrModelagemFuzzy}" size="30" required="true" disabled="true">
+					</h:inputText>	
+					<rich:messages for="data" styleClass="error" />
+					
+				</h:panelGrid>
+			</rich:panel>
+			
+			<h:panelGrid columns="2">
+				<a4j:commandButton value="#{prompt.alterar}" action="#{modelagemFuzzyActions.altera}" />
+				<a4j:commandButton value="#{prompt.cancelar}"  action="listModelagemFuzzy" immediate="true" />
+        	</h:panelGrid>
+        
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+	</ui:define>
+</ui:composition>
+</html>

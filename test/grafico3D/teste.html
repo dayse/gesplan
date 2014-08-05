@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript" src="canvas3DGraph.js"></script>  
+<link type="text/css" rel="stylesheet" href="css.css">
+<script type="text/javascript">  
+  
+    window.onload=function(){  
+              
+        //Initialise Graph  
+        var g = new canvasGraph('graph',0,1000,0,1000,0,1900);  
+                  
+				  
+        //define some data  
+        gData=new Array();  
+
+        gData[0]={x:500,y:400,z:600};  
+        gData[1]={x:500,y:500,z:500};  
+        gData[2]={x:300,y:500,z:700};  
+        gData[3]={x:500,y:200,z:800};  
+        gData[4]={x:500,y:100,z:1900};  
+  
+        // sort data - draw farest elements first         
+        gData.sort(sortNumByZ); 
+         
+        
+		
+		//alert(gData[4].x+""+gData[4].y+""+gData[4].z);
+		
+		g.xMin=0;
+		g.xMax=1000;
+		g.yMin=0;
+		g.yMax=1000;
+		g.zMin=0;
+		g.zMax=1900;
+        //draw graph   
+        g.drawGraph(gData);   
+		//alert(g.containerHeight);
+  
+    }  
+</script>   
+</head>
+<body>
+<p>testo bla</p>
+<div id="g-holder">  
+    <div id="canvasDiv">  
+        <canvas id="graph" width="600" height="600" ></canvas>  
+        <div id="gInfo"></div>   
+    </div>  
+    <div id="controls">  
+    <!-- (put your controls here, if you need any) -->  
+	</div>  
+</div>     
+</body>
+</html>

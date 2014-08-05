@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition
+	template="/WEB-INF/template/modelagemfuzzy_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_upload}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.tecido_Editar}</ui:define>
+	<ui:define name="corpo">
+		<h:form>
+			<f:facet name="header">
+				<h:outputText value="#{prompt.modelagemFuzzy_upload_modelagem}" />
+			</f:facet>
+
+			<h:panelGrid columns="2" columnClasses="top,top">
+				<rich:fileUpload
+					fileUploadListener="#{modelagemFuzzyActions.enviarArquivo}"
+					maxFilesQuantity="#{modelagemFuzzyActions.uploadsAvailable}"
+					id="upload" immediateUpload="#{modelagemFuzzyActions.autoUpload}"
+					acceptedTypes="xfl"
+					allowFlash="#{modelagemFuzzyActions.useFlash}">
+
+					<a4j:support event="onclick" reRender="info" />
+
+					<a4j:support event="onfileuploadcomplete" reRender="upload"
+						action="#{modelagemFuzzyActions.mensagemUpload}" />
+
+				</rich:fileUpload>
+				<h:panelGroup id="info">
+					<f:facet name="header">
+						<h:outputText value="Uploaded Files Info" />
+					</f:facet>
+					<rich:dataGrid columns="1" value="#{modelagemFuzzyActions.files}"
+						var="file" rowKeyVar="row">
+						<rich:panel bodyClass="rich-laguna-panel-no-header" />
+					</rich:dataGrid>
+					<rich:spacer height="3" />
+				</h:panelGroup>
+			</h:panelGrid>
+			<br />
+			<br />
+			<a4j:commandButton action="newModelagemFuzzy"
+				value="#{prompt.voltar}" immediate="true" />
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+	</ui:define>
+</ui:composition>
+</html>

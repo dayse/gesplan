@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/recurso_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.recurso}</ui:define>
+	<ui:define name="descricao">#{prompt.recurso_Editar}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.recurso_Editar}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form id="formulario">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.recurso_Alterar}" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.codigo}" />:
+					</h:panelGroup>
+					<h:inputText id="codigo" value="#{recursoActions.recurso.codRecurso}"
+						maxlength="#{constantes.lRecursoCodRecurso}" size="20"
+						disabled="true"/>
+					<h:message for="codigo" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.descricao}" />:
+					</h:panelGroup>					
+					<h:inputText id="descricao" value="#{recursoActions.recurso.descrRecurso}"
+						maxlength="#{constantes.lRecursoDescrRecurso}" size="20" />
+					<h:message for="descricao" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.UM}" />:
+					</h:panelGroup>
+					<h:inputText id="UM" value="#{recursoActions.recurso.UM}"
+						maxlength="#{constantes.lRecursoUM}" size="20" required="true">
+					</h:inputText>
+					<h:message for="UM" styleClass="error" />
+					<h:panelGroup>
+						<h:outputText value="#{prompt.custoUnit}" />:
+					</h:panelGroup>
+					<h:inputText id="custoUnit" value="#{recursoActions.recurso.custoUnit}"
+						maxlength="#{constantes.lRecursoCustoUnit}" size="20"
+						required="true" styleClass="colunaCampoNumerico">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="custoUnit" styleClass="error" />
+
+
+				</h:panelGrid>
+			</rich:panel>
+			<br />
+			<br />
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}"
+				action="#{recursoActions.altera}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="listRecurso" immediate="true" />
+		</h:form>
+		<a4j:keepAlive beanName="recursoActions" />
+		
+	</ui:define>
+</ui:composition>
+</html>

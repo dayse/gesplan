@@ -1,0 +1,172 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/recurso_template.xhtml">
+	<ui:define name="titulo">#{prompt.recurso}</ui:define>
+	<ui:define name="descricao">#{prompt.recurso_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.recurso_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.areaDeBusca} -</span> #{help.recurso_Buscar}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.recurso_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.recurso_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="corpo">
+
+		<h:form>
+			<br/>
+
+			<h:panelGrid columns="5">
+
+				<h:outputText value="#{prompt.areaDeBusca}" /> 
+				<h:inputText value="#{recursoActions.campoDeBusca}"/>
+					<h:selectOneMenu id="comboBusca" value="#{recursoActions.comboTiposDeBusca.selecao}">
+						<f:selectItems value="#{recursoActions.comboTiposDeBusca.listaSelecao}" />
+					</h:selectOneMenu>
+				<h:commandButton value="#{prompt.buscar}" action="#{recursoActions.buscaRecurso}" />
+				<a4j:commandButton value="#{prompt.voltarListagemCompleta}" 
+							action="#{recursoActions.cancela}" rendered="#{recursoActions.buscaEfetuada}"/>		
+								
+			</h:panelGrid>
+			
+			<br />
+			<br />
+
+
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="6" align="center"
+				value="#{recursoActions.listaDeRecursos}" var="recurso"  reRender="#{recursoActions.buscaEfetuada}">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputText title="#{tooltip.recurso_Codigo}" value="#{prompt.codigo}" />
+						</rich:column>
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_Descricao}" value="#{prompt.descricao}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_UM}" value="#{prompt.UM}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_CustoUnitario}" value="#{prompt.custoUnit}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.editar}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.excluir}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="consumo" />
+						</h:column>
+						<h:column>
+							<h:outputText value="capacidade" />
+						</h:column>
+
+					</rich:columnGroup>
+				</f:facet>
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+					
+						<h:outputText value="#{prompt.recurso_Numero} = #{recursoActions.listaDeRecursos.rowCount}"/>
+						
+					</h:panelGrid>
+					
+				</f:facet>
+
+				<rich:column>
+					<h:commandLink action="#{recursoActions.mostra}"
+						value="#{recurso.codRecurso}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{recurso.descrRecurso}"></h:outputText>
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{recurso.UM}"></h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{recurso.custoUnit}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<h:column>
+					<h:commandButton action="#{recursoActions.preparaAlteracao}"
+						value="#{prompt.editar}" />
+				</h:column>
+
+				<h:column>
+					<a4j:commandButton value="#{prompt.excluir}" action="#{recursoActions.preparaExclusao}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" />
+				</h:column>
+
+				<h:column>
+					<h:commandButton action="#{recursoActions.informaConsumoPorModelo}"
+						value="Consumo" />
+				</h:column>
+				<h:column>
+					<h:commandButton action="#{recursoActions.informaCapacidadeDoRecurso}"
+						value="Capacidade" />
+				</h:column>
+
+			</rich:dataTable>
+
+
+		</h:form>
+
+		<h:form>
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="Confirma a Exclusao deste Recurso?" />
+
+
+				<center><br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{recursoActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}" 
+					onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')"/>
+
+				</h:panelGrid></center>
+
+			</rich:modalPanel>
+		</h:form>
+
+		<a4j:keepAlive beanName="recursoActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

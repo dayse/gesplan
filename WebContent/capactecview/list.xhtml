@@ -1,0 +1,177 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capactecview_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.capacTecView}</ui:define>
+	<ui:define name="descricao">#{prompt.capacTecView_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.capacTecView_Cadastro}</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="tecidoActions" />
+		<a4j:keepAlive beanName="capacTecViewActions" />
+
+		<h:form>
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"
+				page="#{capacTecViewActions.pagina}">
+			</rich:datascroller>
+
+			<rich:dataTable id="lista" rows="1" align="center"
+				value="#{capacTecViewActions.listaDeTecidos}" var="tecido"
+				width="470px">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column colspan="8">
+							<h:outputText value="Tecido" />
+						</rich:column>
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.tecido_Codigo}" value="#{prompt.codigo}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_Descricao}" value="#{prompt.descricao}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_UM}" value="#{prompt.UM}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_LeadTimeU2}" value="#{prompt.tecidoLeadTimeUnidade2}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_FatorRendimento}" value="#{prompt.tecidoFatorDeRendimento}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_ProducaoDiariaU2}" value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_CustoUnitario}" value="#{prompt.custoUnit}" />
+						</rich:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<h:column >
+					<h:outputText value="#{tecido.codTecido}"/>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{tecido.descrTecido}"></h:outputText>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{tecido.UM}"></h:outputText>
+				</h:column>
+				
+				<h:column>
+					<h:outputText value="#{tecido.leadTimeUnidade2}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default"  />
+					</h:outputText>
+				</h:column>
+				
+				<h:column>
+					<h:outputText value="#{tecido.fatorDeRendimento}">
+							<f:convertNumber minFractionDigits="3" maxFractionDigits="3" locale="default"  />
+					</h:outputText>
+				</h:column>
+				
+				<h:column>
+					<h:outputText value="#{tecido.producaoDiariaMaxUnidade2}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default"  />
+					</h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.custoUnit}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default"  />
+					</h:outputText>
+				</rich:column>
+
+
+
+				<rich:column breakBefore="true" colspan="8" styleClass="space-table"
+					rendered="#{not empty tecido.capacTecViews}" style="height: 10px;">
+					<h:outputText value="" />
+				</rich:column>
+
+				<rich:column breakBefore="true" colspan="8"
+					styleClass="rich-table-header"
+					rendered="#{not empty tecido.capacTecViews}">
+					<h:outputText value="Periodos" />
+				</rich:column>
+
+				<rich:subTable id="tabelaPerioPMs" var="capacTecView"
+					value="#{tecido.capacTecViews}" headerClass="dr-table-header-continue"
+					rendered="#{not empty tecido.capacTecViews}">
+
+
+
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodo}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.perioPM.periodoPM}" />
+					</rich:column>
+
+					<rich:column colspan="2" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.perioPM.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.perioPM.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DiasUteisMatriz}" value="#{prompt.perioPM_NumDiasUteisMatriz}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.perioPM.numDiasUteisMatriz}" >
+							<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default"  />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DiasUteisU2}" value="#{prompt.perioPM_NumDiasUteisU2}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.perioPM.numDiasUteisU2}" >
+							<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default"  />
+						</h:outputText>
+					</rich:column>
+					
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.capacTecView_DisponibilidadeMaxDiaria}" value="#{prompt.capacTecView_consumoMaxDiarioMatriz}" />
+						</f:facet>
+						<h:outputText value="#{capacTecView.consumoMaxDiarioMatriz}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+
+				</rich:subTable>
+
+			</rich:dataTable>
+
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

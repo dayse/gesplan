@@ -1,0 +1,815 @@
+//--------------------------------------------------------------------------------//
+//                               COPYRIGHT NOTICE                                 //
+//--------------------------------------------------------------------------------//
+// Copyright (c) 2012, Instituto de Microelectronica de Sevilla (IMSE-CNM)        //
+//                                                                                //
+// All rights reserved.                                                           //
+//                                                                                //
+// Redistribution and use in source and binary forms, with or without             //
+// modification, are permitted provided that the following  conditions are met:   //
+//                                                                                //
+//     * Redistributions of source code must retain the above copyright notice,   //
+//       this list of conditions and the following disclaimer.                    // 
+//                                                                                //
+//     * Redistributions in binary form must reproduce the above copyright        // 
+//       notice, this list of conditions and the following disclaimer in the      //
+//       documentation and/or other materials provided with the distribution.     //
+//                                                                                //
+//     * Neither the name of the IMSE-CNM nor the names of its contributors may   //
+//       be used to endorse or promote products derived from this software        //
+//       without specific prior written permission.                               //
+//                                                                                //
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"    //
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE      //
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE // 
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE  //
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL     //
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR     //
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER     //
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  //
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  //
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.           //
+//--------------------------------------------------------------------------------//
+
+options {
+ LOOKAHEAD = 1;
+ STATIC = false;
+}
+
+PARSER_BEGIN(XfuzzyConfig)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//   PARSER DE LA CONFIGURACION DE LAS DISTINTAS HERRAMIENTAS	//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+package xfuzzy;
+
+import xfuzzy.lang.*;
+import xfuzzy.xfplot.*;
+import xfuzzy.xfsim.*;
+import xfuzzy.xfdm.*;
+import xfuzzy.xfsl.*;
+import java.io.*;
+import java.util.Vector;
+
+public class XfuzzyConfig {
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			MIEMBROS PRIVADOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ private int error;
+ private String errorMsg;
+ private boolean end;
+
+ private XfdmConfig xfdmcfg;
+ private XfslConfig xfslcfg;
+ private XfsimConfig xfsimcfg;
+ private XfplotConfig xfplotcfg;
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			   CONSTRUCTOR				//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ public XfuzzyConfig() {
+  this.error = 0;
+  this.errorMsg = "";
+  this.xfdmcfg = null;
+  this.xfslcfg = null;
+  this.xfsimcfg = null;
+  this.xfplotcfg = null;
+ }
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			METODOS PUBLICOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ //-------------------------------------------------------------//
+ // Analiza un fichero para leer una configuracion de Xfdm	//
+ //-------------------------------------------------------------//
+
+ public XfdmConfig parseXfdmConfig(File file) {
+  initParse(file);
+  this.xfdmcfg = new XfdmConfig();
+  try { tryConfiguration(); }
+  catch(ParseException ex) { return null; }
+  if(error == 0) return this.xfdmcfg;
+  return null;
+ }
+
+ //-------------------------------------------------------------//
+ // Analiza un fichero para leer una configuracion de Xfsl	//
+ //-------------------------------------------------------------//
+
+ public XfslConfig parseXfslConfig(File file) {
+  initParse(file);
+  this.xfslcfg = new XfslConfig();
+  try { tryConfiguration(); }
+  catch(ParseException ex) { return null; }
+  if(error == 0) return this.xfslcfg;
+  return null;
+ }
+
+ //-------------------------------------------------------------//
+ // Analiza un fichero para leer una configuracion de Xfsim	//
+ //-------------------------------------------------------------//
+
+ public boolean parseXfsimConfig(Xfsim xfsim, File file) {
+  initParse(file);
+  this.xfsimcfg = xfsim.getConfiguration();
+  try { tryConfiguration(); } catch(ParseException ex) { }
+  return ( error == 0 );
+ }
+
+ //-------------------------------------------------------------//
+ // Analiza un fichero para leer una configuracion de Xfplot	//
+ //-------------------------------------------------------------//
+
+ public boolean parseXfplotConfig(XfplotConfig config, File file) {
+  initParse(file);
+  this.xfplotcfg = config;
+  try { tryConfiguration(); } catch(ParseException ex) { }
+  return ( error == 0 );
+ }
+
+ //-------------------------------------------------------------//
+ // Devuelve el conjunto de errores cometidos en una lectura	//
+ //-------------------------------------------------------------//
+
+ public String resume() {
+  String eol = System.getProperty("line.separator", "\n");
+  String msg = this.errorMsg + this.error;
+  if(this.error == 1) msg += " error."; else msg += " errors.";
+  return msg+eol;
+ }
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			METODOS PRIVADOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ //-------------------------------------------------------------//
+ // Inicializa las variables internas de un analisis		//
+ //-------------------------------------------------------------//
+
+ private void initParse(File file) {
+  error = 0;
+  errorMsg = "";
+
+  InputStream stream;
+  try { stream = new FileInputStream(file); }
+  catch (Exception e) {
+   errorMsg += "Can't open file "+file.getAbsolutePath();
+   error ++;
+   return;
+  }
+
+  jj_input_stream = new SimpleCharStream(stream, 1, 1);
+  token_source = new XfuzzyConfigTokenManager(jj_input_stream);
+
+  ReInit(stream);
+ }
+
+ //-------------------------------------------------------------//
+ // Obtiene una lista de numeros a partir de un Vector		//
+ //-------------------------------------------------------------//
+
+ private double[] getParams(Vector v) {
+  double[] param = new double[v.size()];
+  for(int i=0; i<param.length; i++)
+   param[i] = Double.parseDouble((String) v.elementAt(i) );
+  return param;
+ }
+
+ //-------------------------------------------------------------//
+ // Almacena una excepcion (error sintactico)			//
+ //-------------------------------------------------------------//
+
+ private void exception(ParseException e) {
+  String eol = System.getProperty("line.separator", "\n");
+  Token t = e.currentToken.next;
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. ";
+  this.errorMsg += "Parse error at line "+t.beginLine+" : ";
+  this.errorMsg += "Encountered \""+t.image+"\""+" while expecting ";
+
+  int expected[] = new int[e.expectedTokenSequences.length];
+  for(int i=0; i<expected.length; i++)
+   expected[i] = e.expectedTokenSequences[i][0];
+  if(expected.length == 1) this.errorMsg += e.tokenImage[expected[0]]+"."+eol;
+  else {
+   this.errorMsg += "one of :\n       "+e.tokenImage[expected[0]];
+   for(int i=1; i<expected.length; i++)
+    this.errorMsg += ",\n       "+e.tokenImage[expected[i]];
+   this.errorMsg += "."+eol;
+  }
+ }
+
+ //-------------------------------------------------------------//
+ // Almacena una excepcion (error lexico)			//
+ //-------------------------------------------------------------//
+
+ private void exception(TokenMgrError e) {
+  String eol = System.getProperty("line.separator", "\n");
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. "+e.getMessage()+eol;
+ }
+
+ //-------------------------------------------------------------//
+ // Almacena una excepcion (generica)				//
+ //-------------------------------------------------------------//
+
+ private void exception(Exception e) {
+  String eol = System.getProperty("line.separator", "\n");
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. "+e.getMessage()+eol;
+ }
+
+ //=============================================================//
+ //	     TRATAMIENTO DE LA CONFIGURACION DE XFSL		// 
+ //=============================================================//
+
+ //-------------------------------------------------------------//
+ // Introduce el fichero de entrenamiento			//
+ //-------------------------------------------------------------//
+
+ private void xfslTrainingFile(Token tid) throws XflException {
+  if(xfslcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  if(!file.exists()) throw new XflException(31);
+  xfslcfg.trainingfile = file;
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el fichero de test				//
+ //-------------------------------------------------------------//
+
+ private void xfslTestFile(Token tid) throws XflException {
+  if(xfslcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  if(!file.exists()) throw new XflException(31);
+  xfslcfg.testfile = file;
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce la descripcion de un historico			//
+ //-------------------------------------------------------------//
+
+ private void xfslLogFile(Token tid, Vector v) {
+  if(xfslcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  xfslcfg.logfile = new XfslLog(file,v);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el fichero de salida				//
+ //-------------------------------------------------------------//
+
+ private void xfslOutputFile(Token tid) {
+  if(xfslcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  xfslcfg.outputfile = file;
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el algoritmo de aprendizaje			//
+ //-------------------------------------------------------------//
+
+ private void xfslAlgorithm(Token tid, double[] param) throws XflException {
+  if(xfslcfg == null) return;
+  xfslcfg.algorithm = XfslAlgorithm.create(tid.image,param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una opcion del algoritmo de aprendizaje		//
+ //-------------------------------------------------------------//
+
+ private void xfslOption(Token tid, double[] param) throws XflException {
+  if(xfslcfg == null) return;
+  if(xfslcfg.algorithm != null) xfslcfg.algorithm.setOption(tid.image,param);
+  else throw new XflException(30);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce la funcion de error				//
+ //-------------------------------------------------------------//
+
+ private void xfslErrorFunction(Token tid, double[] param) throws XflException {
+  if(xfslcfg == null) return;
+  xfslcfg.errorfunction = new XfslErrorFunction(tid.image,param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce un metodo de simplificacion (como preprocesado)	//
+ //-------------------------------------------------------------//
+
+ private void xfslPreprocessing(Token tid, double[] param) {
+  if(xfslcfg == null) return;
+  xfslcfg.preprocessing.set(tid.image, param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce un metodo de simplificacion (como postprocesado)	//
+ //-------------------------------------------------------------//
+
+ private void xfslPostprocessing(Token tid, double[] param) {
+  if(xfslcfg == null) return;
+  xfslcfg.postprocessing.set(tid.image, param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una condicion de finalizacion			//
+ //-------------------------------------------------------------//
+
+ private void xfslEndCondition(Token tid, double[] param) {
+  if(xfslcfg == null) return;
+  xfslcfg.endcondition.set(tid.image, param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una seleccion de parametros a ajustar		//
+ //-------------------------------------------------------------//
+
+ private void xfslEnable(Token tid) {
+  if(xfslcfg == null) return;
+  xfslcfg.addSetting(tid.image, true);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una seleccion de parametros a  no ajustar		//
+ //-------------------------------------------------------------//
+
+ private void xfslDisable(Token tid) {
+  if(xfslcfg == null) return;
+  xfslcfg.addSetting(tid.image, false);
+ }
+
+ //=============================================================//
+ //	     TRATAMIENTO DE LA CONFIGURACION DE XFSIM		// 
+ //=============================================================//
+
+ //-------------------------------------------------------------//
+ // Introduce el fichero ".class" con el modelo de planta	//
+ //-------------------------------------------------------------//
+
+ private void xfsimPlantModel(Token tid) throws XflException {
+  if(xfsimcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  if(!file.exists()) throw new XflException(31);
+  xfsimcfg.setPlantModel(file);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce los valores iniciales de las variables de estado	//
+ //-------------------------------------------------------------//
+
+ private void xfsimInit(double[] param) {
+  if(xfsimcfg == null) return;
+  xfsimcfg.init = param;
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una condicion de finalizacion			//
+ //-------------------------------------------------------------//
+
+ private void xfsimAddLimit(Token tid, Token tn, int kind) {
+  if(xfsimcfg == null) return;
+  xfsimcfg.limit.add(tid.image,Double.parseDouble(tn.image),kind);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce la descripcion de un historico			//
+ //-------------------------------------------------------------//
+
+ private void xfsimLogFile(Token tid, Vector v) {
+  if(xfsimcfg == null) return;
+  File log = new File(tid.image.substring(1,tid.image.length()-1));
+  xfsimcfg.addLogFile(log,v);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce la descripcion de una representacion grafica	//
+ //-------------------------------------------------------------//
+
+ private void xfsimPlot(Token tx, Token ty, Token tk) {
+  if(xfsimcfg == null) return;
+  xfsimcfg.addPlot(tx.image,ty.image,Integer.parseInt(tk.image));
+ }
+
+ //=============================================================//
+ //	     TRATAMIENTO DE LA CONFIGURACION DE XFPLOT		// 
+ //=============================================================//
+
+ //-------------------------------------------------------------//
+ // Introduce una representacion grafica en 2D			//
+ //-------------------------------------------------------------//
+
+ private void xfplotGraph2D(Token tx, Token ty) throws Exception {
+  if(xfplotcfg == null) return;
+  xfplotcfg.setVariables(tx.image,ty.image);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce una representacion grafica en 3D			//
+ //-------------------------------------------------------------//
+
+ private void xfplotGraph3D(Token tx, Token ty, Token tk) throws Exception {
+  if(xfplotcfg == null) return;
+  xfplotcfg.setVariables(tx.image,ty.image,tk.image);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce los valores de las variables no seleccionadas	//
+ //-------------------------------------------------------------//
+
+ private void xfplotValues(double[] param) throws Exception {
+  if(xfplotcfg == null) return;
+  xfplotcfg.setInputValues(param);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce los valores de las barras de deslizamiento	//
+ //-------------------------------------------------------------//
+
+ private void xfplotPerspective(Token tx, Token ty) throws Exception {
+  if(xfplotcfg == null) return;
+  int horiz = Integer.parseInt(tx.image);
+  int vert = Integer.parseInt(ty.image);
+  xfplotcfg.setSlides(horiz,vert);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el numero de divisiones de los ejes		//
+ //-------------------------------------------------------------//
+
+ private void xfplotSamples(Token tid) throws Exception {
+  if(xfplotcfg == null) return;
+  xfplotcfg.setSamples(Integer.parseInt(tid.image));
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el codigo del modelo de colores de la grafica 3D	//
+ //-------------------------------------------------------------//
+
+ private void xfplotColorMode(Token tid) throws Exception {
+  if(xfplotcfg == null) return;
+  xfplotcfg.setColorMode(Integer.parseInt(tid.image));
+ }
+
+ //=============================================================//
+ //	     TRATAMIENTO DE LA CONFIGURACION DE XFDM		// 
+ //=============================================================//
+
+ //-------------------------------------------------------------//
+ // Introduce el fichero de patrones				//
+ //-------------------------------------------------------------//
+
+ private void xfdmPatternFile(Token tid) throws XflException {
+  if(xfdmcfg == null) return;
+  File file = new File(tid.image.substring(1,tid.image.length()-1));
+  if(!file.exists()) throw new XflException(31);
+  xfdmcfg.patternfile = file;
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el numero de variables de entrada			//
+ //-------------------------------------------------------------//
+
+ private void xfdmInputs(Token tid) throws Exception {
+  if(xfdmcfg == null) return;
+  xfdmcfg.numinputs = Integer.parseInt(tid.image);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el numero de variables de salida			//
+ //-------------------------------------------------------------//
+
+ private void xfdmOutputs(Token tid) throws Exception {
+  if(xfdmcfg == null) return;
+  xfdmcfg.numoutputs = Integer.parseInt(tid.image);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el estilo de las variables de entrada		//
+ //-------------------------------------------------------------//
+
+ private void xfdmInput(Token tid, double param[]) throws Exception {
+  if(xfdmcfg == null) return;
+  if(!XfdmInputStyle.paramTest(param)) throw new XflException(35);
+  if(tid.image.equals("ANY")) {
+   xfdmcfg.commonstyle = new XfdmInputStyle(tid.image,param);
+  } else {
+   if(xfdmcfg.inputstyle == null) xfdmcfg.inputstyle = new XfdmInputStyle[0];
+   XfdmInputStyle aux[] = new XfdmInputStyle[xfdmcfg.inputstyle.length+1];
+   System.arraycopy(xfdmcfg.inputstyle,0,aux,0,aux.length-1);
+   aux[aux.length-1] = new XfdmInputStyle(tid.image,param);
+   xfdmcfg.inputstyle = aux;
+  } 
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el estilo del sistema		 		//
+ //-------------------------------------------------------------//
+
+ private void xfdmSystem(Token tid, Token to, Token ta, Token ts, Token tb)
+ throws Exception {
+  if(xfdmcfg == null) return;
+  int conj = Integer.parseInt(ta.image);
+  int style = Integer.parseInt(ts.image);
+  boolean bool = tb.image.equals("1");
+  xfdmcfg.systemstyle = new XfdmSystemStyle(tid.image,to.image,conj,style,bool);
+ }
+
+ //-------------------------------------------------------------//
+ // Introduce el algoritmo de aprendizaje                       //
+ //-------------------------------------------------------------//
+
+ private void xfdmAlgorithm(Token tid, double[] param) throws XflException {
+  if(xfdmcfg == null) return;
+  xfdmcfg.algorithm = XfdmAlgorithm.create(tid.image,param);
+ }
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//   Descripcion de la sintaxis del fichero de configuracion	//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+PARSER_END(XfuzzyConfig)
+
+SKIP :
+{
+  " "
+| "\t"
+| <SINGLE_LINE_COMMENT: "//"> : COMMENT
+| <SINGLE_LINE_COMMENT2: "#"> : COMMENT
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* palabras clave */
+{
+  <XFSL_TRAININGFILE: "xfsl_training">
+| <XFSL_TESTFILE: "xfsl_test">
+| <XFSL_LOGFILE: "xfsl_log">
+| <XFSL_OUTPUTFILE: "xfsl_output">
+| <XFSL_ALGORITHM: "xfsl_algorithm">
+| <XFSL_OPTION: "xfsl_option">
+| <XFSL_ERRORFUNCTION: "xfsl_errorfunction">
+| <XFSL_PREPROCESSING: "xfsl_preprocessing">
+| <XFSL_POSTPROCESSING:"xfsl_postprocessing">
+| <XFSL_ENDCONDITION: "xfsl_endcondition">
+| <XFSL_ENABLE: "xfsl_enable">
+| <XFSL_DISABLE: "xfsl_disable">
+| <XFSIM_PLANT: "xfsim_plant">
+| <XFSIM_INIT: "xfsim_init">
+| <XFSIM_LIMIT: "xfsim_limit">
+| <XFSIM_LOG: "xfsim_log">
+| <XFSIM_PLOT: "xfsim_plot">
+| <XFPLOT_GRAPH3D: "xfplot_graph3D">
+| <XFPLOT_GRAPH2D: "xfplot_graph2D">
+| <XFPLOT_VALUES: "xfplot_values">
+| <XFPLOT_PERSPECTIVE: "xfplot_perspective">
+| <XFPLOT_SAMPLES: "xfplot_samples">
+| <XFPLOT_COLORMODE: "xfplot_colormode">
+| <XFDM_PATTERN: "xfdm_pattern">
+| <XFDM_INPUTS: "xfdm_inputs">
+| <XFDM_OUTPUTS: "xfdm_outputs">
+| <XFDM_INPUT: "xfdm_input">
+| <XFDM_SYSTEM: "xfdm_system">
+| <XFDM_ALGORITHM: "xfdm_algorithm">
+| <EOL: ("\n"|"\r"|"\r\n")>
+}
+
+<COMMENT> SKIP:
+{
+ <OTHER: ~["\n","\r"]>
+}
+
+<COMMENT> TOKEN:
+{
+ <CEOL: ("\n"|"\r"|"\r\n")> : DEFAULT
+}
+
+TOKEN: /* identificadores */
+{
+  <ID : ["a"-"z","A"-"Z","_"] (["a"-"z","A"-"Z","0"-"9","_"])* >
+| <FILE: "\"" (~["\""])+ "\"">
+| <PARAM: <ID> "." <ID> "." ( "ANY" | <INTEGER>) >
+| <NUMBER : <FLOAT>(["e","E"](["+","-"])?<INTEGER>)? >
+| <#INTEGER: ( ["0"-"9"] )+ >
+| <#FLOAT: ("-")? <INTEGER> | ("-")? <INTEGER>"."<INTEGER> | "."<INTEGER> >
+| <ERROR: ~["a"-"z","A"-"Z","0"-"9","_","(",")",",","/","#","\n","\r","-","&","<",">"]>
+}
+
+
+void endline() :
+{}
+{
+ <EOF> { end = true; } | <EOL> | <CEOL>
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//	SINTAXIS DE CUALQUIER FICHERO DE CONFIGURACION		//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+void tryDirective() :
+{}
+{
+ try { directive() }
+ catch (ParseException e) { exception(e); skipline(); }
+ catch (XflException e) { exception(e); skipline(); }
+ catch (Exception e) { exception(e); skipline(); }
+}
+
+void directive() throws XflException, Exception:
+{
+	Token tid, tn, tx, ty, tk;
+	double[] param;
+	Vector v;
+}
+{
+  <XFSL_TRAININGFILE> "(" tid = <FILE> ")" endline()
+	{
+	 xfslTrainingFile(tid);
+	}
+| <XFSL_TESTFILE> "(" tid = <FILE> ")" endline()
+	{
+	 xfslTestFile(tid);
+	}
+| <XFSL_LOGFILE> "(" tid = <FILE>  v=listOfNames() ")" endline()
+	{
+	 xfslLogFile(tid, v);
+	}
+| <XFSL_OUTPUTFILE> "(" tid = <FILE> ")" endline()
+	{
+	 xfslOutputFile(tid);
+	}
+| <XFSL_ALGORITHM> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 xfslAlgorithm(tid, param);
+	}
+| <XFSL_OPTION> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 xfslOption(tid, param);
+	}
+| <XFSL_ERRORFUNCTION> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+	{
+	 xfslErrorFunction(tid, param);
+	}
+| <XFSL_PREPROCESSING> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+	{
+	 xfslPreprocessing(tid, param);
+	}
+| <XFSL_POSTPROCESSING> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+	{
+	 xfslPostprocessing(tid, param);
+	}
+| <XFSL_ENDCONDITION> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+	{
+	 xfslEndCondition(tid, param);
+	}
+| <XFSL_ENABLE> "(" tid=<PARAM> ")" endline()
+	{
+	 xfslEnable(tid);
+	}
+| <XFSL_DISABLE> "(" tid=<PARAM> ")" endline()
+	{
+	 xfslDisable(tid);
+	}
+| <XFSIM_PLANT> "(" tid=<FILE> ")" endline()
+	{ 
+	 xfsimPlantModel(tid);
+	}
+| <XFSIM_INIT> "(" param=listOfParams() ")" endline()
+	{
+	 xfsimInit(param);
+	}
+| <XFSIM_LIMIT> "(" ( xfsimLimit() ( "&" xfsimLimit() )* )? ")" endline()
+| <XFSIM_LOG> "("  tid=<FILE> v=listOfNames() ")" endline()
+	{
+	 xfsimLogFile(tid, v);
+	}
+| <XFSIM_PLOT> "(" tx=<ID> "," ty=<ID> "," tk=<NUMBER> ")" endline()
+	{
+	 xfsimPlot(tx,ty,tk);
+	}
+| <XFPLOT_GRAPH3D> "(" tx = <ID> "," ty = <ID> "," tk = <ID> ")" endline()
+	{
+	 xfplotGraph3D(tx, ty, tk);
+	}
+| <XFPLOT_GRAPH2D> "(" tx = <ID> "," ty = <ID> ")" endline()
+	{
+	 xfplotGraph2D(tx, ty);
+	}
+| <XFPLOT_VALUES> "(" param = listOfParams() ")" endline()
+	{
+	 xfplotValues(param);
+	}
+| <XFPLOT_PERSPECTIVE> "(" tx = <NUMBER> "," ty = <NUMBER> ")" endline()
+	{
+	 xfplotPerspective(tx, ty);
+	}
+| <XFPLOT_SAMPLES> "(" tid = <NUMBER> ")" endline()
+	{
+	 xfplotSamples(tid);
+	}
+| <XFPLOT_COLORMODE> "(" tid = <NUMBER> ")" endline()
+	{
+	 xfplotColorMode(tid);
+	}
+| <XFDM_PATTERN> "(" tid = <FILE> ")" endline()
+	{
+	 xfdmPatternFile(tid);
+	}
+| <XFDM_INPUTS> "(" tid = <NUMBER> ")" endline()
+	{
+	 xfdmInputs(tid);
+	}
+| <XFDM_OUTPUTS> "(" tid = <NUMBER> ")" endline()
+	{
+	 xfdmOutputs(tid);
+	}
+| <XFDM_INPUT> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+	{
+	 xfdmInput(tid,param);
+	}
+| <XFDM_SYSTEM> "(" tid=<ID> "," tn=<ID> "," tk=<NUMBER> "," tx=<NUMBER>
+  "," ty=<NUMBER> ")" endline()
+	{
+	 xfdmSystem(tid,tn,tk,tx,ty);
+	}
+| <XFDM_ALGORITHM> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 xfdmAlgorithm(tid, param);
+	}
+| endline()
+}
+
+double[] listOfParamsWithComma() :
+{
+        Token tn;
+        Vector v = new Vector();
+}
+{
+ ("," tn=<NUMBER> { v.addElement(tn.image); } )* 
+	{
+	 return getParams(v);
+	}
+}
+
+double[] listOfParams() :
+{
+        Token tn;
+        Vector v = new Vector();
+}
+{
+ (tn=<NUMBER> { v.addElement(tn.image); }
+ ("," tn=<NUMBER> { v.addElement(tn.image); } )* )? 
+	{
+	 return getParams(v);
+	}
+}
+
+Vector listOfNames() :
+{
+        Token tn;
+        Vector v = new Vector();
+}
+{
+ ("," tn=<ID> { v.addElement(tn.image); } )* 
+        {
+         return v;
+        }
+}
+
+void xfsimLimit() :
+{
+	Token tid,tn;
+	int kind = -1;
+}
+{
+ tid = <ID> ( "<" { kind=0; } | ">" { kind = 1; } ) tn = <NUMBER>
+	{
+	 xfsimAddLimit(tid,tn,kind);
+	}
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//		FUNCIONES PRINCIPALES DEL PARSER		//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+JAVACODE
+void tryConfiguration() {
+ end = false;
+ while(!end) {
+  try { tryDirective(); }
+  catch (ParseException e) { exception(e); skipline(); }
+  catch (TokenMgrError e) { exception(e); end = true; }
+ }
+}
+
+JAVACODE
+void skipline() {
+ Token t;
+ do { t = getNextToken(); }
+ while(t.kind != EOF && t.kind != EOL && t.kind != CEOL);
+}
+

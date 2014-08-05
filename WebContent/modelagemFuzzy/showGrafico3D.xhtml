@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_grafico3d_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descGrafico3D}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_Grafico3D}</ui:define>
+	<ui:define name="corpo">
+
+	
+		<h:form>
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelagemFuzzy_legendaSimulador3D}" />
+				</f:facet>
+				<h:panelGrid columns="2">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_eixoXSimulador3D}" />:
+					</h:panelGroup>
+						<h:outputText value="#{modelagemFuzzyActions.variavelInput1CorrenteGrafico3D.nome}" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_eixoYSimulador3D}" />:
+					</h:panelGroup>
+						<h:outputText value="#{modelagemFuzzyActions.variavelInput2CorrenteGrafico3D.nome}" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_eixoZSimulador3D}" />:
+					</h:panelGroup>
+					
+						<h:outputText value="#{modelagemFuzzyActions.variavelOutputCorrente.nome}" />
+					
+				</h:panelGrid>
+			</rich:panel>
+
+			<h:panelGrid columns="2">
+        	  <a4j:commandButton value="#{prompt.modelagemFuzzy_mostraGrafico3D}" action="#{modelagemFuzzyActions.mostraGrafico3D}" reRender="grafico" onclick="this.disabled=true" oncomplete="this.disabled=false" />
+        	  <h:outputText value="#{prompt.modelagemFuzzy_grafico3DOBS}"/>
+        	</h:panelGrid>
+        	
+			<rich:simpleTogglePanel id="grafico"  rendered="#{modelagemFuzzyActions.exibindoGrafico}">
+			<f:facet name="header" >
+				<h:outputText value="#{prompt.modelagemFuzzy_simulacao3D}" />
+			</f:facet>			
+			
+
+				<gt:grafico3d
+					datasets="#{modelagemFuzzyActions.dataSimulador3D}" 
+					placeholder="simulador3d" 
+					numSamples="#{modelagemFuzzyActions.simulador3DNumSamples}"
+					width="600" height="450"
+				/>
+			</rich:simpleTogglePanel>
+				
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

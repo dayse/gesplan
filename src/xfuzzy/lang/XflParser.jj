@@ -1,0 +1,1229 @@
+//--------------------------------------------------------------------------------//
+//                               COPYRIGHT NOTICE                                 //
+//--------------------------------------------------------------------------------//
+// Copyright (c) 2012, Instituto de Microelectronica de Sevilla (IMSE-CNM)        //
+//                                                                                //
+// All rights reserved.                                                           //
+//                                                                                //
+// Redistribution and use in source and binary forms, with or without             //
+// modification, are permitted provided that the following  conditions are met:   //
+//                                                                                //
+//     * Redistributions of source code must retain the above copyright notice,   //
+//       this list of conditions and the following disclaimer.                    // 
+//                                                                                //
+//     * Redistributions in binary form must reproduce the above copyright        // 
+//       notice, this list of conditions and the following disclaimer in the      //
+//       documentation and/or other materials provided with the distribution.     //
+//                                                                                //
+//     * Neither the name of the IMSE-CNM nor the names of its contributors may   //
+//       be used to endorse or promote products derived from this software        //
+//       without specific prior written permission.                               //
+//                                                                                //
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"    //
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE      //
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE // 
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE  //
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL     //
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR     //
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER     //
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  //
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  //
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.           //
+//--------------------------------------------------------------------------------//
+
+options {
+ LOOKAHEAD = 1;
+ STATIC = false;
+}
+
+PARSER_BEGIN(XflParser)
+
+package xfuzzy.lang;
+
+import java.io.*;
+import java.util.Vector;
+
+/**
+ * Parser del lenguaje XFL3
+ * 
+ * @author Francisco José Moreno Velo
+ *
+ */
+public class XflParser {
+
+	//----------------------------------------------------------------------------//
+	//                            MIEMBROS PRIVADOS                               //
+	//----------------------------------------------------------------------------//
+	
+	/**
+	 * Salto de línea
+	 */
+	private String eol = System.getProperty("line.separator", "\n");
+	
+	/**
+	 * Sistema que se está analizando
+	 */
+	private Specification spec;
+	
+	/**
+	 * Conjunto de paquetes disponibles
+	 */
+	private XflPackageBank pkgbank;
+	
+	/**
+	 * Contador de errores
+	 */
+	private int error;
+	
+	/**
+	 * Contador de warnings
+	 */
+	private int warning;
+	
+	/**
+	 * Mensaje de error
+	 */
+	private String errorMsg;
+	
+	/**
+	 * Flag para detectar si se ha definido el módulo "crisp"
+	 */
+	private boolean crispDefined;
+	
+	/**
+	 * Flag para detectar si se ha definido el módulo "system"
+	 */
+	private boolean systemDefined;
+	
+	/**
+	 * Flag para detectar si se reconoce algo después de salir de
+	 * la especificación
+	 */
+	private boolean end;
+	
+	//----------------------------------------------------------------------------//
+	//                                CONSTRUCTOR                                 //
+	//----------------------------------------------------------------------------//
+	
+	public XflParser () {
+		this.error = 0;
+		this.warning = 0;
+		this.errorMsg = "";
+		this.crispDefined = false;
+		this.systemDefined = false;
+	}
+	
+	//----------------------------------------------------------------------------//
+	//                             MÉTODOS PÚBLICOS                               //
+	//----------------------------------------------------------------------------//
+	
+	/**
+	 * Analiza la sintaxis de un fichero de especificacion de un
+	 * sistema difuso
+	 */
+	public Specification parse(String filename) {
+		this.error = 0;
+		this.warning = 0;
+		this.errorMsg = "";
+		this.crispDefined = false;
+		this.systemDefined = false;
+		this.pkgbank = new XflPackageBank();
+		
+		File file = new File(filename);
+		this.spec = new Specification(file);
+		
+		InputStream stream;
+		try { stream = new FileInputStream(filename); }
+		catch (Exception e) {
+			this.errorMsg += "Can't open file"+filename+eol;
+			this.error ++;
+			return null;
+		}
+		
+		jj_input_stream = new SimpleCharStream(stream, 1, 1);
+		token_source = new XflParserTokenManager(jj_input_stream);
+		ReInit(stream);
+		try { system(); }
+		catch (ParseException e) {
+			this.errorMsg += "Fatal error loading "+filename+eol;
+			this.error ++;
+			return null;
+		}
+		catch (TokenMgrError e) {
+			this.errorMsg += "Fatal error loading "+filename+eol;
+			this.error ++;
+			return null;
+		}
+		
+		try { stream.close(); } catch (IOException e) {}
+		
+		if(this.error>0) return null;
+		return spec;
+	}
+
+	/**
+	 * Analiza la sintaxis de un flujo de entrada que contenga la
+	 * especificación de un sistema difuso
+	 */
+	public Specification parse(InputStream stream, String name) {
+		this.error = 0;
+		this.warning = 0;
+		this.errorMsg = "";
+		this.crispDefined = false;
+		this.systemDefined = false;
+		this.pkgbank = new XflPackageBank();
+		
+		this.spec = new Specification(name);
+		
+		ReInit(stream);
+		try { system(); }
+		catch (ParseException e) {
+			this.errorMsg += "Fatal error loading stream"+eol;
+			this.error ++;
+			return null;
+		}
+		catch (TokenMgrError e) {
+			this.errorMsg += "Fatal error loading stream"+eol;
+			this.error ++;
+			return null;
+		}
+		
+		try { stream.close(); } catch (IOException e) {}
+		
+		if(this.error>0) return null;
+		return spec;
+	}
+
+	/**
+	 * Obtiene el mensaje de error del análisis sintáctico	
+	 */
+	public String resume() {
+		String msg = this.errorMsg + this.error;
+		if(this.error == 1) msg += " error"; else msg += " errors";
+		if(this.warning == 0) msg += ".";
+		else if(this.warning == 1) msg += " and "+this.warning+" warning.";
+		else msg += " and "+this.warning+" warnings.";
+		return msg;
+	}
+
+	/**
+	 * Ejecución externa
+	 */
+	public static void main(String args[]) throws Exception {
+		if(args.length != 1 && args.length != 3) return;
+		XflParser parser = new XflParser();
+		Specification spec = parser.parse(args[0]);
+		if(spec == null) System.out.println(parser.resume());
+		else System.out.println(spec.toXfl());
+	}
+	
+	//----------------------------------------------------------------------------//
+	//                             MÉTODOS PÚBLICOS                               //
+	//----------------------------------------------------------------------------//
+
+	/**
+	 * Crea un nuevo conjunto de operadores
+	 */
+	private Operatorset newOperatorset(Token tid) {
+		if(spec.searchOperatorset(tid.image)!=null) exception(tid, 9);
+		Operatorset newop = new Operatorset(tid.image);
+		spec.addOperatorset(newop);
+		return newop;
+	}
+	
+	/**
+	 * Crea un nuevo operador de un conjunto de operadores
+	 */
+	private void newOperator(Operatorset op,Token top, Token tid, double param[]) {
+		int kindop = -1;
+		int kindfz = -1;
+		if(top.image.equals("and"))
+		{ kindop = FuzzyOperator.AND; kindfz = XflPackage.BINARY; }
+		if(top.image.equals("or"))
+		{ kindop = FuzzyOperator.OR; kindfz = XflPackage.BINARY; }
+		if(top.image.equals("also"))
+		{ kindop = FuzzyOperator.ALSO; kindfz = XflPackage.BINARY; }
+		if(top.image.equals("imp") || top.image.equals("implication"))
+		{ kindop = FuzzyOperator.IMP; kindfz = XflPackage.BINARY; }
+		if(top.image.equals("not"))
+		{ kindop = FuzzyOperator.NOT; kindfz = XflPackage.UNARY; }
+		if(top.image.equals("very") || top.image.equals("strongly"))
+		{ kindop = FuzzyOperator.VERY; kindfz = XflPackage.UNARY; }
+		if(top.image.equals("moreorless"))
+		{ kindop = FuzzyOperator.MOREORLESS; kindfz = XflPackage.UNARY; }
+		if(top.image.equals("slightly"))
+		{ kindop = FuzzyOperator.SLIGHTLY; kindfz = XflPackage.UNARY; }
+		if(top.image.equals("defuzzification") || top.image.equals("defuz"))
+		{ kindop = FuzzyOperator.DEFUZMETHOD; kindfz = XflPackage.DEFUZ; }
+		if(kindop == -1) { exception(top,5); return; }
+		
+		FuzzyOperator operator = null;
+		int index = tid.image.indexOf('.');
+		String pkgname = tid.image.substring(0,index);
+		String opname = tid.image.substring(index+1);
+		if(!pkgbank.contains(pkgname,opname,kindfz)) { exception(tid,4); return; }
+		operator = (FuzzyOperator) pkgbank.instantiate(pkgname,opname, kindfz);
+		if(operator==null) 
+		try{ operator.set(param); } catch(Exception e) { exception(tid,34); return; }
+		op.set(operator, kindop);
+	}
+
+	/**
+	 * Crea una lista de parámetros
+	 */
+	private double[] newParameters(Token tn[],int counter) {
+		double param[] = new double[counter];
+		for(int i=0; i<counter; i++) param[i] = Double.parseDouble(tn[i].image);
+		return param;
+	}
+	
+	/**
+	 * Crea un tipo de variable difusa
+	 */
+	private Type newType(Token tid, Token tp, Universe u) {
+		Type newtype = null;
+		if(spec.searchType(tid.image)!=null) { exception(tid, 11); return null; }
+		if(u != null) newtype = new Type(tid.image,u);
+		else if(tp != null) {
+			Type parent=spec.searchType(tp.image);
+			if(parent == null) exception(tp,12);
+			else newtype = new Type(tid.image,parent);
+		}
+		if(newtype==null) newtype = new Type(tid.image);
+		spec.addType(newtype);
+		return newtype;
+	}
+
+	/**
+	 * Crea un nuevo universo de discurso
+	 */
+	private Universe newUniverse(Token tmin, Token tmax, Token tcard) {
+		double min = Double.valueOf(tmin.image).doubleValue();
+		double max = Double.valueOf(tmax.image).doubleValue();
+		if(tcard == null)
+			try { return new Universe(min,max); }
+		catch (XflException e) { exception(tmin, e); return null; }
+		
+		try {
+			int card = Integer.parseInt(tcard.image);
+			return new Universe(min,max,card);
+		}
+		catch (XflException e) { exception(tmin, e); return null; }
+		catch (NumberFormatException e) { exception(tmin, 2); return null; }
+	}
+
+	/**
+	 * Crea una nueva familia de funciones de pertenencia
+	 */
+	private void newFamily(Type type, Token tfam, Token tid, double param[]) {
+		if(type == null) return;
+		Family fam = null;
+		int index = tid.image.indexOf('.');
+		String pkgname = tid.image.substring(0,index);
+		String famname = tid.image.substring(index+1);
+		if(!pkgbank.contains(pkgname,famname,XflPackage.FAMILY)) { 
+			exception(tid,36);
+			return;
+		} 
+		fam = (Family) pkgbank.instantiate(pkgname,famname, XflPackage.FAMILY);
+		if(fam==null) { exception(tid,36); return; }
+		
+		try {
+			fam.set(tfam.image, type);
+			fam.set(param);
+			type.addFamily(fam);
+		}
+		catch (XflException e) { exception(tfam, e); }
+	}
+
+	/**
+	 * Crea una nueva función de pertenencia de un tipo
+	 */
+	private void newMemFunc(Type type, Token tmf, Token tid, double param[]) {
+		if(type == null) return;
+		ParamMemFunc mf = null;
+		int index = tid.image.indexOf('.');
+		String pkgname = tid.image.substring(0,index);
+		String mfname = tid.image.substring(index+1);
+		if(!pkgbank.contains(pkgname,mfname,XflPackage.MFUNC)) {
+			exception(tid,7); 
+			return;
+		}
+		mf = (ParamMemFunc) pkgbank.instantiate(pkgname,mfname, XflPackage.MFUNC);
+		if(mf==null) { exception(tid,7); return; }
+		
+		try {
+			mf.set(tmf.image, type.getUniverse());
+			mf.set(param);
+			type.add(mf);
+		}
+		catch (XflException e) { exception(tmf, e); }
+	}
+
+	/**
+	 * Crea una nueva funcion de pertenencia familiar
+	 */
+	private void newFamiliarMemFunc(Type type, Token tmf, Token tid, int index) {
+		if(type == null) return;
+		Family fam = type.searchFamily(tid.image);
+		if(fam==null) { exception(tid,37); return; }
+		try {
+			type.add(new FamiliarMemFunc(tmf.image,fam,index));
+		}
+		catch (XflException e) { exception(tmf, e); }
+	}
+	
+	/**
+	 * Crea un nueva base de reglas
+	 */
+	private Rulebase newRulebase(Token tmod) {
+		CrispBlockSet cbs = spec.getCrispBlockSet();
+		if(cbs.search(tmod.image)!=null) { exception(tmod,41); return null; }
+		if(spec.searchRulebase(tmod.image)!=null) {exception(tmod,13); return null; }
+		Rulebase newmod = new Rulebase(tmod.image);
+		spec.addRulebase(newmod);
+		return newmod;
+	}
+
+	/**
+	 * Crea una nueva variable de una base de reglas
+	 */
+	private void newVariable(Rulebase mod,Token ttype, Token tvar, boolean input) {
+		if(mod == null) return;
+		Type type = spec.searchType(ttype.image);
+		if(type == null) { exception(ttype,12); return; }
+		if(mod.searchVariable(tvar.image) != null ) { exception(tvar,15); return; }
+		if(input) {
+			Variable inputvar = new Variable(tvar.image,type,Variable.INPUT);
+			mod.addInputVariable(inputvar);
+		}
+		else {
+			Variable outputvar = new Variable(tvar.image,type,mod);
+			mod.addOutputVariable(outputvar);
+		}
+	}
+
+	/**
+	 * Asigna a una base de reglas su conjunto de operadores
+	 */
+	private void newUsingOp(Rulebase mod, Token top) {
+		if(mod == null) return;
+		
+		if(top == null) {
+			Operatorset op = spec.searchOperatorset("_default_");
+			if(op == null) { op = new Operatorset(); spec.addOperatorset(op); }
+			mod.setOperatorset(op);
+			return;
+		}
+		
+		Operatorset op = spec.searchOperatorset(top.image);
+		if(op==null) exception(top,10);
+		else mod.setOperatorset(op);
+	}
+	
+	/**
+	 * Crea una nueva regla de una base de reglas
+	 */
+	private Rule newRule(Relation rel, Rulebase mod, Token tdg) {
+		Rule rule;
+		if(tdg == null) rule = new Rule(rel);
+		else {
+			double degree = Double.parseDouble(tdg.image);
+			rule = new Rule(rel,degree);
+		}
+		mod.addRule(rule);
+		return rule;
+	}
+
+	/**
+	 * Crea una nueva proposición para el antecedente de una regla
+	 */
+	private Relation newProposition(Token tvar,Token tmf,Rulebase mod,int code) {
+		Variable var = mod.searchVariable(tvar.image);
+		if(var == null) { exception(tvar, 16); return null; }
+		
+		LinguisticLabel mf = var.search(tmf.image);
+		if(mf == null) { exception(tvar, 6); return null; }
+		
+		switch (code) {
+		case 0: return Relation.create(Relation.IS,null,null,var,mf,mod);
+		case 1: return Relation.create(Relation.ISNOT,null,null,var,mf,mod);
+		case 2: return Relation.create(Relation.GR_EQ,null,null,var,mf,mod);
+		case 3: return Relation.create(Relation.SM_EQ,null,null,var,mf,mod);
+		case 4: return Relation.create(Relation.GREATER,null,null,var,mf,mod);
+		case 5: return Relation.create(Relation.SMALLER,null,null,var,mf,mod);
+		case 6: return Relation.create(Relation.APP_EQ,null,null,var,mf,mod);
+		case 7: return Relation.create(Relation.VERY_EQ,null,null,var,mf,mod);
+		case 8: return Relation.create(Relation.SL_EQ,null,null,var,mf,mod);
+		default: return null;
+		}
+	}
+
+	/**
+	 * Crea una nueva conclusión para el consecuente de una regla
+	 */
+	private void newConclusion(Token tvar, Token tmf, Rulebase mod, Rule rule) {
+		if(rule == null) return;
+		Variable output = mod.searchVariable(tvar.image);
+		if(output==null) { exception(tvar,16); return; }
+		LinguisticLabel mf = output.search(tmf.image);
+		if(mf==null) { exception(tmf,6); return; }
+		rule.add(new Conclusion(output,mf,mod));
+	}
+	
+	/**
+	 * Crea el conjunto de bloques no difusos
+	 */
+	private void newCrispBlockSet(Token t) {
+		if(crispDefined) { exception(t,39); return; }
+		crispDefined = true;
+	}
+
+	/**
+	 * Crea un nuevo bloque de un conjunto de bloques no difusos
+	 */
+	private void newCrispBlock(Token tblock, Token tid, double param[]) {
+		CrispBlockSet cbs = spec.getCrispBlockSet();
+		if(cbs.search(tblock.image)!=null) { exception(tblock,41); return; }
+		if(spec.searchRulebase(tblock.image)!=null) { exception(tblock,13); return; }
+		
+		CrispBlock block = null;
+		int index = tid.image.indexOf('.');
+		String pkgname = tid.image.substring(0,index);
+		String blockname = tid.image.substring(index+1);
+		if(!pkgbank.contains(pkgname,blockname,XflPackage.CRISP)) {
+			exception(tid,40); 
+			return;
+		}
+		block = (CrispBlock) pkgbank.instantiate(pkgname,blockname, XflPackage.CRISP);
+		if(block==null) { exception(tid,40); return; }
+		try{ block.set(param); } catch(Exception e) { exception(tid,34); return; }
+		block.setLabel(tblock.image);
+		cbs.add(block);
+	}
+
+	/**
+	 * Crea la descripción global del sistema difuso
+	 */
+	private void newSystemModule(Token t) {
+		if(systemDefined) { exception(t,24); return; }
+		systemDefined = true;
+	}
+	
+	/**
+	 * Crea una nueva variable global del sistema difuso
+	 */
+	private void newVariable(Token ttype, Token tid, boolean input) {
+		Type type = spec.searchType(ttype.image);
+		if(type == null) { exception(ttype,12); return; }
+		if(spec.getSystemModule().searchVariable(tid.image) != null )
+		{ exception(tid,15); return; }
+		if(input) {
+			Variable inputvar = new Variable(tid.image,type,Variable.INPUT);
+			spec.getSystemModule().addVariable(inputvar);
+		}
+		else {
+			Variable outputvar = new Variable(tid.image,type,Variable.OUTPUT);
+			spec.getSystemModule().addVariable(outputvar);
+		}
+	}
+
+	/**
+	 * Crea una nueva llamada a una base de reglas
+	 */
+	private void newCall(Token t, Vector iv, Vector ov) {
+		Rulebase ref = spec.searchRulebase(t.image);
+		CrispBlock block = spec.getCrispBlockSet().search(t.image);
+		if(ref != null) {
+			if(ref.getInputs().length != iv.size()) { exception(t,21); return; }
+			if(ref.getOutputs().length != ov.size()) { exception(t,21); return; }
+		} else if(block != null) {
+			if(block.inputs() != iv.size()) { exception(t,21); return; }
+			if(ov.size() != 1) { exception(t,21); return; }
+		} else { exception(t,20); return; }
+		
+		Variable[] ivar = new Variable[iv.size()];
+		Variable[] ovar = new Variable[ov.size()];
+		for(int i=0; i<ivar.length; i++) {
+			String varname = (String) iv.elementAt(i);
+			ivar[i] = spec.getSystemModule().searchVariable( varname );
+			if(ivar[i] == null) { exception(t,22); return; }
+		}
+		for(int i=0; i<ovar.length; i++) {
+			String varname = (String) ov.elementAt(i);
+			ovar[i] = spec.getSystemModule().searchVariable( varname );
+			if(ovar[i] != null && !ovar[i].isOutput()) { exception(t,23); return; }
+			if(ovar[i] == null) {
+				ovar[i] = new Variable(varname,Variable.INNER);
+				spec.getSystemModule().addVariable(ovar[i]);
+			}
+		}
+		if(ref != null) spec.getSystemModule().addCall(ref,ivar,ovar);
+		else spec.getSystemModule().addCall(block,ivar,ovar[0]);
+	}
+	
+	/**
+	 * Genera un error de sintaxis de XFL3
+	 */
+	private void exception(Token t, XflException e) {
+		this.error ++;
+		this.errorMsg += "Xfuzzy ["+this.error+"]. ";
+		this.errorMsg += "Parse error at line "+t.beginLine+" : "+e+eol;
+	}
+
+	/**
+	 * Genera un error de sintaxis de XFL3
+	 */
+	private void exception(Token t, int code) {
+		this.error ++;
+		this.errorMsg += "Xfuzzy ["+this.error+"]. ";
+		this.errorMsg += "Parse error at line "+t.beginLine+" : ";
+		this.errorMsg += XflException.getMessage(code)+eol;
+	}
+
+	/**
+	 * Genera un error de sintaxis de XFL3
+	 */
+	private void exception(ParseException e) {
+		Token t = e.currentToken.next;
+		this.error ++;
+		this.errorMsg += "Xfuzzy ["+this.error+"]. ";
+		this.errorMsg += "Parse error at line "+t.beginLine+" : ";
+		this.errorMsg += "Encountered \""+t.image+"\""+" while expecting ";
+		
+		int expected[] = new int[e.expectedTokenSequences.length];
+		for(int i=0; i<expected.length; i++)
+			expected[i] = e.expectedTokenSequences[i][0];
+		if(expected.length == 1) this.errorMsg += e.tokenImage[expected[0]]+"."+eol;
+		else {
+			this.errorMsg += "one of :"+e.tokenImage[expected[0]];
+			for(int i=1; i<expected.length; i++)
+				this.errorMsg += ", "+e.tokenImage[expected[i]];
+			this.errorMsg += "."+eol;
+		}
+	}
+
+	/**
+	 * Genera un error léxico de XFL3
+	 */
+	private void exception(TokenMgrError e) {
+		this.error ++;
+		this.errorMsg += "Xfuzzy ["+this.error+"]. "+e.getMessage()+eol;
+	}
+
+}
+
+PARSER_END(XflParser)
+
+SKIP :
+{
+  " "
+| "\r" 
+| "\n" 
+| "\t"
+| <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* palabras clave */
+{
+  <IMPORT: "import">
+| <OPERATORSET: "operatorset">
+| <TYPE: "type">
+| <EXTENDS: "extends">
+| <RULEBASE: "rulebase">
+| <USING: "using">
+| <IF: "if">
+| <CRISP: "crisp">
+| <SYSTEM: "system">
+}
+
+TOKEN: /* operadores */
+{
+  <AND: "&">
+| <OR: "|">
+| <NOT: "!">
+| <VERY: "+">
+| <MOREORLESS: "~">
+| <SLIGHTLY: "%">
+| <IS: "==">
+| <ISNOT: "!=">
+| <GREATEROREQUAL: ">=">
+| <SMALLEROREQUAL: "<=">
+| <GREATER: ">">
+| <SMALLER: "<">
+| <APPROXEQUAL: "~=">
+| <VERYEQUAL: "+=">
+| <SLIGHTLYEQUAL: "%=">
+| <ASIGN: "=">
+| <THEN: "->">
+}
+
+TOKEN: /* identificadores */
+{
+  <ID : ["a"-"z","A"-"Z","_"] (["a"-"z","A"-"Z","0"-"9","_"])* >
+| <OPERATOR: <ID> "." <ID> >
+}
+
+TOKEN: /* numeros */
+{
+  <NUMBER : <FLOAT>(["e","E"](["+","-"])?<INTEGER>)? >
+| <#INTEGER: ( ["0"-"9"] )+ >
+| <#FLOAT: ("-")? <INTEGER> | ("-")? <INTEGER>"."<INTEGER> | "."<INTEGER> >
+}
+
+void system() :
+{
+	end = false;
+}
+{
+ tryDefinitions()
+}
+
+void definition() :
+{
+}
+{
+   tryOperatorset()
+ | tryType()
+ | tryRulebase() 
+ | tryCrispBlockSet() 
+ | trySystemModule()
+ | <EOF> { end = true; }
+}
+
+void tryOperatorset() :
+{}
+{
+ try { operatorset() }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void operatorset() :
+{
+	Token tid;
+	Operatorset newop;
+}
+{
+ <OPERATORSET> tid = <ID> 
+	{
+	 newop = newOperatorset(tid);
+	}
+ "{" ( tryOperator(newop) )* "}"
+}
+
+void tryOperator(Operatorset op) :
+{}
+{
+ try { operator(op) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+
+void operator(Operatorset op) :
+{
+	Token top;
+	Token tname;
+	double param[];
+}
+{
+ top=<ID> tname=<OPERATOR> param=tryParameters() ";"
+	{
+	 newOperator(op,top,tname,param);
+	}
+}
+
+double[] tryParameters() :
+{
+	double param[];
+}
+{
+ try { param=parameters() {return param;} }
+ catch (ParseException e) { exception(e); skipto(")"); return new double[0]; }
+ catch (TokenMgrError e) { exception(e); skipto(")"); return new double[0];}
+}
+
+double[] parameters() :
+{
+	Token tn[] = new Token[25];
+	int i=0;
+}
+{
+  "(" ( tn[i]=<NUMBER> {i++;} ( "," tn[i]=<NUMBER> {i++;})* )? ")"
+	{
+	 return newParameters(tn,i);
+	}
+}
+
+void tryType() :
+{}
+{
+ try { type() }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void type() :
+{
+	Token tid;
+	Token tp = null;
+	Universe u = null;
+	Type newtype;
+}
+{
+ <TYPE> tid=<ID> ( u=universe() | <EXTENDS> tp=<ID>)?
+	{
+	 newtype = newType(tid,tp,u);
+	}
+ "{" ( tryTypeElement(newtype) )* "}"
+}
+
+Universe tryUniverse() :
+{
+	Universe u = null;
+}
+{
+ try { u=universe() {return u;} }
+ catch (ParseException e) { exception(e); skipto("]"); return u; }
+ catch (TokenMgrError e) { exception(e); skipto("]"); return u; }
+}
+
+Universe universe():
+{
+	Token tmin;
+	Token tmax;
+	Token tcard=null;
+}
+{
+ "[" tmin=<NUMBER> "," tmax=<NUMBER> ( ";" tcard=<NUMBER>)? "]"
+	{
+	 return newUniverse(tmin,tmax,tcard);
+	}
+}
+
+void tryTypeElement(Type type) :
+{}
+{
+ try { typeElement(type) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void typeElement(Type type) :
+{
+	Token tname;
+}
+{
+ tname=<ID> ( family(type,tname) | memfunc(type,tname) )
+}
+
+void family(Type type, Token tname) :
+{
+        Token tfam;
+        double param[];
+}
+{
+ "[" "]" tfam=<OPERATOR> param=tryParameters() ";"
+        {
+         newFamily(type,tname,tfam,param);
+        }
+}
+
+void memfunc(Type type, Token tname) :
+{
+	Token tmf;
+	double param[];
+	int index;
+}
+{
+ (
+   tmf=<OPERATOR>
+   param=tryParameters() ";"
+	{
+	 newMemFunc(type,tname,tmf,param);
+	}
+ | 
+   tmf=<ID>
+   index=tryIndex() ";"
+	{
+	 newFamiliarMemFunc(type,tname,tmf,index);
+	}
+ )
+}
+
+int tryIndex() :
+{
+	Token ti;
+}
+{
+ "[" ti=<NUMBER> "]"
+	{
+	 return Integer.parseInt(ti.image);
+	}
+}
+
+void tryRulebase() :
+{}
+{
+ try { rulebase() }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void rulebase() :
+{
+	Token tmod;
+	Rulebase newmod;
+}
+{
+ <RULEBASE> tmod=<ID> { newmod = newRulebase(tmod); }
+ tryVariables(newmod)  tryUsingOp(newmod)
+ (rule(newmod))+ "}"
+}
+
+void tryVariables(Rulebase mod) :
+{}
+{
+ try { variables(mod) }
+ catch (ParseException e) { exception(e); skipto(")"); }
+ catch (TokenMgrError e) { exception(e); skipto(")"); }
+}
+
+void variables(Rulebase mod):
+{
+}
+{
+ "(" (variable(mod,true) ("," variable(mod, true))* )? 
+ ":" (variable(mod,false) ("," variable(mod, false))* )? ")"
+}
+
+void variable(Rulebase mod, boolean input):
+{
+	Token ttype;
+	Token tvar;
+}
+{
+ ttype=<ID> tvar=<ID>
+	{
+	 newVariable(mod,ttype,tvar,input);
+	}
+}
+
+void tryUsingOp(Rulebase mod) :
+{}
+{
+ try { usingop(mod) }
+ catch (ParseException e) { exception(e); skipto("{"); }
+ catch (TokenMgrError e) { exception(e); skipto("{"); }
+}
+
+void usingop(Rulebase mod) :
+{
+	Token top = null;
+}
+{
+ (<USING> top=<ID>)? "{"
+	{
+	 newUsingOp(mod,top);
+	}
+}
+
+void tryRule(Rulebase mod) :
+{}
+{
+ try { rule(mod) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void rule(Rulebase mod):
+{
+	Rule rule;
+	Token tdg = null;
+}
+{
+ ("["tdg = <NUMBER>"]")?
+ <IF> rule = tryAntecedent(mod, tdg) <THEN> tryConclusions(mod, rule) 
+}
+
+Rule tryAntecedent(Rulebase mod, Token tdg) :
+{
+	Rule rule;
+}
+{
+ try { rule = antecedent(mod,tdg) { return rule; } }
+ catch (ParseException e) { exception(e); skipto(")"); return null; }
+ catch (TokenMgrError e) { exception(e); skipto(")"); return null; }
+}
+
+Rule antecedent(Rulebase mod, Token tdg) :
+{
+	Relation rel;
+}
+{
+ "(" rel = relation(mod) ")"
+	{
+	 return newRule(rel,mod,tdg);
+	}
+}
+
+Relation relation(Rulebase mod):
+{
+	Relation rel;
+	Relation lrel;
+	Relation rrel;
+}
+{
+ rel = unary(mod) 	 
+(
+ <AND> rrel = unary(mod)
+	{
+	 lrel = rel;
+	 rel = Relation.create(Relation.AND,lrel,rrel,null,null,mod);
+	}
+| <OR> rrel = unary(mod)
+	{
+	 lrel = rel;
+	 rel = Relation.create(Relation.OR,lrel,rrel,null,null,mod);
+	}
+)*
+	{
+	 return rel;
+	}
+}
+
+Relation unary(Rulebase mod):
+{
+	Relation prop;
+}
+{ 
+  prop = proposition(mod)
+	{
+	 return prop;
+	}
+| <NOT> prop = proposition(mod) 
+	{
+	 return Relation.create(Relation.NOT,prop,null,null,null,mod);
+	}
+| <VERY> prop = proposition(mod)
+	{
+	 return Relation.create(Relation.VERY,prop,null,null,null,mod);
+	}
+| <MOREORLESS> prop = proposition(mod)
+	{	
+	 return Relation.create(Relation.MoL,prop,null,null,null,mod);
+	}
+| <SLIGHTLY> prop = proposition(mod)
+	{
+	 return Relation.create(Relation.SLIGHTLY,prop,null,null,null,mod);
+	}
+}
+
+Relation proposition(Rulebase mod):
+{
+	Relation prop;
+}
+{
+ ( prop = simpleProposition(mod) | prop = tryCompound(mod) )
+	{
+	 return prop;
+	}
+}
+
+Relation simpleProposition(Rulebase mod) :
+{
+        Token tvar;
+        Token tmf;
+        int code;
+}
+{
+ tvar=<ID> code=comparative() tmf=<ID>
+        {
+         return newProposition(tvar,tmf,mod,code);
+        }
+}
+
+int comparative() :
+{
+}
+{
+   <IS> { return 0; }
+ | <ISNOT> { return 1;}
+ | <GREATEROREQUAL> { return 2;}
+ | <SMALLEROREQUAL> { return 3;}
+ | <GREATER> { return 4;}
+ | <SMALLER> { return 5;}
+ | <APPROXEQUAL> { return 6;}
+ | <VERYEQUAL> { return 7;}
+ | <SLIGHTLYEQUAL> { return 8;}
+}
+
+Relation tryCompound(Rulebase mod) :
+{
+	Relation prop;
+}
+{
+ try { prop = compoundProposition(mod) { return prop; } }
+ catch (ParseException e) { exception(e); skipto(")"); return null; }
+ catch (TokenMgrError e) { exception(e); skipto(")"); return null; }
+}
+
+
+Relation compoundProposition(Rulebase mod) :
+{
+	Relation prop;
+}
+{
+ "(" prop = relation(mod) ")"
+	{
+	 return prop;
+	}
+}
+
+void tryConclusions(Rulebase mod, Rule rule) :
+{}
+{
+ try { conclusions(mod,rule) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void conclusions(Rulebase mod, Rule rule):
+{
+	Token tvar;
+	Token tmf;
+}
+{
+ conclusion(mod,rule) ( "," conclusion(mod,rule) )* ";"
+}
+
+void conclusion(Rulebase mod, Rule rule):
+{
+        Token tvar;
+        Token tmf;
+}
+{
+ tvar = <ID> <ASIGN> tmf = <ID>
+        {
+         newConclusion(tvar,tmf,mod,rule);
+        }
+}
+
+void tryCrispBlockSet() :
+{}
+{
+ try { crispblockset() }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void crispblockset() :
+{
+	Token t;
+}
+{
+ t = <CRISP> 
+	{
+	 newCrispBlockSet(t);
+	}
+ "{" ( tryCrispBlock() )* "}"
+}
+
+void tryCrispBlock() :
+{}
+{
+ try { crispblock() }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+
+void crispblock() :
+{
+	Token tid;
+	Token tname;
+	double param[];
+}
+{
+ tid=<ID> tname=<OPERATOR> param=tryParameters() ";"
+	{
+	 newCrispBlock(tid,tname,param);
+	}
+}
+
+void trySystemModule() :
+{}
+{
+ try { systemmod() }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void systemmod() :
+{
+	Token t;
+}
+{
+ t = <SYSTEM>
+	{
+	 newSystemModule(t);
+	}
+ "(" (systemvar(true) ("," systemvar(true))*)? 
+ ":" (systemvar(false) ("," systemvar(false))*)? ")"
+ "{" ( tryCall() )* "}"
+}
+
+void systemvar(boolean input):
+{
+	Token ttype;
+        Token tid;
+}
+{
+ ttype=<ID> tid=<ID>
+        {
+         newVariable(ttype,tid,input);
+        }
+}
+
+void tryCall() :
+{}
+{
+ try { call() }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void call() :
+{
+        Token tmod;
+        Token tvar;
+        Vector iv = new Vector();
+        Vector ov = new Vector();
+}
+{
+ tmod = <ID>
+ "(" tvar = <ID> { iv.add(tvar.image); }
+     ("," tvar = <ID> { iv.add(tvar.image); } )*
+ ":" tvar = <ID> { ov.add(tvar.image); }
+     ("," tvar = <ID> { ov.add(tvar.image); } )*
+ ")" ";" { newCall(tmod,iv,ov); }
+}
+
+JAVACODE
+void tryDefinitions() {
+ while(!end) {
+  try { definition(); }
+  catch (ParseException e) { exception(e); skipto("}"); }
+  catch (TokenMgrError e) { exception(e); end = true; }
+ }
+}
+
+JAVACODE
+void skipto(String st) {
+ Token t;
+ do { t = getNextToken();}
+ while(t.kind != EOF && !t.image.equals(st));
+}
+

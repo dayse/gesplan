@@ -1,0 +1,353 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/cadplan_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.cadplans}</ui:define>
+	<ui:define name="descricao">#{prompt.cadplan_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.cadPlan_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.cadPlan_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.implementar} - </span> #{help.cadPlan_Implementar}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimirTodos} -</span> #{help.cadPlan_Imprimir}
+		<br /><br />
+		<span class="negrito">#{prompt.totalizar} -</span> #{help.cadPlan_TotalizarPlanos}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="cadPlanActions"/>
+		
+		<h:form id="formCadPlanList">
+			
+			<br/>
+			
+			<rich:datascroller id="scroller" for="tabelaCadPlan" align="center" renderIfSinglePage="false" 
+				maxPages="5"  page="#{cadPlanActions.pagina}">
+					<a4j:support ajaxSingle="true" action="#{cadPlanActions.atualizarPlanos}" event="onpagechange"/>
+					<!--  
+					<a4j:support ajaxSingle="true" action="#{cadPlanActions.totalizarPlano}" 
+						event="onpagechange" actionListener="#{cadPlanActions.actionAjax}" >
+							<f:setPropertyActionListener value="#{pageIndex}" target="#{cadPlanActions.pageIndex}"/>
+							<f:param name="pageIndex" assignTo="#{cadPlanActions.pageIndexInt}" value="#{pageIndex}"/>
+							<a4j:actionparam name="index" assignTo="#{cadPlanActions.pageIndexIntAjax}" value="#{pageIndex}"/>
+					</a4j:support>
+					-->
+			</rich:datascroller>	
+			
+			<rich:dataTable id="tabelaCadPlan" var="plano" align="center" rows="1" width="550px"
+				value="#{cadPlanActions.listaCadPlan}" >
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<rich:column colspan="16">
+							<h:outputText value="#{prompt.cadplan}" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.cadPlan_Codigo}" value="#{prompt.cadplan_codigo}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_Descricao}" value="#{prompt.cadplan_descricao}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_Modelagem}" value="#{prompt.modelagemFuzzy}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_EscoreMinimo}" value="#{prompt.cadplan_escoreMin}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_EscoreMedio}" value="#{prompt.cadplan_escoreMedio}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_VariacaoEstoque}" value="#{prompt.cadplan_varEstqPer}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_ProducaoDiaria}" value="#{prompt.cadplan_varProdDiaPer}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_Ranking}" value="#{prompt.cadplan_ranking}" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column rendered="#{cadPlanActions.listaCadPlan.rowCount gt 0}">
+							<h:outputText value="" />
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:commandLink value="#{plano.codPlan}" action="#{cadPlanActions.mostra}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{plano.descrPlan}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{plano.modelagemFuzzy}" rendered="#{not empty plano.modelagemFuzzy}" />
+					<h:outputText value="Nenhum" rendered="#{empty plano.modelagemFuzzy}" />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{plano.escoreMin}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{plano.escoreMedio}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{plano.varEstqPer}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{plano.varProdDiaPer}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{plano.ranking}"  >
+						<f:convertNumber maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column>
+					<h:commandButton value="#{prompt.ajustar}" action="#{cadPlanActions.ajustarPlano}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.totalizar}" action="#{cadPlanActions.totalizarPlano}" 
+					disabled="#{cadPlanActions.renderizarTotalizacao}" reRender="formCadPlanList"/>
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.copiar}" action="#{cadPlanActions.copiarPlano}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.implementar}" action="#{cadPlanActions.implementaPlanoMestre}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.imprimir}" action="#{cadPlanActions.imprimir}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.gerarMsgExcecao}" action="#{cadPlanActions.gerarExcecaoMens}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.mostrarMsgExcecao}" action="#{cadPlanActions.mostrarExcecaoMens}" />
+				</rich:column>
+				
+				<rich:column>
+					<a4j:commandButton value="#{prompt.excluir}" action="#{cadPlanActions.preparaExclusao}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" />
+				</rich:column>
+				
+				<rich:column breakBefore="true" colspan="16" styleClass="space-table" style="height: 25px;"
+					rendered="#{cadPlanActions.renderizarTotalizacao}">
+					<h:outputText value="" />
+				</rich:column>
+				
+				<!--  COMPONENTE FAKE UTILIZADO PARA A BORDA DA TABELA SER COMPLETAMENTE RENDERIZADA  -->
+				<rich:column breakBefore="true" rendered="false"/>
+			
+				<rich:column breakBefore="true" colspan="16" styleClass="rich-table-header"
+					rendered="#{cadPlanActions.renderizarTotalizacao}">
+					<h:outputText value="#{prompt.totalizacaoPlanoPeriodo}" />
+				</rich:column>
+				
+				<!--  COMPONENTE FAKE UTILIZADO PARA A BORDA DA TABELA SER COMPLETAMENTE RENDERIZADA  -->
+				<rich:column breakBefore="true" rendered="false"/>
+				
+					<rich:subTable id="tabelaPlPerModAgregado" value="#{cadPlanActions.listaPlPerModAgregado}" 
+						align="center" headerClass="dr-table-header-continue"  var="plPerModAgregado"
+						rendered="#{cadPlanActions.renderizarTotalizacao}">
+					
+						<rich:column sortBy="#{plPerModAgregado.perioPM.periodoPM}" 
+							styleClass="colunaCampoNumericoCentralizado">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodos}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.perioPM.periodoPM}"/>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="3">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.perioPM.dataInicial.time}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.perioPM.dataFinal.time}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.cadPlan_VendasProjetadas}" value="#{prompt.plpermod_vendasProjetadas}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.vendasModel}">
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.cadPlan_PedidosTotais}" value="#{prompt.plpermod_pedidosTotais}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.pedidosModel}">
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.cadPlan_ProducaoTotal}" value="#{prompt.plpermod_producaoTotal}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.producaoModel}">
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+							</h:outputText>
+						</rich:column>
+						
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.cadPlan_DisponibilidadeProjTotal}" value="#{prompt.plpermod_disponibilidadeProjetada}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.dispProjModel}">
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+							</h:outputText>
+						</rich:column>
+						
+						<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+							<f:facet name="header">
+								<h:outputText title="#{tooltip.cadPlan_CoberturaMedia}" value="#{prompt.plpermod_coberturaMedia}"/>
+							</f:facet>
+							<h:outputText value="#{plPerModAgregado.coberturaModel}">
+							<f:convertNumber  maxFractionDigits="2" locale="default" />
+							</h:outputText>
+						</rich:column>
+					
+					</rich:subTable>
+
+			</rich:dataTable>
+			
+			<br/>
+			<b><h:outputText value="#{prompt.msgDetalharCadPlan}" style="font:13px" /></b>
+
+		</h:form>
+
+		<h:form id="formExclusao">
+		
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.confirmacaoExclusaoPlano}"/>
+
+				<center>
+				
+				<br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{cadPlanActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao" operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}"
+						action="Richfaces.hideModalPanel('panelConfirmacaoExclusao')">
+						<rich:componentControl for="panelConfirmacaoExclusao" operation="hide" event="onclick" />
+					</h:commandButton>
+
+				</h:panelGrid>
+				
+				</center>
+
+			</rich:modalPanel>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

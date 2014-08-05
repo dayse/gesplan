@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      >
+       <ui:composition>
+    <script language="javascript" type="text/javascript" src="/gesplan/js/jquery-1.5.1.js"></script>
+    <script language="javascript" type="text/javascript" src="/gesplan/js/flot/jquery.flot.js"></script>
+    		<div id="placeholder" style="width:600px;height:300px"></div>
+		
+			 <script  language="javascript" type="text/javascript">
+						$(function () {
+						
+						    var d2 = #{valor};
+						
+						                        
+						    $.plot($("#placeholder"), [
+						        {
+						            data: d2,
+						            bars: { show: true, fill: true }
+						        }
+						    ]);
+						});
+			</script>
+       </ui:composition>
+</html>

@@ -1,0 +1,32 @@
+
+*********************Chamada do projeto gesplan***********
+(chamada do sistema em servidor local)
+
+http://localhost:8080/gesplan/
+ou
+http://localhost:8080//gesplan/login.faces
+
+
+**********************arquivos de modelagem***********************
+diretorio com arquivos .xfl que armazenam a modelagem fuzzy
+Este diretorio deve ser esvaziado quando fizer create/drop pois caso contrario o sistema vai considerar que aqueles arquivos .xfl
+estao cadastrados, quando na verdade não estao mais pois o cadastro de modelagens foi esvaziado
+(ATENCAO: substituir gesplan2010Work pelo nome do diretorio do workspace em uso no momento)
+
+Destino do arquivo=C:\gesplan2010Work\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\gesplan\WEB-INF\modelagens/
+
+
+
+*********************carga do sistema***********
+
+Para verificarmos as senhas que estao sendo usadas e quais os
+logins que estao sendo criados veja o arquivo test\cargaDoSistema\CargaUsuario.java.
+A sequencia da carga é importante pois 
+para que vc possa criar, excluir, alterar  sera necessario
+iniciar o planejamento de HP e para isso voce tera que ter
+privilegio de administrador entao na hora de dar a carga no
+projeto tera que ter sido criado o o administrador.  Na versão antiga da carga era necessário
+descomentar a linha de codigo que criara a conta de administrador. Atualmente já está ok.
+
+
+

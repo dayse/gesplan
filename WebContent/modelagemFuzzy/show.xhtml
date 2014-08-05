@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core"  
+>
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_show_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Arquivo'}">
+			${prompt.modelagemFuzzy_DescDetalhar}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Modelagem'}">
+			${prompt.modelagemFuzzy_DescModelagem}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Regras'}">
+			${prompt.modelagemFuzzy_DescRegras}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Operadores'}">
+			${prompt.modelagemFuzzy_DescOperadores}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Limites'}">
+			${prompt.modelagemFuzzy_DescLimites}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar MF'}">
+			${prompt.modelagemFuzzy_DescMF}
+		</c:if>	
+	</ui:define>
+	<ui:define name="descricao_ajuda">
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Arquivo'}">
+			${help.modelagemFuzzy_DetalharModelagem}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Modelagem'}">
+			${help.modelagemFuzzy_MostrarModelagem}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Regras'}">
+			${help.modelagemFuzzy_MostrarRegras}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Operadores'}">
+			${help.modelagemFuzzy_MostrarOperadores}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar Limites'}">
+			${help.modelagemFuzzy_MostrarLimites}
+		</c:if>
+		<c:if test="${modelagemFuzzyActions.opcaoDescricaoSelecionada == 'Detalhar MF'}">
+			${help.modelagemFuzzy_MF}
+		</c:if>	
+	</ui:define>
+	<ui:define name="corpo">
+
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{modelagemFuzzyActions.modelagemFuzzyCorrente.descrModelagemFuzzy}
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="#{prompt.nome}" />:				
+				
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeModelagemFuzzy}" />
+				
+				<h:outputText value="#{prompt.descricao}" />:
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.descrModelagemFuzzy}" />
+				
+				<h:outputText value="#{prompt.nomeArquivo}" />:
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeArquivo}" />
+				
+				<h:outputText value="#{prompt.finalidadeModelagem}" />:
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.finalidadeModelagem}" />
+				
+				<h:outputText value="#{prompt.modelagemFuzzy_autor}" />:
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.autor}" />
+				
+				<h:outputText value="#{prompt.dataUpload}" />:
+				
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.dataCriacao.time}" >
+					<f:convertDateTime pattern="dd/MM/yyyy"/> 
+				</h:outputText>
+				
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel >
+			<f:facet name="header" >
+			#{modelagemFuzzyActions.opcaoMostraModelagem}
+			</f:facet>
+			
+			<h:panelGrid id="AreaTexto" rendered="#{modelagemFuzzyActions.isTexto}" >
+				<h:inputTextarea  id="textArea"
+	   			 rows="12" cols="100"
+	  			 value="#{modelagemFuzzyActions.conteudoTextArea}"/>
+				
+				
+			</h:panelGrid>
+			
+			<h:panelGrid id="AreaGrafico" rendered="#{!modelagemFuzzyActions.isTexto}" >
+				<h:inputTextarea  id="textArea2"
+	   			 rows="10" cols="100"
+	  			 value="grafico"/>
+				
+				
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,184 @@
+/* - - - - - - - - - - - - - - - - - - - - -
+
+Title : Wufoo Form Structure
+Author : Infinity Box Inc.
+URL : http://wufoo.com
+
+- - - - - - - - - - - - - - - - - - - - - */
+/*
+	@author bruno.oliveira
+	O trecho a seguir aplica uma regra padrão para todos os links do sistema, em
+	todas as suas manifestações (link, visited, hover, active), o padrão pode ser
+	sobrescrito por uma regra mais específica para links específicos.
+ */
+a:link, a:visited, a:hover, a:active{
+	color: blue;	
+}
+
+/*	
+	@author bruno.oliveira
+	O trecho a seguir é uma regra especifica dos links pertecentes ao menu do sistema.
+*/
+.cor_links_menu a:link, a:visited, a:hover, a:active{
+	color: black;	
+}
+
+html{
+	background:#eee;
+}
+
+body{
+	margin:17px 0 15px 0;
+	padding:0;
+	text-align:center;
+	font-size:small;
+	font-family:"Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+}
+
+#rodape {
+	text-align: center;
+	font-style: italic;
+	font-size: x-small;
+	margin: 30px 0px 30px 0px;		
+}
+
+#container{
+	text-align:left;
+	background:#fff;
+	border:1px solid #ccc;
+	margin:0 auto;
+	width:98%;
+}
+
+
+form.wufoo{
+	margin:20px 14px 0 14px;
+	padding:0 0 20px 0;
+}
+
+h2{
+	margin:0;
+	padding:0;
+	min-height:0;
+	
+}
+/* ----- LOGO ----- */
+
+h1{
+	margin:0;
+	padding:0;
+	min-height:0;
+	background-color:#dedede;
+/*	text-indent:-9000px; */
+	text-decoration:none;
+}
+
+h1 a{
+	min-height:40px;
+	height:40px;
+	display:block;
+	background:url('../imagens/coppe-INT_GESPLAN') no-repeat left top;
+	overflow:hidden;
+}
+
+h2{
+	float: left;
+}
+
+.cabecalho form a {
+	background-image: url('../imagens/Button-Help-icon.png');
+	background-repeat: no-repeat;
+	display: block;
+	width: 16px;
+	height: 16px;
+	float: right;
+	margin-left: 10px;
+}
+
+.descricao{
+	font-size:95%;
+	margin-bottom: 30px;
+	color:#555;	
+}
+
+.descricao p{
+	float: left;
+	padding: 0;
+	margin-left: 10px;
+	margin-top: 0;
+}
+
+/*
+	@author bruno.oliveira
+	Para aplicar um link numa imagem, precisamos especificar um texto no elemento <a></a> para
+	que o link exista. Pelas boas práticas de CSS ocultamos esse texto da visão do usuário
+	através da regra a seguir.
+	Display none faz com que o texto fique invisível, o que acarreta duas coisas:
+		- O texto está apenas invisível, então por isso o elemento <a></a> o reconhece como
+		conteúdo e por isso renderiza o link;
+		- O texto mesmo oculto é reconhecido por leitores de telas usados por pessoas com 
+		deficiência visual, o que faz com que o texto se torne uma descrição não visível
+		da imagem.
+*/
+.oculto{
+	display: none;
+}
+
+.cabecalho{
+	padding: 10px;
+	padding-bottom: 0;	
+	display:inline-block;
+	font-size:95%;
+/*	line-height:135%;*/
+	margin-bottom: 0;
+	color:#555;
+}
+
+.descricao_ajuda{
+	text-align: justify;
+	font-size: 10pt;
+}
+
+/*
+	@author bruno.oliveira
+	A regra a seguir é aplicada na funcionalidade help para a criação de paragrafos
+	nos textos gerados pelo help.properties.
+	A pseudo-classe "first-letter" afeta apenas a primeira letra do texto, como aqui
+	se aplica um margem à esquerda de 10%, apenas a primeira linha do texto será afetada,
+	dando o efeito de paragrafo desejado.
+*/
+.descricao_ajuda:first-letter{
+	margin-left: 10%;
+}
+
+/*
+	@author bruno.oliveira
+	A regra a seguir trouxe a configuração da imagem de close dos ModalPanel
+	para dentro do CSS, como é recomendado pelas boas práticas em CSS.
+*/
+.close{
+	background-image: url('../imagens/close.png');
+	background-repeat: no-repeat;
+	display: block;
+	width: 16px;
+	height: 16px;
+	float: right;
+	margin-right: 5px;
+}
+
+/*
+	@author bruno.oliveira
+	Esta regra aplica o negrito nos subtópicos contidos nos helps.
+*/
+.negrito{
+	font-weight: bold;
+}
+
+/*
+	@author bruno.oliveira
+	Aplica um paragrafo dentro dos ModalPanels em que algum menu
+	possui subitens relacionados.
+*/
+.paragrafo{
+	margin-left: 10%;
+}

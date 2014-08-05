@@ -1,0 +1,252 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/demodper_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.demandasPorModelo}</ui:define>
+	<ui:define name="descricao">#{prompt.descricaoListDemandasPorModelo}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.deModPer_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.editar} -</span> #{help.deModPer_Editar}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="deModPerActions" />
+
+		<h:form id="formDeModPerList">
+		
+			
+			<br/>
+			<br/>
+			
+			<rich:datascroller id="scroller" for="tabelaModelos" align="center" renderIfSinglePage="false" maxPages="5"
+			page="#{deModPerActions.pagina}" pageIndexVar="paginaAtual"/>
+			
+			<rich:dataTable id="tabelaModelos" rows="1"  value="#{deModPerActions.listaModelos}"  var="modelo"
+				reRender="#{deModPerActions.buscaEfetuada}" width="450px" align="center">
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<rich:column colspan="8">
+							<h:outputText value="Modelo" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.modelo_codigo}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.modelo_descricao}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_FlagProducao}" value="#{prompt.modelo_flagProducao}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_TR}" value="#{prompt.modelo_tr}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_Cobertura}" value="#{prompt.modelo_cobertura}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_EstoqueInicial}" value="#{prompt.modelo_estoqueInicial}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText value="#{prompt.grafico}" />
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+						
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{modelo.codModelo}"/>
+				</rich:column>
+
+				
+				<rich:column>
+					<h:outputText value="#{modelo.descrModelo}"/>
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{modelo.familia.descrFamilia}" />
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{modelo.flagProducaoModel ? 'Livre' : 'Fixo'}"/>
+				</h:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tr}" >
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.cobertura}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.estqInicModel}" >
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default"/>
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.grafico}"
+						action="#{deModPerActions.exibirGrafico}" />
+				</rich:column>
+				
+				<rich:column breakBefore="true" colspan="8" styleClass="space-table" style="height: 25px;">
+					<h:outputText value="" />
+				</rich:column>
+			
+				<rich:column breakBefore="true" colspan="8" styleClass="rich-table-header">
+					<h:outputText value="Demandas do Modelo" />
+				</rich:column>
+			
+				<rich:subTable id="tabelaDeModPer" value="#{modelo.deModPers}" var="deModPer" 
+					 align="center" headerClass="dr-table-header-continue">  
+					
+					<rich:column  colspan="2" sortBy="#{deModPer.periodo.periodoPM}" styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodos}"/>
+						</f:facet>
+						<h:outputText value="#{deModPer.periodo.periodoPM}"/>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}"/>
+						</f:facet>
+						<h:outputText value="#{deModPer.periodo.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}"/>
+						</f:facet>
+						<h:outputText value="#{deModPer.periodo.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.deModPer_VendasProjetadas}" value="#{prompt.vendas}"/>
+						</f:facet>
+						<h:outputText value="#{deModPer.vendasProjetadasModelo}">
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default"/>
+					</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.deModPer_Pedidos}" value="#{prompt.pedidos}"/>
+						</f:facet>
+						<h:outputText value="#{deModPer.pedidosModelo}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default"/>
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column colspan="2" styleClass="colunaCampoNumericoCentralizado">
+							<a4j:commandButton value="#{prompt.editar}" reRender="gridInfoDemanda"
+							onclick="Richfaces.showModalPanel('panelConfirmacaoAlteracao',{width:300, top:300})">
+								<f:setPropertyActionListener value="#{deModPer}" target="#{deModPerActions.demanda}"/>
+							</a4j:commandButton>
+					</rich:column>
+					
+				</rich:subTable>
+					
+			</rich:dataTable>
+			
+		</h:form>
+		
+		<h:form id="formAlteracao">
+		
+			<rich:modalPanel id="panelConfirmacaoAlteracao" height="120" width="500" >
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.alteracaoDemanda}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoAlteracao')" />
+				</f:facet>
+
+				<h:panelGrid id="gridInfoDemanda" columns="3">
+				
+					<h:panelGroup >
+						<h:outputText value="#{prompt.vendas}: "/>
+					</h:panelGroup>
+						<h:inputText id="vendas" value="#{deModPerActions.demanda.vendasProjetadasModelo}" >
+							<f:validateDoubleRange minimum="0" />
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+						</h:inputText>
+						<rich:message for="vendas" styleClass="error" />
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.pedidos}: "/>
+					</h:panelGroup>
+						<h:inputText id="pedidos" value="#{deModPerActions.demanda.pedidosModelo}">
+							<f:validateDoubleRange minimum="0"/>
+							<f:convertNumber maxFractionDigits="0" locale="default"/>
+						</h:inputText>
+						<rich:message for="pedidos" styleClass="error" />
+						
+					<br/>
+					
+					<h:panelGrid columns="2">
+					
+						<a4j:commandButton id="ok" value="#{prompt.alterar}"
+							action="#{deModPerActions.altera}" styleClass="botao">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+	
+						<a4j:commandButton id="cancelar" value="#{prompt.cancelar}"
+							action="#{deModPerActions.cancelar}">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+						
+					</h:panelGrid>	
+
+				</h:panelGrid>
+
+			</rich:modalPanel>
+		
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

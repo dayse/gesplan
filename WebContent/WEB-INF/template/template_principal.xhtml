@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+
+<head>
+<!-- CSS -->
+<!-- Esta stylesheet e usada para permitir a impressao de telas com a cor branca
+     Atencao - Talvez seja necessario limpar a cache do FireFox para visualizar as alteracoes feitas no css
+     
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/themeImpressao.css" type="text/css" />
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/theme.css" type="text/css" />
+-->
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/message.css" type="text/css" />
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/form.css" type="text/css" />
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/structure.css" type="text/css" />
+<link rel="stylesheet" href="#{facesContext.externalContext.request.contextPath}/recursos/css/themeImpressao.css" type="text/css" />
+<title>#{prompt.tituloSistema}</title> 
+</head>
+
+<body id="public">
+
+<div id="container">
+
+<h1>
+<a id="logo" href="http://www.int.gov.br" ><span class="oculto">INT</span></a>
+</h1>
+
+<div class="wufoo">
+	<ui:insert name="cabecalho"/>
+
+<f:view>
+	<f:loadBundle basename="prompt" var="prompt" />
+	<f:loadBundle basename="mensagens" var="mensagemSistema" />
+	<f:loadBundle basename="help" var="help" />
+	<f:loadBundle basename="tooltip" var="tooltip" />
+
+	<h:form>
+		<ui:insert name="menu">
+			<rich:toolBar>
+	
+				<rich:dropDownMenu>
+					<f:facet name="label">
+						<h:panelGroup>
+							<h:outputText value="#{prompt.produtos}" />
+						</h:panelGroup>
+					</f:facet>
+	
+					<rich:menuItem submitMode="server" value="#{prompt.modelos}"
+						action="#{modeloActions.preparaListagem}"		icon="/recursos/imagens/open.gif">
+					</rich:menuItem>
+	
+					<rich:menuItem submitMode="server" value="#{prompt.familias}"
+						action="#{familiaActions.preparaListagem}"	icon="/recursos/imagens/open.gif" />
+				</rich:dropDownMenu>
+				
+				<rich:dropDownMenu>
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="Recursos"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="#{prompt.tecidos}"
+	                    action="#{tecidoActions.preparaListagem}"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="#{prompt.costura}"
+	                    action="listCapacDia"
+	                    icon="/recursos/imagens/open.gif" />
+	                <rich:menuItem submitMode="server" value="#{prompt.recursos}"
+	                    action="#{recursoActions.preparaListagem}" 
+	                    icon="/recursos/imagens/open.gif" />                    
+	            </rich:dropDownMenu>
+	            
+	            <rich:dropDownMenu>
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="Planos Mestres"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="Cadastro de Planos"
+	                    action="listCadPlan"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="Plano Mestre Vigente"
+	                    action="listPMP"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="Mensagem de Excecao"
+	                    action="listExcecao"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	            </rich:dropDownMenu>    
+
+				<rich:dropDownMenu>
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="Plano de Vendas"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="Demanda por Modelo/Periodo"
+	                    action="#{deModPerActions.exibirDemandas}" icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="Demanda por Familia/Periodo"
+	                    action="#{deFamPerActions.exibirDemandas}" icon="/recursos/imagens/open.gif" />
+	            </rich:dropDownMenu>
+
+				<rich:dropDownMenu>
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="HP"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="Configura HP"
+	                    action="listHP"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="Definicao de Periodos PMP"
+	                    action="listPerioPM"   icon="/recursos/imagens/open.gif" />
+	                <rich:menuItem submitMode="server" value="Definicao de Periodos PAP"
+	                    action="listPerioPAP" 
+	                    icon="/recursos/imagens/open.gif" />                    
+	            </rich:dropDownMenu>
+	            
+				<rich:dropDownMenu rendered="#{sessaoDoUsuario.administrador}">
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="#{prompt.administracao}"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="#{prompt.cadastroDeUsuarios}"
+	                    action="listUsuario"
+	                    icon="/recursos/imagens/open.gif">
+	                </rich:menuItem>
+	            </rich:dropDownMenu>
+	            
+	            <rich:dropDownMenu>
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="#{prompt.avaliacao}"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="#{prompt.analiseCapacidadeMaq}" action="listCadPlanAvaliacao"
+	                     icon="/recursos/imagens/open.gif">
+	                     <f:setPropertyActionListener value="maquina" target="#{avaliacaoActions.opcaoAnaliseCapacidade}"/>
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="#{prompt.analiseCapacidadeTecido}" action="listCadPlanAvaliacao"
+	                     icon="/recursos/imagens/open.gif">
+	                     <f:setPropertyActionListener value="tecido" target="#{avaliacaoActions.opcaoAnaliseCapacidade}"/>
+	                </rich:menuItem>
+	                <rich:menuItem submitMode="server" value="#{prompt.analiseCapacidadeRecurso}" action="listCadPlanAvaliacao"
+	                     icon="/recursos/imagens/open.gif">
+	                     <f:setPropertyActionListener value="recurso" target="#{avaliacaoActions.opcaoAnaliseCapacidade}"/>
+	                </rich:menuItem>
+	            </rich:dropDownMenu>
+	            
+				<rich:dropDownMenu rendered="#{(sessaoDoUsuario.administrador or sessaoDoUsuario.engenheiroConhecimento)}">
+	                <f:facet name="label"> 
+	                    <h:panelGroup>
+	                        <h:outputText value="Eng. de Conhecimento"/>
+	                    </h:panelGroup>
+	                </f:facet>
+	                <rich:menuItem submitMode="server" value="Modelagem"
+	                    action="listModelagemFuzzy" 
+	                    icon="/recursos/imagens/open.gif" />     
+	                    
+	                <rich:menuItem submitMode="server" value="Avaliacao PMP Fuzzy"
+	                    action="listAvaliacaoFuzzy" 
+	                    icon="/recursos/imagens/open.gif" />         
+	                                         
+	            </rich:dropDownMenu>
+	            
+	            <h:commandLink class="linkMenu" value="#{prompt.sair}" action="#{autenticadorActions.logout}" />  	    
+		    
+		</rich:toolBar>
+			
+			
+		</ui:insert>
+		<span class="cor_links_menu">
+			<ui:insert name="submenu" /> 
+		</span>
+	</h:form>
+	<rich:spacer width="1" height="5" />
+
+	<h:messages id="msgSistema" globalOnly="true" errorClass="errorGlobal" infoClass="successGlobal" />
+
+	<ui:insert name="corpo"/>
+	
+	<div id="rodape">
+		#{prompt.copyRight} <br />
+		<b>Usuario:   </b> <h:outputText value="[#{sessaoDoUsuario.usuarioLogado.nome} - #{sessaoDoUsuario.usuarioLogado.tipoUsuario.tipoUsuario}]"/> <br />
+		<b>#{prompt.versao}</b>
+	</div>
+	
+
+</f:view>
+</div>
+
+</div>
+<!--container-->
+
+
+</body>
+
+</html>

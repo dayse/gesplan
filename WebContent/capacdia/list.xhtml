@@ -1,0 +1,192 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capacDia_template.xhtml">
+	<ui:define name="titulo">#{prompt.capacDia}</ui:define>
+	<ui:define name="descricao">#{prompt.capacDia_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.capacDia_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.parametros_margemSeg} -</span> #{help.capacDia_EditarMargemSeguranca}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="corpo">
+
+		<h:form>
+		
+			<br/>
+			<rich:datascroller id="scroller" for="lista" maxPages="5" align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="10" align="center" value="#{capacDiaActions.listaCapacDia}" var="capacDia" >
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<h:column>
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodo}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.capacDia_CapacProdDiariaEmMim}" value="#{prompt.capacDia_capacProdDiariaEmMin}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.capacDia_CapacProdDiariaComMargem}" value="#{prompt.capacDia_capacProdDiariaEmMinMg}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText value="" />
+						</h:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{capacDia.perioPM.periodoPM}"/> 
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{capacDia.perioPM.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{capacDia.perioPM.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{capacDia.capacProdDiariaEmMin}"> 
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{capacDia.capacProdDiariaEmMinMg}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+					
+				</rich:column>
+
+				<h:column>
+					<h:commandButton action="#{capacDiaActions.preparaAlteracao}" value="#{prompt.editar}" />
+				</h:column>
+
+				
+				<f:facet name="footer">
+					#{prompt.capacDia_Numero} = #{capacDiaActions.listaCapacDia.rowCount}
+				</f:facet>
+
+			</rich:dataTable>
+		
+			<br/>
+			<br />
+
+
+	
+		
+
+			<center>
+				<h:panelGrid columns="3">
+					<h:column>
+					   	<h:outputText value="#{prompt.parametros_margemSeg} " />:
+					         </h:column>
+					<h:column>
+						<h:inputText value="#{capacDiaActions.parametroCorrente.margemSeguranca}" 
+						 size="10" disabled="true" />
+						 <h:outputText value="%" />
+					         </h:column>
+					<h:column>
+							<a4j:commandButton value="#{prompt.alterar}" 
+									onclick="Richfaces.showModalPanel('panelConfirmacaoAlteracao',{heigth:100, width:600, top:300})"/>
+					</h:column>
+				</h:panelGrid>
+			</center>
+
+
+			<br />
+
+		</h:form>
+		
+		<rich:modalPanel id="panelConfirmacaoAlteracao" autosized="true" height="100" width="200">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.parametros_margemSeg}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+				
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoAlteracao')" />
+				</f:facet>
+
+		<h:form id="formAlteracao">
+		
+
+				<h:panelGrid columns="4"  cellpadding="1">				
+						<h:outputText value="#{prompt.novoValor}: "/>
+						
+						<h:inputText id="margemSeg" value="#{capacDiaActions.parametroCorrente.margemSeguranca}"
+						maxlength="#{constantes.lParametrosMargemSeguranca}"  size="15" required="true">
+							<rich:ajaxValidator event="onkeyup" />
+							<f:validateDoubleRange minimum="0" />
+						</h:inputText>
+						 <h:outputText value="%" />
+						
+						<rich:message id="errorMSG" for="margemSeg" errorClass="error"  styleClass="error" />
+						
+				</h:panelGrid>
+				
+				<center>
+				
+					<br/>
+					<br/>
+					
+					
+					<h:panelGrid columns="2">
+					
+					
+
+					<a4j:commandButton id="Altera"
+									   reRender="formAlteracao"
+									   value="#{prompt.alterar}"
+									   action="#{capacDiaActions.alteraMargemSeg}"
+									   styleClass="botao">
+                    <f:setPropertyActionListener value="#{capacDia}" target="#{capacDiaActions.capacDiaCorrente}"/>
+					</a4j:commandButton>
+
+					<h:commandButton id="cancelaModal"
+								     value="#{prompt.cancelar}"
+								     action="#{capacDiaActions.cancelaModal}"
+								     immediate="true"
+								     styleClass="botao" />
+					
+				</h:panelGrid></center>
+				
+				
+			</h:form>
+		</rich:modalPanel>
+
+		<a4j:keepAlive beanName="capacDiaActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

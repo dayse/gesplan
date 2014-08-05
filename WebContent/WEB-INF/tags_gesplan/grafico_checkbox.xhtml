@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:c="http://java.sun.com/jstl/core"  
+      >
+       <ui:composition>
+    
+    <script language="javascript" type="text/javascript" src="/gesplan/js/jquery-1.5.1.js"></script>
+    <script language="javascript" type="text/javascript" src="/gesplan/js/flot/jquery.flot.js"></script>
+    
+    <script language="javascript" type="text/javascript" src="/gesplan/js/flot/jquery.flot.axislabels.js"></script>
+    
+    <!-- Importando script de hack do JS para usar funcoes que utilizam simbolos que nao podem ser
+    		postos em um xhtml. 
+     -->
+    <script language="javascript" type="text/javascript" src="/gesplan/js/js_hacks.js"></script>
+    
+			<table id="choices" style="font-weight: bold"><tr ><td>Mostrar:</td></tr></table>
+    		<div id="#{placeholder}" style="width:#{width}px;height:#{height}px"></div>
+    		
+	
+	 		
+			 
+			 <script language="javascript" type="text/javascript">
+
+			 var $j = jQuery.noConflict();
+				
+			 $j(function () {
+
+					var datasets = {};
+					<c:if test="${grafico != null}">
+						datasets = #{grafico.printData};
+					</c:if>  
+
+
+			        
+				 
+				    // hard-code color indices to prevent them from shifting as
+				    // countries are turned on/off
+				    var i = 0;
+				    $j.each(datasets, function(key, val) {
+				        val.color = i;
+				        ++i;
+				    });
+				    // insert checkboxes 				    
+				    var choiceContainer = $j("#choices");
+				    var iterator = 0;
+				    $j.each(datasets, function(key, val) {
+					    	if(iterator % 2==0){
+						        choiceContainer.append('<td style="padding-right: 10px"><input type="checkbox" name="' + key +
+			                               '" checked="checked" id="id' + key + '"/>' +
+			                               '<label for="id' + key + '">'
+			                                + val.label + '</label></td>');						    	
+					    	}
+				    });
+				    choiceContainer.find("input").click(plotAccordingToChoices);
+
+
+				    function plotAccordingToChoices() {
+				        var data = [];
+				        choiceContainer.find("input:checked").each(function () {
+				            var key = $j(this).attr("name");
+				            if (key)
+					            if (datasets[key])
+				                	data.push(datasets[key]);
+				        });
+				        if (maiorQue(data.length, 0))
+							$j.plot($j("##{placeholder}"), data, #{grafico.printOptions});
+			            
+
+			            
+				    }
+
+				    plotAccordingToChoices();
+
+
+						});
+			</script>
+       </ui:composition>
+</html>

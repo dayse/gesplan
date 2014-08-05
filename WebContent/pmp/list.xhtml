@@ -1,0 +1,291 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/pmp_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.pmp_Titulo}</ui:define>
+	<ui:define name="descricao">#{prompt.pmp_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.pmp_Cadastro}
+		<br />
+		<span class="negrito">#{help.pmp_CalculoDiscreto}</span>
+		<br />
+			#{help.pmp_CalculoCritica1}
+		<br />
+			#{help.pmp_CalculoCritica2}
+				<br /><br />
+				<h:graphicImage style="margin-left: 50px;" value="/recursos/imagens/calculo.png" height="105px" width="354px" />
+				<h:graphicImage style="margin-left: 50px;" value="/recursos/imagens/calculo_part2.png" height="288px" width="354px" />
+				<br />
+			#{help.pmp_DescricaoSiglas}
+		<!--  br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp} -->
+	</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="pmpActions" />
+
+		<h:form>
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"
+				page="#{pmpActions.pagina}">
+			</rich:datascroller>
+
+			<rich:dataTable id="lista" rows="1" align="center"
+				value="#{pmpActions.listaDeModelos}" var="modelo"
+				width="470px">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column colspan="14">
+							<h:outputText value="Modelo" />
+						</rich:column>
+						<rich:column breakBefore="true" >
+							<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.codigo}" />
+						</rich:column>
+						<rich:column colspan="3">
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.descricao}" />
+						</rich:column>
+						
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="#{prompt.modelo_indiceCobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TUC}"  value="#{prompt.modelo_tuc}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_TAMLote}" value="#{prompt.modelo_tamLote}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TR}" value="#{prompt.modelo_tr}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_Cobertura}" value="#{prompt.modelo_cobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_EstoqueInicial}" value="#{prompt.modelo_estoqueInicial}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_EstoqueFalta}" value="#{prompt.modelo_estoqueEmFalta}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_RecebimentoPendente}" value="#{prompt.modelo_recebimentoPendente}" />
+						</rich:column>
+						
+					</rich:columnGroup>
+				</f:facet>
+
+				<h:column>
+					<h:outputText value="#{modelo.codModelo}"></h:outputText>
+				</h:column>
+
+				<rich:column colspan="3">
+					<h:outputText value="#{modelo.descrModelo}"></h:outputText>
+				</rich:column>
+
+				<rich:column colspan="2">
+					<h:outputText value="#{modelo.familia.descrFamilia}" />
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.indiceCob}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tuc}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.tamLotePMP}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.trPMP}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.coberturaPMP}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.estqInicModelPMP}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.estqEmFaltaPMP}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{modelo.recebimentoPendentePMP}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+
+				<rich:column breakBefore="true" colspan="14" styleClass="space-table"
+					rendered="#{not empty modelo.pmps}" style="height: 10px;">
+					<h:outputText value="" />
+				</rich:column>
+				
+
+				<rich:column breakBefore="true" colspan="14"
+					styleClass="rich-table-header"
+					rendered="#{not empty modelo.pmps}">
+					<h:outputText value="Periodos" />
+				</rich:column>
+
+				<rich:subTable id="tabelaPerioPMVigs" var="pmp"
+					value="#{modelo.pmps}" headerClass="dr-table-header-continue"
+					rendered="#{not empty modelo.pmps}">
+
+
+
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodo}" />
+						</f:facet>
+						<h:outputText value="#{pmp.perioPMVig.periodoPM}" />
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</f:facet>
+						<h:outputText value="#{pmp.perioPMVig.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</f:facet>
+						<h:outputText value="#{pmp.perioPMVig.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_NumDiasUteis}" value="#{prompt.pmp_numDiasUteis}" />
+						</f:facet>
+						<h:outputText value="#{pmp.perioPMVig.numDiasUteisMatriz}">
+							<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_VendasProjetadas}" value="#{prompt.plpermod_vendasProjetadas}" />
+						</f:facet>
+						<h:outputText value="#{pmp.vendasModel}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_Pedidos}" value="#{prompt.plpermod_pedidos}" />
+						</f:facet>
+						<h:outputText value="#{pmp.pedidosModel}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_RecebimentoProducao}" value="#{prompt.plpermod_recebimentoProducaopc}" />
+						</f:facet>
+						<h:outputText value="#{pmp.producaoModel}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico" colspan="2">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_DisponibilidadeProjetada}" value="#{prompt.plpermod_disponibilidadeProjetada}" />
+						</f:facet>
+						<h:outputText value="#{pmp.dispProjModel}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_Cobertura}" value="#{prompt.pmp_coberturaModel}" />
+						</f:facet>
+						<h:outputText value="#{pmp.coberturaModel}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_ProducaoLote}" value="#{prompt.plpermod_producaolt}" />
+						</f:facet>
+						<h:outputText value="#{pmp.prodLoteModel}">
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_ProducaoDiaria}" value="#{prompt.plpermod_producaoDiarialt}" />
+						</f:facet>
+						<h:outputText value="#{pmp.prodDiariaLoteModel}">
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.pmp_DisponibilidadeEntrega}" value="#{prompt.pmp_disponibEntrega}" />
+						</f:facet>
+						<h:outputText value="#{pmp.disponibEntrega}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					
+				</rich:subTable>
+
+			</rich:dataTable>
+
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

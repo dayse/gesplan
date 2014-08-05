@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelo_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.modelo}</ui:define>
+	<ui:define name="descricao">#{prompt.modelo_descList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelo_Mostrar}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form id="formModeloShow">
+		
+			<rich:panel>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelo}" />
+				</f:facet>
+
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+					<h:outputText value="#{prompt.modelo_codigo}" />:<h:outputText id="codigo"
+						value="#{modeloActions.modeloCorrente.codModelo}" />
+
+					<h:outputText value="#{prompt.modelo_descricao}" />:<h:outputText id="desc"
+						value="#{modeloActions.modeloCorrente.descrModelo}" />
+						
+					<h:outputText value="#{prompt.familia}" />:<h:outputText
+						value="#{modeloActions.modeloCorrente.familia}" />
+
+
+					<h:outputText value="#{prompt.modelo_flagProducao}" />:
+                  	
+                  	
+                  	<h:selectOneRadio id="flag" value="#{modeloActions.radioFlags.selecao}" disabled="true">
+							<f:selectItems value="#{modeloActions.radioFlags.listaSelecao}" />
+					</h:selectOneRadio>
+                  	
+                  	
+						
+					<h:outputText value="#{prompt.modelo_indiceCobertura}" />:
+					<h:outputText id="indCob" value="#{modeloActions.modeloCorrente.indiceCob}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+						
+					<h:outputText value="#{prompt.modelo_tuc}" />:
+					<h:outputText id="tuc" value="#{modeloActions.modeloCorrente.tuc}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+
+					<h:outputText value="#{prompt.modelo_tamLote}" />:
+					<h:outputText id="tamLote" value="#{modeloActions.modeloCorrente.tamLote}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+
+					<h:outputText value="#{prompt.modelo_tr}" />:<h:outputText
+						id="tmpRep" value="#{modeloActions.modeloCorrente.tr}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+
+					<h:outputText value="#{prompt.modelo_cobertura}" />:
+					<h:outputText id="cob" value="#{modeloActions.modeloCorrente.cobertura}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+					
+
+
+					<h:outputText value="#{prompt.modelo_estoqueInicial}" />:
+					<h:outputText id="estIni" value="#{modeloActions.modeloCorrente.estqInicModel}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+					
+					<h:outputText value="#{prompt.modelo_estoqueEmFalta}" />:
+					<h:outputText id="estEmFalta" value="#{modeloActions.modeloCorrente.estqEmFalta}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+					
+					<br />
+
+				</h:panelGrid>
+				
+					<h:commandButton id="botaoVoltar" value="#{prompt.voltar}"
+					action="#{modeloActions.cancelar}" immediate="true" />
+
+			</rich:panel>
+		
+		</h:form>
+		<a4j:keepAlive beanName="modeloActions" />
+		
+	</ui:define>
+		
+</ui:composition>
+
+</html>

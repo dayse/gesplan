@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/recmodel_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.recmodel}</ui:define>
+	<ui:define name="descricao">#{prompt.recmodel_Incluir}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.recModel_Incluir}</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="recModelActions" />
+		<a4j:keepAlive beanName="recursoActions" />
+
+		<h:form id="formRecModelNew">
+
+			<rich:panel>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelo}" />
+				</f:facet>
+
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+
+				<h:panelGrid columns="3">
+
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.recurso_Codigo}" />:
+					</h:panelGroup>
+					<h:inputText id="codigoRec" 
+						value="#{recModelActions.recModelCorrente.recurso.codRecurso}" 
+						maxlength="#{constantes.lRecursoCodRecurso}" size="20" disabled="true"/>
+					<h:message for="codigoRec" styleClass="error" />
+					
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.recurso_Descricao}" />:
+					</h:panelGroup>
+					<h:inputText id="descrRec" 
+						value="#{recModelActions.recModelCorrente.recurso.descrRecurso}"
+						maxlength="#{constantes.lRecursoDescrRecurso}" size="20" disabled="true"/>
+					<h:message for="descrRec" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelo}" />
+					</h:panelGroup>
+						<h:selectOneMenu id="comboModelos" value="#{recModelActions.comboModelos.selecao}" required="true">
+							<f:selectItems value="#{recModelActions.comboModelos.listaSelecao}" />
+						</h:selectOneMenu>
+					<h:message for="comboModelos" styleClass="error" />	
+					
+
+						
+				   	<h:panelGroup>
+					<h:outputText value="#{prompt.consumoUnit}" />:
+					</h:panelGroup>
+						<h:inputText id="consumoUnit" value="#{recModelActions.recModelCorrente.consumoUnit}" 
+							maxlength="#{constantes.lRecmodelConsumoUnit}" size="20" required="true">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="consumoUnit" styleClass="error" />
+
+
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoIncluir" value="#{prompt.confirmarInclusao}"
+				action="#{recModelActions.inclui}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="#{recModelActions.cancela}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,141 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capacrec_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.capacRec}</ui:define>
+	<ui:define name="descricao">#{prompt.capacRec_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.capacRec_Cadastro}</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="recursoActions" />
+		<a4j:keepAlive beanName="capacRecActions" />
+
+		<h:form>
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"
+				page="#{capacRecActions.pagina}">
+			</rich:datascroller>
+
+			<rich:dataTable id="lista" rows="1" align="center"
+				value="#{capacRecActions.listaDeRecursos}" var="recurso"
+				width="470px">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column colspan="5">
+							<h:outputText value="Recurso" />
+						</rich:column>
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.recurso_Codigo}" value="#{prompt.codigo}" />
+						</rich:column>
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.recurso_Descricao}" value="#{prompt.descricao}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.recurso_UM}" value="#{prompt.UM}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.recurso_CustoUnitario}" value="#{prompt.custoUnit}" />
+						</rich:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<h:column >
+					<h:outputText value="#{recurso.codRecurso}"></h:outputText>
+				</h:column>
+
+				<rich:column colspan="2">
+					<h:outputText value="#{recurso.descrRecurso}"></h:outputText>
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{recurso.UM}"></h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{recurso.custoUnit}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+
+
+				<rich:column breakBefore="true" colspan="5" styleClass="space-table"
+					rendered="#{not empty recurso.capacRecs}" style="height: 10px;">
+					<h:outputText value="" />
+				</rich:column>
+
+				<rich:column breakBefore="true" colspan="5"
+					styleClass="rich-table-header"
+					rendered="#{not empty recurso.capacRecs}">
+					<h:outputText value="Periodos" />
+				</rich:column>
+
+				<rich:subTable id="tabelaPerioPMs" var="capacRec"
+					value="#{recurso.capacRecs}" headerClass="dr-table-header-continue"
+					rendered="#{not empty recurso.capacRecs}">
+
+
+
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodo}" />
+						</f:facet>
+						<h:outputText value="#{capacRec.perioPM.periodoPM}" />
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</f:facet>
+						<h:outputText value="#{capacRec.perioPM.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</f:facet>
+						<h:outputText value="#{capacRec.perioPM.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.capacRec_CapacDiaria}" value="#{prompt.capacRec_capacDiaria}" />
+						</f:facet>
+						<h:outputText value="#{capacRec.capacDiaria}">
+								<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default"  />
+						</h:outputText>
+					</rich:column>
+
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText value="#{prompt.editar}" />
+						</f:facet>
+						<h:commandButton value="#{prompt.editar}"
+							action="#{capacRecActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{capacRec}"
+								target="#{capacRecActions.capacRecCorrente}" />
+						</h:commandButton>
+					</rich:column>
+
+				</rich:subTable>
+
+			</rich:dataTable>
+
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

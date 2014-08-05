@@ -1,0 +1,1043 @@
+//--------------------------------------------------------------------------------//
+//                               COPYRIGHT NOTICE                                 //
+//--------------------------------------------------------------------------------//
+// Copyright (c) 2012, Instituto de Microelectronica de Sevilla (IMSE-CNM)        //
+//                                                                                //
+// All rights reserved.                                                           //
+//                                                                                //
+// Redistribution and use in source and binary forms, with or without             //
+// modification, are permitted provided that the following  conditions are met:   //
+//                                                                                //
+//     * Redistributions of source code must retain the above copyright notice,   //
+//       this list of conditions and the following disclaimer.                    // 
+//                                                                                //
+//     * Redistributions in binary form must reproduce the above copyright        // 
+//       notice, this list of conditions and the following disclaimer in the      //
+//       documentation and/or other materials provided with the distribution.     //
+//                                                                                //
+//     * Neither the name of the IMSE-CNM nor the names of its contributors may   //
+//       be used to endorse or promote products derived from this software        //
+//       without specific prior written permission.                               //
+//                                                                                //
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"    //
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE      //
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE // 
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE  //
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL     //
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR     //
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER     //
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  //
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  //
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.           //
+//--------------------------------------------------------------------------------//
+
+
+options {
+ LOOKAHEAD = 1;
+ STATIC = false;
+}
+
+PARSER_BEGIN(PkgParser)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+//		PARSER DE LOS PAQUETES DE FUNCIONES		//
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+package xfuzzy.pkg;
+
+import java.util.Vector;
+import java.io.*;
+
+/**
+ * Parser de los paquetes de fiunciones
+ *
+ * @author Francisco José Moreno Velo
+ */
+public class PkgParser {
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			CONSTANTES PRIVADAS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ private final int JAVABLOCK = 0;
+ private final int DERIVBLOCK = 1;
+ private final int ANSICBLOCK = 2;
+ private final int CPPBLOCK = 3;
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			MIEMBROS PRIVADOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ private String eol = System.getProperty("line.separator", "\n");
+ private Vector path;
+ private int error;
+ private String errorMsg;
+ private boolean end;
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			  CONSTRUCTORES				//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ //-------------------------------------------------------------//
+ // Constructor por defecto					//
+ //-------------------------------------------------------------//
+
+ public PkgParser() {
+  this.path = new Vector();
+  this.error = 0;
+  this.errorMsg = "";
+  defaultPath();
+ }
+
+ //-------------------------------------------------------------//
+ // Constructor con una lista de directorios de busqueda	//
+ //-------------------------------------------------------------//
+
+ public PkgParser(File path[]) {
+  this();
+  for(int i=0; i<path.length; i++) this.path.addElement(path[i]);
+ }
+
+ //-------------------------------------------------------------//
+ // Constructor con un directorio de busqueda			//
+ //-------------------------------------------------------------//
+
+ public PkgParser(File path) {
+  this();
+  this.path.addElement(path);
+ }
+
+ //-------------------------------------------------------------//
+ // Constructor con un directorio de busqueda			//
+ //-------------------------------------------------------------//
+
+ public PkgParser(String dir) {
+  this();
+  File file = new File(dir);
+  if(file.isDirectory()) this.path.addElement(path);
+ }
+   
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			METODOS PUBLICOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ //-------------------------------------------------------------//
+ // Asigna el directorio de busqueda de paquetes		//
+ //-------------------------------------------------------------//
+
+ public void setPath(File path) {
+  this.path = new Vector();
+  this.path.addElement(path);
+ }
+
+ //-------------------------------------------------------------//
+ // Asigna un conjunto de directorios de busqueda de paquetes	//
+ //-------------------------------------------------------------//
+
+ public void setPath(File path[]) {
+  this.path = new Vector();
+  for(int i=0; i<path.length; i++) this.path.addElement(path[i]);
+ }
+
+ //-------------------------------------------------------------//
+ // Annade un directorio de busqueda de paquetes		//
+ //-------------------------------------------------------------//
+
+ public void addPath(File path) {
+  this.path.addElement(path);
+ }
+
+ //-------------------------------------------------------------//
+ // Analiza la sintaxis de un paquete de funciones		//
+ // (a buscar entre los	directorios de busqueda asignados)	//
+ //-------------------------------------------------------------//
+
+ public PackageDefinition parse(String pkgname) {
+  String filename = pkgname+".pkg";
+  for(int i=0; i<path.size(); i++) {
+   File dir = (File) this.path.elementAt(i);
+   File file = new File(dir,filename);
+   if(file.exists()) return parse(file);
+  }
+  return null;
+ }
+
+ //-------------------------------------------------------------//
+ // Analiza la sintaxis de un paquete de funciones		//
+ //-------------------------------------------------------------//
+
+ public PackageDefinition parse(File file) {
+  this.error = 0;
+  this.errorMsg = "";
+  PackageDefinition pkgdef = new PackageDefinition(file);
+  String filename = file.getAbsolutePath();
+  InputStream stream;
+  try { stream = new FileInputStream(file); }
+  catch (Exception e) {
+   this.errorMsg += "Can't open file"+filename+eol;
+   this.error++;
+   return null;
+  }
+
+  jj_input_stream = new SimpleCharStream(stream, 1, 1);
+  token_source = new PkgParserTokenManager(jj_input_stream);
+  ReInit(stream);
+  try { parsePackageDefinition(pkgdef); }
+  catch (ParseException e) {
+   this.errorMsg += "Fatal error loading "+filename+eol;
+   this.error ++;
+   return null;
+  }
+  catch (TokenMgrError e) {
+   this.errorMsg += "Fatal error loading "+filename+eol;
+   this.error ++;
+   return null;
+  }
+
+  try { stream.close(); } catch (IOException e) {}
+
+  if(this.error>0) return null;
+  return pkgdef;
+ }
+
+ //-------------------------------------------------------------//
+ // Ontiene los posibles mensajes de error del analisis		//
+ //-------------------------------------------------------------//
+
+ public String resume() {
+  String msg = this.errorMsg + this.error;
+  if(this.error == 1) msg += " error."; else msg += " errors.";
+  return msg+eol;
+ }
+
+ //-------------------------------------------------------------//
+ // Ejecucion externa						//
+ //-------------------------------------------------------------//
+
+ public static void main(String args[]) throws Exception {
+  if(args.length != 1) return;
+  PkgParser parser = new PkgParser();
+  PackageDefinition pkgdef = parser.parse(new File(args[0]));
+  if(pkgdef == null) System.out.println(parser.resume());
+  else if(!pkgdef.compile()) System.out.println(pkgdef.resume());
+ }
+
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+ //			METODOS PRIVADOS			//
+ //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+
+ //-------------------------------------------------------------//
+ // Obtiene los directorios de busqueda por defecto		//
+ //-------------------------------------------------------------//
+
+ private void defaultPath() {
+  File userdir = new File(System.getProperty("user.dir"));
+  File pkgdir = new File( System.getProperty("xfuzzy.path")+"/pkg" );
+  path.addElement(userdir);
+  path.addElement(pkgdir);
+ }
+
+ //-------------------------------------------------------------//
+ // Elimina los saltos de linea del comienzo y final de codigo	//
+ //-------------------------------------------------------------//
+
+ private String trim(String code) {
+  String line,rest; 
+  int index;
+
+  index = code.indexOf("\n"); if(index == -1) return code;
+  line = code.substring(0,index);
+  if(line.trim().length() == 0) rest = code.substring(index+1);
+  else rest = new String(code);
+  index = rest.lastIndexOf("\n"); if(index == -1) return rest;
+  line = rest.substring(index);
+  if(line.trim().length() == 0) rest = rest.substring(0,index);
+  return rest;
+ }
+
+ //-------------------------------------------------------------//
+ // Almacena la informacion de un error				//
+ //-------------------------------------------------------------//
+
+ private void exception(ParseException e) {
+  Token t = e.currentToken.next;
+  this.error ++;
+  this.errorMsg += "PackageDefinition ["+this.error+"]. ";
+  this.errorMsg += "Parse error at line "+t.beginLine+" : ";
+  this.errorMsg += "Encountered \""+t.image+"\""+" while expecting ";
+
+  int expected[] = new int[e.expectedTokenSequences.length];
+  for(int i=0; i<expected.length; i++)
+   expected[i] = e.expectedTokenSequences[i][0];
+  if(expected.length == 1) this.errorMsg += e.tokenImage[expected[0]]+"."+eol;
+  else {
+   this.errorMsg += "one of :"+e.tokenImage[expected[0]];
+   for(int i=1; i<expected.length; i++)
+    this.errorMsg += ", "+e.tokenImage[expected[i]];
+   this.errorMsg += "."+eol;
+  }
+ }
+
+ //-------------------------------------------------------------//
+ // Almacena la informacion de un error				//
+ //-------------------------------------------------------------//
+
+ private void exception(TokenMgrError e) {
+  this.error ++;
+  this.errorMsg += "PackageDefinition ["+this.error+"]. "+e.getMessage()+eol;
+ }
+
+}
+
+PARSER_END(PkgParser)
+
+SKIP :
+{
+ " " 
+| "\r" 
+| "\n" 
+| "\t"
+| <SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>
+| <FORMAL_COMMENT: "/**" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* palabras claves */
+{
+  <BINARY: "binary">
+| <UNARY: "unary">
+| <MF: "mf">
+| <DEFUZ: "defuz">
+| <FAMILY: "family">
+| <CRISP: "crisp">
+| <ALIAS: "alias">
+| <PARAM: "parameter">
+| <DEFINED: "definedfor">
+| <EQUAL: "equal">
+| <GREATER: "greatereq"> 
+| <SMALLER: "smallereq">
+| <CENTER: "center">
+| <BASIS: "basis">
+| <JAVA: "java">
+| <ANSI_C: "ansi_c">
+| <CPLUSPLUS: "cplusplus">
+| <DERIVATIVE: "derivative">
+| <REQUIRES: "requires">
+| <SOURCE: "source">
+| <MEMBERS: "members">
+| <INPUTS: "inputs">
+| <UPDATE: "update">
+}
+
+TOKEN : /* identificador */
+{
+<ID : ["a"-"z","A"-"Z","_"] (["a"-"z","A"-"Z","0"-"9","_"])* >
+| <OPERATOR: <ID> "." <ID> >
+}
+
+<CODEBLOCK> TOKEN: 
+{
+  <LBRACE: "{"> 
+| <RBRACE: "}">
+| <OTHER: ~["{","}"]>
+}
+
+void tryDefinition(PackageDefinition pkg) :
+{}
+{
+ try { definition(pkg) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void definition(PackageDefinition pkg) :
+{
+	Definition def;
+}
+{
+  def = binarydef(pkg) { pkg.add(def,PackageDefinition.BINARY); }
+| def = unarydef(pkg) { pkg.add(def,PackageDefinition.UNARY); }
+| def = mfdef(pkg)    { pkg.add(def,PackageDefinition.MFUNC); }
+| def = defuzdef(pkg) { pkg.add(def,PackageDefinition.DEFUZ); }
+| def = familydef(pkg) { pkg.add(def,PackageDefinition.FAMILY); }
+| def = crispdef(pkg) { pkg.add(def,PackageDefinition.CRISP); }
+| <EOF> { end = true; }
+}
+
+Definition binarydef(PackageDefinition pkg) :
+{
+	Definition def;
+	Token tid;
+}
+{
+ <BINARY> tid = <ID>
+	{
+	 def = Definition.createBinaryDefinition(pkg.toString(), tid.image);
+	}
+ "{"  
+( tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryJavaBlock(def)
+| tryCBlock(def)
+| tryCppBlock(def)
+| tryDerivativeBlock(def)
+| tryUpdateBlock(def)
+| tryOtherBlock(def)
+)+
+ "}"
+	{
+	 return def;
+	}
+}
+
+Definition unarydef(PackageDefinition pkg) :
+{
+	Definition def;
+	Token tid;
+}
+{
+ <UNARY> tid = <ID>
+	{
+	 def = Definition.createUnaryDefinition(pkg.toString(), tid.image);
+	}
+ "{" 
+( tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryJavaBlock(def)
+| tryCBlock(def)
+| tryCppBlock(def)
+| tryDerivativeBlock(def)
+| tryUpdateBlock(def)
+| tryOtherBlock(def)
+)+
+ "}"
+	{
+	 return def;
+	}
+}
+
+Definition defuzdef(PackageDefinition pkg) :
+{
+	Definition def;
+	Token tid;
+}
+{
+ <DEFUZ> tid = <ID>
+	{
+	 def = Definition.createDefuzDefinition(pkg.toString(), tid.image);
+	}
+ "{"
+( tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryUpdateBlock(def)
+| tryOtherBlock(def)
+| tryDefineBlock(def)
+| tryJavaBlock(def)
+| tryCBlock(def)
+| tryCppBlock(def)
+| tryDerivativeBlock(def)
+)+
+ "}"
+	{
+	 return def;
+	}
+}
+
+Definition mfdef(PackageDefinition pkg) :
+{
+        Definition def;
+        Token tid;
+}
+{
+ <MF> tid = <ID>
+        {
+         def = Definition.createMFDefinition(pkg.toString(), tid.image);
+        }
+ "{"
+(  tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryUpdateBlock(def)
+| tryOtherBlock(def)
+| tryMFJavaBlock(def)
+| tryMFAnsiCBlock(def)
+| tryMFCppBlock(def)
+| tryMFDerivativeBlock(def)
+)+
+ "}"
+        {
+         return def;
+        }
+}
+
+Definition familydef(PackageDefinition pkg) :
+{
+        Definition def;
+        Token tid;
+}
+{
+ <FAMILY> tid = <ID>
+        {
+         def = Definition.createFamilyDefinition(pkg.toString(), tid.image);
+        }
+ "{"
+(  tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryMembersBlock(def)
+| tryUpdateBlock(def)
+| tryOtherBlock(def)
+| tryMFJavaBlock(def)
+| tryMFAnsiCBlock(def)
+| tryMFCppBlock(def)
+| tryMFDerivativeBlock(def)
+)+
+ "}"
+        {
+         return def;
+        }
+}
+
+Definition crispdef(PackageDefinition pkg) :
+{
+	Definition def;
+	Token tid;
+}
+{
+ <CRISP> tid = <ID>
+	{
+	 def = Definition.createCrispDefinition(pkg.toString(), tid.image);
+	}
+ "{" 
+( tryAliasBlock(def)
+| tryParamBlock(def)
+| tryRequiresBlock(def)
+| tryInputsBlock(def)
+| tryJavaBlock(def)
+| tryCBlock(def)
+| tryCppBlock(def)
+| tryOtherBlock(def)
+)+
+ "}"
+	{
+	 return def;
+	}
+}
+
+void tryAliasBlock(Definition def) :
+{}
+{
+ try { aliasblock(def) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void aliasblock(Definition def) :
+{
+	Vector vector = new Vector();
+	Token tid;
+}
+{
+ <ALIAS> tid=<ID> { vector.addElement( tid.image ); }
+ ("," tid = <ID> { vector.addElement( tid.image ); })* ";"
+	{
+         def.setAlias(vector);
+	}
+}
+
+void tryParamBlock(Definition def) :
+{}
+{
+ try { paramblock(def) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void paramblock(Definition def) :
+{
+	Vector vector = new Vector();
+}
+{
+ <PARAM> paramdef(def,vector)
+	{
+	 def.setParameters(vector);
+	}
+}
+
+void paramdef(Definition def, Vector vector) :
+{
+        Token tid;
+}
+{
+ 
+ tid=<ID>
+ ( ";"  { vector.addElement( tid.image ); }
+ | "[" "]" ";" { def.setParamList( tid.image ); }
+ | "," { vector.addElement( tid.image ); } paramdef(def,vector)
+ )
+}
+
+void tryRequiresBlock(Definition def) :
+{}
+{
+ try { requiresblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void requiresblock(Definition def) :
+{
+	String code;
+}
+{
+ <REQUIRES> "{" code = codeblock() <RBRACE>
+	{
+	 def.setCode(Definition.REQUIREMENTS,trim(code));
+	}
+}
+
+void tryUpdateBlock(Definition def) :
+{}
+{
+ try { updateblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void updateblock(Definition def) :
+{
+        String code;
+}
+{
+ <UPDATE> "{" code = codeblock() <RBRACE>
+        {
+         def.setCode(Definition.UPDATE,trim(code));
+        }
+}
+
+void tryOtherBlock(Definition def) :
+{}
+{
+ try { otherblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void otherblock(Definition def) :
+{
+	String code;
+}
+{
+ <SOURCE> "{" code = codeblock() <RBRACE>
+	{
+	 def.setCode(Definition.SOURCE,trim(code));
+	}
+}
+
+void tryDefineBlock(Definition def) :
+{}
+{
+ try { defineblock(def) }
+ catch (ParseException e) { exception(e); skipto(";"); }
+ catch (TokenMgrError e) { exception(e); skipto(";"); }
+}
+
+void defineblock(Definition def) :
+{
+	Vector vector = new Vector();
+	Token tid;
+}
+{
+ <DEFINED> (tid=<OPERATOR> | tid=<ID>) { vector.addElement( tid.image ); }
+ ("," (tid=<OPERATOR> | tid=<ID>) { vector.addElement( tid.image ); })* ";"
+	{
+	 def.setDefinedFor(vector);
+	}
+}
+
+void tryJavaBlock(Definition def) :
+{}
+{
+ try { javablock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void javablock(Definition def) :
+{
+	String code;
+}
+{
+ <JAVA> "{" code = codeblock() <RBRACE>
+	{
+         def.setCode(Definition.JAVA_EQUAL, trim(code));
+	}
+}
+
+void tryCBlock(Definition def) :
+{}
+{
+ try { cblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void cblock(Definition def) :
+{
+	String code;
+}
+{
+ <ANSI_C> "{" code = codeblock() <RBRACE>
+	{
+	 def.setCode(Definition.C_EQUAL, trim(code));
+	}
+}
+
+void tryCppBlock(Definition def) :
+{}
+{
+ try { cppblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void cppblock(Definition def) :
+{
+	String code;
+}
+{
+ <CPLUSPLUS> "{" code = codeblock() <RBRACE>
+	{
+	 def.setCode(Definition.CPP_EQUAL, trim(code));
+	}
+}
+
+void tryDerivativeBlock(Definition def) :
+{}
+{
+ try { derivativeblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void derivativeblock(Definition def) :
+{
+	String code;
+}
+{
+ <DERIVATIVE> "{" code = codeblock() <RBRACE>
+	{
+	 def.setCode(Definition.DERIV_EQUAL, trim(code));
+	}
+}
+
+void tryMembersBlock(Definition def) :
+{}
+{
+ try { membersblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void membersblock(Definition def) :
+{
+        String code;
+}
+{
+ <MEMBERS> "{" code = codeblock() <RBRACE>
+        {
+         def.setCode(Definition.MEMBERS,trim(code));
+        }
+}
+
+void tryInputsBlock(Definition def) :
+{}
+{
+ try { inputsblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void inputsblock(Definition def) :
+{
+        String code;
+}
+{
+ <INPUTS> "{" code = codeblock() <RBRACE>
+        {
+         def.setCode(Definition.INPUTS,trim(code));
+        }
+}
+
+void tryMFJavaBlock(Definition def) :
+{}
+{
+ try { mfjavablock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void mfjavablock(Definition def) :
+{}
+{
+ <JAVA> "{"
+( tryEqualBlock(def,JAVABLOCK)
+| tryGreatereqBlock(def,JAVABLOCK)
+| trySmallereqBlock(def,JAVABLOCK)
+| tryCenterBlock(def,JAVABLOCK)
+| tryBasisBlock(def,JAVABLOCK)
+)*
+ "}"
+}
+
+void tryMFAnsiCBlock(Definition def) :
+{}
+{
+ try { mfansicblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void mfansicblock(Definition def) :
+{}
+{
+ <ANSI_C> "{"
+( tryEqualBlock(def,ANSICBLOCK)
+| tryGreatereqBlock(def,ANSICBLOCK)
+| trySmallereqBlock(def,ANSICBLOCK)
+| tryCenterBlock(def,ANSICBLOCK)
+| tryBasisBlock(def,ANSICBLOCK)
+)*
+ "}"
+}
+
+void tryMFCppBlock(Definition def) :
+{}
+{
+ try { mfcppblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void mfcppblock(Definition def) :
+{}
+{
+ <CPLUSPLUS> "{"
+( tryEqualBlock(def,CPPBLOCK)
+| tryGreatereqBlock(def,CPPBLOCK)
+| trySmallereqBlock(def,CPPBLOCK)
+| tryCenterBlock(def,CPPBLOCK)
+| tryBasisBlock(def,CPPBLOCK)
+)*
+ "}"
+}
+
+void tryMFDerivativeBlock(Definition def) :
+{}
+{
+ try { mfderivativeblock(def) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void mfderivativeblock(Definition def) :
+{}
+{
+ <DERIVATIVE> "{"
+( tryEqualBlock(def,DERIVBLOCK)
+| tryGreatereqBlock(def,DERIVBLOCK)
+| trySmallereqBlock(def,DERIVBLOCK)
+| tryCenterBlock(def,DERIVBLOCK)
+| tryBasisBlock(def,DERIVBLOCK)
+)*
+ "}"
+}
+
+void tryEqualBlock(Definition def, int kind) :
+{}
+{
+ try { equalblock(def,kind) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void equalblock(Definition def, int kind) :
+{
+	 String code;
+}
+{
+ <EQUAL> "{" code = codeblock() <RBRACE>
+	{
+         switch(kind) {
+	  case JAVABLOCK:
+	   def.setCode(Definition.JAVA_EQUAL, trim(code)); break;
+	  case DERIVBLOCK:
+           def.setCode(Definition.DERIV_EQUAL, trim(code)); break;
+	  case ANSICBLOCK:
+           def.setCode(Definition.C_EQUAL, trim(code)); break;
+	  case CPPBLOCK:
+           def.setCode(Definition.CPP_EQUAL, trim(code)); break;
+         }
+	}
+}
+
+void tryGreatereqBlock(Definition def, int kind) :
+{}
+{
+ try { greatereqblock(def,kind) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void greatereqblock(Definition def, int kind) :
+{
+	 String code;
+}
+{
+ <GREATER> "{" code = codeblock() <RBRACE>
+	{
+         switch(kind) {
+          case JAVABLOCK:
+           def.setCode(Definition.JAVA_GREQ, trim(code)); break;
+          case DERIVBLOCK:
+           def.setCode(Definition.DERIV_GREQ, trim(code)); break;
+          case ANSICBLOCK:
+           def.setCode(Definition.C_GREQ, trim(code)); break;
+          case CPPBLOCK:
+           def.setCode(Definition.CPP_GREQ, trim(code)); break;
+         }
+	}
+}
+
+void trySmallereqBlock(Definition def, int kind) :
+{}
+{
+ try { smallereqblock(def,kind) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void smallereqblock(Definition def, int kind) :
+{
+	 String code;
+}
+{
+ <SMALLER> "{" code = codeblock() <RBRACE>
+	{
+         switch(kind) {
+          case JAVABLOCK:
+           def.setCode(Definition.JAVA_SMEQ, trim(code)); break;
+          case DERIVBLOCK:
+           def.setCode(Definition.DERIV_SMEQ, trim(code)); break;
+          case ANSICBLOCK:
+           def.setCode(Definition.C_SMEQ, trim(code)); break;
+          case CPPBLOCK:
+           def.setCode(Definition.CPP_SMEQ, trim(code)); break;
+         }
+	}
+}
+
+void tryCenterBlock(Definition def, int kind) :
+{}
+{
+ try { centerblock(def,kind) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void centerblock(Definition def, int kind) :
+{
+	 String code;
+}
+{
+ <CENTER> "{" code = codeblock() <RBRACE>
+	{
+         switch(kind) {
+          case JAVABLOCK:
+           def.setCode(Definition.JAVA_CENTER, trim(code)); break;
+          case DERIVBLOCK:
+           def.setCode(Definition.DERIV_CENTER, trim(code)); break;
+          case ANSICBLOCK:
+           def.setCode(Definition.C_CENTER, trim(code)); break;
+          case CPPBLOCK:
+           def.setCode(Definition.CPP_CENTER, trim(code)); break;
+         }
+	}
+}
+
+void tryBasisBlock(Definition def, int kind) :
+{}
+{
+ try { basisblock(def,kind) }
+ catch (ParseException e) { exception(e); skipto("}"); }
+ catch (TokenMgrError e) { exception(e); skipto("}"); }
+}
+
+void basisblock(Definition def, int kind) :
+{
+	 String code;
+}
+{
+ <BASIS> "{" code = codeblock() <RBRACE>
+	{
+         switch(kind) {
+          case JAVABLOCK:
+           def.setCode(Definition.JAVA_BASIS, trim(code)); break;
+          case DERIVBLOCK:
+           def.setCode(Definition.DERIV_BASIS, trim(code)); break;
+          case ANSICBLOCK:
+           def.setCode(Definition.C_BASIS, trim(code)); break;
+          case CPPBLOCK:
+           def.setCode(Definition.CPP_BASIS, trim(code)); break;
+         }
+	}
+}
+
+JAVACODE
+void parsePackageDefinition(PackageDefinition pkg) {
+ end = false;
+ while(!end) {
+   try { tryDefinition(pkg); }
+   catch (ParseException e) { exception(e); skipto("}"); }
+   catch (TokenMgrError e) { exception(e); skipto("}"); }
+  }
+}
+
+JAVACODE
+String codeblock() {
+ String s = "";
+ int nesting = 1;
+ Token t;
+
+ token_source.curLexState = CODEBLOCK;
+ while(true) {
+   t = getToken(1);
+   if(t.kind == LBRACE) { nesting++; s+=t.image; }
+   else if(t.kind == RBRACE) { 
+     nesting--;
+     if( nesting == 0) break;
+     else s+=t.image;
+    }
+   else if(t.kind == EOF) break;
+   else s+=t.image;
+   t = getNextToken();
+  }
+ token_source.curLexState = DEFAULT;
+ return s;
+}
+
+JAVACODE
+void skipto(String st) {
+ Token t=null;
+ token_source.curLexState = CODEBLOCK;
+ while(true) {
+   try {
+    t = getNextToken();
+    if(t.kind == EOF || t.image.equals(st)) break;
+   } catch (TokenMgrError e) {}
+  } 
+ token_source.curLexState = DEFAULT;
+}
+

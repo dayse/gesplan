@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Unnamed" pageWidth="1420" pageHeight="842" columnWidth="1380" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<property name="com.jasperassistant.designer.Grid" value="true"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="20"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="20"/>
+	<property name="com.jasperassistant.designer.Margins" value="true"/>
+	<property name="com.jasperassistant.designer.Rulers" value="true"/>
+	<property name="com.jasperassistant.designer.SnapToGuides" value="true"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Zebra">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[new Boolean ($V{REPORT_COUNT}.intValue() % 2 == 0)]]></conditionExpression>
+			<style mode="Opaque" forecolor="#000000" backcolor="#CCCCCC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="LOGO_COPPE" class="java.lang.String">
+		<parameterDescription><![CDATA[Logotipo da COPPE-UFRJ]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LOGO_COPPE}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LOGO_INT" class="java.lang.String">
+		<parameterDescription><![CDATA[Logotipo do INT]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{LOGO_INT}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+    codFamilia,
+    descrFamilia,
+    modelo.cobertura,
+    codModelo,
+    descrModelo,
+    estqInicModel,
+    flagProducaoModel,
+    indiceCob,
+    tamLote,
+    tr,
+    tuc
+FROM
+     "public"."familia" familia INNER JOIN "public"."modelo" modelo ON familia."id" = modelo."familia_id"]]>
+	</queryString>
+	<field name="codFamilia" class="java.lang.String"/>
+	<field name="descrFamilia" class="java.lang.String"/>
+	<field name="cobertura" class="java.lang.String"/>
+	<field name="codModelo" class="java.lang.String"/>
+	<field name="descrModelo" class="java.lang.String"/>
+	<field name="estqInicModel" class="java.lang.String"/>
+	<field name="flagProducaoModel" class="java.lang.String"/>
+	<field name="indiceCob" class="java.lang.String"/>
+	<field name="tamLote" class="java.lang.String"/>
+	<field name="tr" class="java.lang.String"/>
+	<field name="tuc" class="java.lang.String"/>
+	<background>
+		<band height="762">
+			<frame>
+				<reportElement x="0" y="0" width="1380" height="762"/>
+				<box>
+					<pen lineWidth="2.0"/>
+					<topPen lineWidth="2.0"/>
+					<leftPen lineWidth="2.0"/>
+					<bottomPen lineWidth="2.0"/>
+					<rightPen lineWidth="2.0"/>
+				</box>
+			</frame>
+		</band>
+	</background>
+	<pageHeader>
+		<band height="159">
+			<image>
+				<reportElement x="80" y="30" width="200" height="100" isRemoveLineWhenBlank="true"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{LOGO_COPPE}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="1101" y="52" width="200" height="89"/>
+				<imageExpression class="java.lang.String"><![CDATA[$P{LOGO_INT}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="460" y="42" width="441" height="40"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Black" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GESPLAN - Gestão do Plano Mestre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="477" y="100" width="403" height="30"/>
+				<textElement textAlignment="Center">
+					<font size="18" pdfFontName="Courier-Oblique"/>
+				</textElement>
+				<text><![CDATA[Listagem de Modelos]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="10" y="22" width="1360" height="121"/>
+				<box>
+					<pen lineWidth="2.0"/>
+					<topPen lineWidth="2.0"/>
+					<leftPen lineWidth="2.0"/>
+					<bottomPen lineWidth="2.0"/>
+					<rightPen lineWidth="2.0"/>
+				</box>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="24">
+			<staticText>
+				<reportElement x="1250" y="0" width="120" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Estoque Inicial (pcs)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="0" width="245" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="335" y="0" width="108" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código de Família]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="0" width="80" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="0" width="293" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição da Família]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="736" y="0" width="105" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Flag de produção]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="841" y="0" width="120" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Índice de cobertura]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="961" y="0" width="63" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TUC (min)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1024" y="0" width="94" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tam. Lote (pcs)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1118" y="0" width="55" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TR (dias)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1173" y="0" width="77" height="20"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cobertura %]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="10" y="0" width="1360" height="20"/>
+				<box>
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.5"/>
+					<leftPen lineWidth="1.5"/>
+					<bottomPen lineWidth="1.5"/>
+					<rightPen lineWidth="1.5"/>
+				</box>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<elementGroup/>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="10" y="0" width="79" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{codModelo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="92" y="0" width="242" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{descrModelo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="336" y="0" width="107" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{codFamilia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="445" y="0" width="291" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{descrFamilia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="738" y="0" width="104" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{flagProducaoModel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="844" y="0" width="115" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{indiceCob}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="962" y="0" width="63" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tuc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="1027" y="0" width="90" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tamLote}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="1119" y="0" width="55" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{tr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="1177" y="0" width="74" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{cobertura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Zebra" stretchType="RelativeToBandHeight" mode="Opaque" x="1253" y="0" width="118" height="20"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{estqInicModel}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="59">
+			<textField>
+				<reportElement x="1152" y="39" width="178" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="1330" y="39" width="40" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="40" width="25" height="19"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Data:]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="false">
+				<reportElement key="textField" x="45" y="40" width="135" height="19" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,159 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd">
+
+<suite name="Suite de Testes">
+
+    <test name="Testes Unitarios" verbose="1" preserve-order="true" >
+        <classes>
+        	<!--  
+        	<class name="tecido.TesteTecido"/>
+        	<class name="avaliacao.TesteAvaliacao"/>
+        	<class name="cadplan.TesteCadPlan"/>
+        	<class name="excecaoMens.TesteExcecaoMens"/>
+        	<class name="JPA.TesteJPA"/>
+        	<class name="HP.TesteHP"/>
+        	<class name="recurso.TesteRecurso"/>
+        	<class name="periopm.TestePerioPM"/>
+        	-->
+        </classes>
+    </test>
+	
+	<!-- Testes de carga inicial foi criado para simular a implantação do sistema, onde não haveriam outros dados além
+	dos de acesso de usuários.
+	Para utilizá-lo devemos colocar "Carga do Estudo de Caso" entre comentários e tirar os comentários do "Teste de Carga Inicial".  -->
+   <test name="Testes de carga inicial" verbose="1" preserve-order="true">
+       <classes>
+       		<!--
+ 	       <class name="cargaDoSistema.CargaStartarJPA"/>
+ 	       <class name="cargaDoSistema.CargaUsuario"/>
+ 	       <class name="cargaDoSistema.CargaParametros"/>
+ 	       -->
+		</classes>
+	</test>        
+    
+    <test name="Carga do Estudo de Caso" verbose="1" preserve-order="true">
+        <classes>
+ 	        <class name="cargaDoSistema.CargaStartarJPA"/>
+ 	        <class name="cargaDoSistema.CargaUsuario"/>
+ 	        <class name="cargaDoSistema.CargaParametros"/>
+ 	        <class name="cargaDoSistema.CargaPerioPM"/>
+ 	        <class name="cargaDoSistema.CargaHP"/>
+ 	        <class name="cargaDoSistema.CargaCapacDia"/>
+ 	        <class name="cargaDoSistema.CargaFamilia"/>
+ 	        <class name="cargaDoSistema.CargaModelo"/>
+ 	        <class name="cargaDoSistema.CargaTecido"/>
+ 	        <class name="cargaDoSistema.CargaRecurso"/>
+ 	        <class name="cargaDoSistema.CargaCapacRec"/>
+ 	        <class name="cargaDoSistema.CargaTecModel"/>
+ 	        <class name="cargaDoSistema.CargaRecModel"/>
+   	        <class name="cargaDoSistema.CargaDeModPer"/>	        
+ 	        <class name="cargaDoSistema.CargaCadPlan"/>	        
+ 	        <class name="cargaDoSistema.CargaExcecao"/>
+ 	        <!--  
+ 	        
+        	<class name="cargaDoSistema.CargaDiretorio"/>
+	        <parameter name="selen-svr-addr" value="localhost"/>
+	        <parameter name="aut-addr" value="http://localhost:8080/gesplan/"/>
+	        <parameter name="brwsr-path" value="*firefox"/>
+	        -->
+        </classes>
+    </test>
+    <test name="Alteracoes Estudo de Caso" verbose="1" preserve-order="true">
+        <classes>	        
+ 	        <class name="alteraEstudoCaso.EstudoImplementaPlano"/>	 
+ 	        <class name="alteraEstudoCaso.EstudoDefasaPeriodo"/>	
+ 	        <class name="alteraEstudoCaso.EstudoAgrupaPeriodo"/>	 
+ 	        <class name="alteraEstudoCaso.EstudoDefineNovoHP"/>	  
+ 	        <class name="alteraEstudoCaso.EstudoAlteraDemandaDePeriodo"/>	  
+   	        <class name="alteraEstudoCaso.EstudoAtualizaEstoque"/>
+ 	        <!--  
+ 	        
+	        -->
+        </classes>
+    </test>
+    
+</suite>
+
+<!--	**************************************************************************	 -->
+
+<!--
+    ATENÇAO:
+    A carga de DeModPer deve ser feita antes da carga de CadPlan.
+    
+	A PROPRIEDADE preserve-order="true" IMPEDE QUE AS CARGAS SEJAM EXECUTADAS DE FORMA
+	ALEATORIA, LOGO COM ESTA PROPRIEDADE A EXECUÇAO SERA FEITA NA SEGUINTE ORDEM:
+	
+	1)  <class name="cargaDoSistema.CargaUsuario"/>
+	2)	<class name="cargaDoSistema.CargaParametros"/>
+	3)  <class name="cargaDoSistema.CargaPerioPM"/>
+	4)  <class name="cargaDoSistema.CargaHP"/>
+	5)  <class name="cargaDoSistema.CargaFamilia"/>
+	....
+	11) <class name="cargaDoSistema.CargaCadPlan"/>
+
+ 
+
+
+
+  ATENÇAO:
+  
+  SE DESEJARMOS EXECUTAR A CARGA APENAS DE CargaUsuario E CargaParametros
+  BASTA QUE SE COMENTE AS DEMAIS CARGAS. ABAIXO SEGUE UM EXEMPLO:
+
+           
+ 	        <class name="cargaDoSistema.CargaUsuario"/>
+ 	        <class name="cargaDoSistema.CargaParametros"/>
+ 	        
+ 	        O TRECHO ABAIXO DEVE SER COMENTADO
+ 	       
+ 	        <class name="cargaDoSistema.CargaPerioPM"/>
+ 	        <class name="cargaDoSistema.CargaHP"/>
+ 	        <class name="cargaDoSistema.CargaFamilia"/>
+ 	        <class name="cargaDoSistema.CargaModelo"/>
+ 	        <class name="cargaDoSistema.CargaTecido"/>
+ 	        <class name="cargaDoSistema.CargaRecurso"/>
+ 	        <class name="cargaDoSistema.CargaTecModel"/>
+ 	        <class name="cargaDoSistema.CargaRecModel"/>
+ 	        <class name="cargaDoSistema.CargaCadPlan"/>
+	        <parameter name="selen-svr-addr" value="localhost"/>
+	        <parameter name="aut-addr" value="http://localhost:8080/gesplan/"/>
+	        <parameter name="brwsr-path" value="*firefox"/>
+	      
+
+	        	
+   ATENÇAO:
+  
+  SE NAO DESEJARMOS EXECUTAR AS CARGAS CargaUsuario E CargaParametros
+  BASTA QUE AS COMENTE DEIXANDO AS DEMAIS CLASSES LIVRES DO COMENTARIO.
+  ABAIXO SEGUE UM EXEMPLO:
+  
+  
+ 	        <class name="cargaDoSistema.CargaPerioPM"/>
+ 	        <class name="cargaDoSistema.CargaHP"/>
+ 	        <class name="cargaDoSistema.CargaFamilia"/>
+ 	        <class name="cargaDoSistema.CargaModelo"/>
+ 	        <class name="cargaDoSistema.CargaTecido"/>
+ 	        <class name="cargaDoSistema.CargaRecurso"/>
+ 	        <class name="cargaDoSistema.CargaTecModel"/>
+ 	        <class name="cargaDoSistema.CargaRecModel"/>
+ 	        <class name="cargaDoSistema.CargaCadPlan"/>
+ 	        
+ 	         O TRECHO ABAIXO DEVE SER COMENTADO
+ 	     
+ 	        <class name="cargaDoSistema.CargaUsuario"/>
+ 	        <class name="cargaDoSistema.CargaParametros"/>
+	        <parameter name="selen-svr-addr" value="localhost"/>
+	        <parameter name="aut-addr" value="http://localhost:8080/gesplan/"/>
+	        <parameter name="brwsr-path" value="*firefox"/>
+	       
+
+-->
+
+<!-- TUTORIAIS BONS SOBRE O TESTNG:
+
+1) http://www.ibm.com/developerworks/java/library/j-testng/
+
+2) http://testng.org/doc/documentation-main.html
+
+3) http://testng.org/dtd/
+
+-->

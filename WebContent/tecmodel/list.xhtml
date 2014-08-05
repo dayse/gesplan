@@ -1,0 +1,243 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/tecmodel_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecmodel}</ui:define>
+	<ui:define name="descricao">#{prompt.tecmodel_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.tecmodel_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.tecmodel_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.tecmodel_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="tecidoActions" />
+		<a4j:keepAlive beanName="tecModelActions" />
+
+		<h:form>
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"
+				page="#{tecModelActions.pagina}">
+			</rich:datascroller>
+
+			<rich:dataTable id="lista" rows="1" align="center"
+				value="#{tecModelActions.listaDeTecidos}" var="tecido" width="470px">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column colspan="11">
+							<h:outputText value="Tecido" />
+						</rich:column>
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.tecido_Codigo}" value="#{prompt.codigo}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_Descricao}" value="#{prompt.descricao}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_UM}" value="#{prompt.UM}" />
+						</rich:column>
+						<rich:column colspan="2" >
+							<h:outputText title="#{tooltip.tecido_LeadTimeU2}" value="#{prompt.tecidoLeadTimeUnidade2}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_FatorRendimento}" value="#{prompt.tecidoFatorDeRendimento}" />
+						</rich:column>
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.tecido_ProducaoDiariaU2}" value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />
+						</rich:column>
+						<rich:column>
+							<h:outputText title="#{tooltip.tecido_CustoUnitario}" value="#{prompt.custoUnit}" />
+						</rich:column>
+
+						<rich:column colspan="2">
+							<h:outputText value="#{prompt.incluirModelo}" />
+						</rich:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<h:column>
+					<h:outputText value="#{tecido.codTecido}"></h:outputText>
+				</h:column>
+
+				<rich:column>
+					<h:outputText value="#{tecido.descrTecido}"></h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.UM}"></h:outputText>
+				</rich:column>
+
+				<rich:column colspan="2" styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.leadTimeUnidade2}">
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.fatorDeRendimento}">
+					<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column colspan="2" styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.producaoDiariaMaxUnidade2}">
+					<f:convertNumber  minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.custoUnit}">
+					<f:convertNumber  minFractionDigits="2" maxFractionDigits="2" locale="default"/>
+					</h:outputText>
+				</rich:column>
+
+				<rich:column colspan="2" styleClass="colunaCampoNumerico">
+					<h:commandButton action="#{tecModelActions.preparaInclusao}"
+						value="Incluir Modelo" />
+				</rich:column>
+
+
+				<rich:column breakBefore="true" colspan="14" styleClass="space-table"
+					rendered="#{not empty tecido.tecModels}" style="height: 20px;">
+					<h:outputText value="" />
+				</rich:column>
+
+
+
+
+
+				<rich:column breakBefore="true" colspan="14"
+					styleClass="rich-table-header"
+					rendered="#{not empty tecido.tecModels}">
+					<h:outputText value="Modelos" />
+				</rich:column>
+
+
+
+  
+
+			<rich:subTable id="tabelaModelos" var="tecModel" value="#{tecido.tecModels}" 
+							   headerClass="dr-table-header-continue" rendered="#{not empty tecido.tecModels}">
+					<rich:column sortBy="#{tecModel.modelo.codModelo}">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.codigo}"/>
+						</f:facet>
+                       <h:outputText value="#{tecModel.modelo.codModelo}" /> 
+                   </rich:column>
+					
+					<rich:column>
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.descricao}" />
+						</f:facet>
+						<h:outputText value="#{tecModel.modelo.descrModelo}" /> 
+					</rich:column>
+					
+					
+					<rich:column styleClass="colunaCampoNumerico" colspan="4">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.tecmodel_TempoDefasagem}" value="#{prompt.tecmodel_TempoDefasagemUsoTec}" />
+						</f:facet>
+						<h:outputText value="#{tecModel.tempoDefasagemUsoTec}">
+						<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default"/>
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.tecmodel_ConsumoLoteM}" value="#{prompt.tecmodel_ConsumoPorLoteMT}" />
+						</f:facet>
+						<h:outputText value="#{tecModel.consumoPorLoteMt}">
+							<f:convertNumber  minFractionDigits="3" maxFractionDigits="3" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column colspan="2" styleClass="colunaCampoNumerico">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.tecmodel_ConsumoLoteKg}" value="#{prompt.tecmodel_ConsumoPorLoteKG}" />
+						</f:facet>
+						<h:outputText value="#{tecModel.consumoPorLoteKg}">
+							<f:convertNumber minFractionDigits="3" maxFractionDigits="3" locale="default" />
+						</h:outputText>
+				     </rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText value="#{prompt.editar}" />
+						</f:facet>
+					  <h:commandButton value="#{prompt.editar}" action="#{tecModelActions.preparaAlteracao}" >
+						<f:setPropertyActionListener value="#{tecModel}" target="#{tecModelActions.tecModelCorrente}" />
+					  </h:commandButton>
+				   </rich:column>
+				
+				  <rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText value="#{prompt.excluir}" />
+						</f:facet>
+					<a4j:commandButton value="#{prompt.excluir}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" >
+						<f:setPropertyActionListener value="#{tecModel}"  target="#{tecModelActions.tecModelCorrente}" />
+				  </a4j:commandButton>
+				 </rich:column>
+				 
+							
+			</rich:subTable>
+
+	
+			</rich:dataTable>
+
+		</h:form>
+
+		<h:form id="formExclusao">
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.confirmacaoExclusaoModelo}" />
+
+				<center><br />
+				<br />
+
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{tecModelActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}"
+						action="Richfaces.hideModalPanel('panelConfirmacaoExclusao')">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+				</h:panelGrid></center>
+
+			</rich:modalPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

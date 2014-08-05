@@ -1,0 +1,316 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich" >
+
+<ui:composition template="/WEB-INF/template/tecido_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecido}</ui:define>
+	<ui:define name="descricao">#{prompt.tecido_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.tecido_Cadastro}
+		<br />
+			<span class="negrito paragrafo">#{prompt.tecidoFatorDeRendimento}: </span> #{help.tecido_FatorRendimento}
+		<br />
+			<span class="negrito paragrafo">#{prompt.tecidoLeadTimeUnidade2}: </span> #{help.tecido_LeadTimeU2}
+		<br />
+			<span class="negrito paragrafo">#{prompt.tecidoProducaoDiariaMaxUnidade2}: </span> #{help.tecido_ProducaoDiariaMaxima}
+		<br />
+			<span class="negrito paragrafo">#{prompt.tecidoUM}: </span> #{help.tecido_UM}
+		<br /><br />
+		<span class="negrito">#{prompt.areaDeBusca} - </span> #{help.tecido_Buscar}
+		<br /><br />
+		<span class="negrito">#{prompt.tecidoEditarPercentPerda} - </span> #{help.tecido_AlterarPercentualPerda}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} - </span> #{help.tecido_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} - </span> #{help.tecido_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="tecidoActions" />
+		
+          
+		<h:form>
+		<br />
+		
+			<h:panelGrid columns="5">
+
+						<h:outputText
+						value="#{prompt.areaDeBusca}:" /> <h:inputText
+						value="#{tecidoActions.campoDeBusca}" /> <h:selectOneMenu
+						id="comboBusca"
+						value="#{tecidoActions.comboTiposDeBusca.selecao}">
+					
+					<f:selectItems value="#{tecidoActions.comboTiposDeBusca.listaSelecao}" />
+					
+					</h:selectOneMenu> <h:commandButton value="#{prompt.buscar}" action="#{tecidoActions.buscaTecido}" />
+					<a4j:commandButton value="#{prompt.voltarListagemCompleta}"
+						                   action="#{tecidoActions.cancela}"
+						                   rendered="#{tecidoActions.buscaEfetuada}" />
+					
+			</h:panelGrid>
+
+			<br />
+			<br />
+
+			<rich:datascroller id="scroller"
+			                   for="lista"
+			                   maxPages="5"
+			                   align="center"
+			                   renderIfSinglePage="false" />
+			                   
+			<rich:dataTable id="lista" 
+			                rows="6"
+			                align="center"
+							value="#{tecidoActions.listaDeTecidos}"
+							var="tecido"
+							reRender="#{tecidoActions.buscaEfetuada}">
+							
+				<f:facet name="header">
+					<rich:columnGroup>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_Codigo}" value="#{prompt.codigo}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_Descricao}" value="#{prompt.descricao}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_UM}" value="#{prompt.tecidoUM}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_LeadTimeU2}" value="#{prompt.tecidoLeadTimeUnidade2}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_FatorRendimento}" value="#{prompt.tecidoFatorDeRendimento}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_ProducaoDiariaU2}" value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_CustoUnitario}" value="#{prompt.tecidoCustoUnit}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.editar}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.excluir}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.consumo}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.disponibilidade}" />
+						</h:column>
+
+					</rich:columnGroup>
+				</f:facet>
+				
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+
+						<h:outputText value="#{prompt.numeroTecidos} = #{tecidoActions.listaDeTecidos.rowCount}" />
+
+					</h:panelGrid>
+
+				</f:facet>
+
+
+				<rich:column>
+					<h:commandLink action="#{tecidoActions.mostra}" value="#{tecido.codTecido}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{tecido.descrTecido}"></h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.UM}"/>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.leadTimeUnidade2}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.fatorDeRendimento}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.producaoDiariaMaxUnidade2}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.custoUnit}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+
+				<h:column>
+					<h:commandButton action="#{tecidoActions.preparaAlteracao}" value="#{prompt.editar}" />
+				</h:column>
+
+				<h:column>
+					<a4j:commandButton  value="#{prompt.excluir}"
+										action="#{tecidoActions.preparaExclusao}"
+						                onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" />
+				</h:column>
+
+				<h:column>
+					<h:commandButton action="#{tecidoActions.informaConsumoPorModelo}" value="consumo" />
+				</h:column>
+				
+				<h:column>
+					<h:commandButton action="#{tecidoActions.mostrarDisponibilidadeMaximaTecidoMatriz}" value="disponibilidade" />
+				</h:column>
+
+			</rich:dataTable>
+		</h:form>
+		
+		<br />
+		<br />
+	    <br />
+	    <center>
+		<h:panelGrid columns="5">
+				<div class="areaDePercentual" align="right">
+				
+				<h:outputText value="Percentual de perda:" />
+				<h:inputText  id="percentPerda"
+					 		  value="#{tecidoActions.parametrosCorrente.percentualDePerda}"
+					 		  size="15"
+					 		  disabled="true" />
+					 
+				 <h:outputText value="%" />
+				 
+				 <h:column>
+					<h:commandButton value="#{prompt.alterar}"
+									   onclick="Richfaces.showModalPanel('panelAlteracao',{heigth:100, width:600, top:300})" />
+				 </h:column> <!-- Nao preciso de ParametrosActions, pois ja estou com tecidoActions na mao,
+		          	           mas poderia utilizar parametrosActions tambem -->
+                </div>
+
+		</h:panelGrid>
+       </center>
+
+		<rich:modalPanel id="panelAlteracao" autosized="true" height="100" width="200">
+		 
+	  
+			<f:facet name="header">
+				<h:panelGroup>
+					<h:outputText value="#{prompt.alterar}"></h:outputText>
+				</h:panelGroup>
+			</f:facet>
+
+			<f:facet name="controls">
+				<h:graphicImage class="close"
+					            onclick="Richfaces.hideModalPanel('panelAlteracao')" />
+			</f:facet>
+			
+			
+			
+			
+			
+
+			<h:form id="formModalPanel">
+			
+				
+				<h:panelGrid columns="4" cellpadding="1">
+					<h:outputText value="#{prompt.tecidoEditarPercentPerda}" />:
+					
+						<h:inputText id="percentualPerda"
+						             value="#{tecidoActions.parametrosCorrente.percentualDePerda}"
+						             required="true"
+						             size="15"
+						             maxlength="#{constantes.lParametrosPercentualperda}">
+						<rich:ajaxValidator event="onkeyup" />
+						<f:validateDoubleRange minimum="0" />
+
+					</h:inputText>
+
+					<rich:message id="errorMSG" for="percentualPerda" errorClass="error" styleClass="error"/>
+
+
+				</h:panelGrid>
+
+				<center>
+				
+				<br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<a4j:commandButton id="Altera"
+									   reRender="formModalPanel"
+									   value="#{prompt.sim}"
+									   action="#{tecidoActions.alteracaoParametrosPercentualDePerda}"
+									   styleClass="botao">
+                    <f:setPropertyActionListener value="#{tecido}" target="#{tecidoActions.tecido}"/>
+					</a4j:commandButton>
+
+					<h:commandButton id="cancelaModal"
+								     value="#{prompt.nao}"
+								     action="#{tecidoActions.cancelaModal}"
+								     immediate="true"
+								     styleClass="botao" />
+
+				</h:panelGrid></center>
+
+			</h:form>
+		</rich:modalPanel>
+		
+			
+		
+		
+		
+
+		<h:form>
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120" width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+									onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.tecido_confirmarExclusao}" />
+
+
+				<center>
+				<br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok"
+					                 value="#{prompt.sim}"
+					                 action="#{tecidoActions.exclui}"
+					                 styleClass="botao">
+					 <rich:componentControl for="panelConfirmacaoExclusao" operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}" onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+
+				</h:panelGrid></center>
+
+			</rich:modalPanel>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

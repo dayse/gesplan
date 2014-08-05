@@ -1,0 +1,134 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/avaliacaoTecidoTecido_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.analiseCapacidadeTecido}</ui:define>
+	<ui:define name="descricao">#{prompt.selecaoTecidos}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.avaliacaoTec_SelecionarDisponibilidade}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="avaliacaoActions"/>
+		
+		<h:form id="formTecidoList">
+		
+			<rich:simpleTogglePanel id="caixaSelecoes" >
+			<f:facet name="header" >
+			Plano Selecionado:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano " style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.cadPlanCorrente.descrPlan}"/>
+					
+			</h:panelGrid>
+			
+			</rich:simpleTogglePanel>
+			<br/>
+			
+			<rich:datascroller id="scroller" for="tabelaTecido" align="center" renderIfSinglePage="false" maxPages="5"/>
+			
+			<rich:dataTable id="tabelaTecido" var="tecido" align="center" rows="1" width="550px"
+				value="#{avaliacaoActions.listaTecido}" >
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_Codigo}" value="#{prompt.codigo}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_Descricao}" value="#{prompt.descricao}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_UM}" value="#{prompt.tecidoUM}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_LeadTimeU2}" value="#{prompt.tecidoLeadTimeUnidade2}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_FatorRendimento}" value="#{prompt.tecidoFatorDeRendimento}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_ProducaoDiariaU2}" value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.tecido_CustoUnitario}" value="#{prompt.tecidoCustoUnit}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText value="" />
+						</h:column>
+
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				<rich:column>
+					<h:outputText value="#{tecido.codTecido}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{tecido.descrTecido}"/>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.UM}"/>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.leadTimeUnidade2}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.fatorDeRendimento}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.producaoDiariaMaxUnidade2}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{tecido.custoUnit}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column>
+					<h:commandButton value="#{prompt.disponibilidadeTecido}" action="#{avaliacaoActions.analisarDisponibilidadeTecido}" />
+				</rich:column>
+				
+			</rich:dataTable>	
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

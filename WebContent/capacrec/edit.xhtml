@@ -1,0 +1,94 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capacrec_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.capacRec}</ui:define>
+	<ui:define name="descricao">#{prompt.capacRec_Editar}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.capacRec_Editar}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form id="formulario">
+
+			<a4j:keepAlive beanName="capacRecActions" />
+			
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.recurso_Alterar}" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.recurso_Codigo}" />:
+					</h:panelGroup>
+					<h:inputText id="codigoRec" 
+						value="#{capacRecActions.capacRecCorrente.recurso.codRecurso}" 
+						maxlength="#{constantes.lRecursoCodRecurso}" size="20" disabled="true"/>
+					<h:message for="codigoRec" styleClass="error" />
+					
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.recurso_Descricao}" />:
+					</h:panelGroup>
+					<h:inputText id="descrRec" 
+						value="#{capacRecActions.capacRecCorrente.recurso.descrRecurso}"
+						maxlength="#{constantes.lRecursoDescrRecurso}" size="20" disabled="true"/>
+					<h:message for="descrRec" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.periodo}" />:
+					</h:panelGroup>					
+					<h:inputText id="periodoPM" value="#{capacRecActions.capacRecCorrente.perioPM.periodoPM}"
+						maxlength="#{constantes.lPeriopmPeriodopm}" size="20" disabled="true"/>
+					<h:message for="periodoPM" styleClass="error" />
+					
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataInicial}" />:
+					</h:panelGroup>
+					<h:outputText id="dataInicial" value="#{capacRecActions.capacRecCorrente.perioPM.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+					
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataFinal}" />:
+					</h:panelGroup>
+					<h:outputText value="#{capacRecActions.capacRecCorrente.perioPM.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.capacRec_capacDiaria}" />:
+					</h:panelGroup>
+					<h:inputText id="capacidadeDiaria" value="#{capacRecActions.capacRecCorrente.capacDiaria}"
+						maxlength="#{constantes.lCapacrecCapacdiaria}" size="20">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="capacidadeDiaria" styleClass="error" />
+					
+					
+				</h:panelGrid>
+				
+			</rich:panel>
+			
+			<br />
+			<br />
+			
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}"
+				action="#{capacRecActions.altera}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="#{capacRecActions.cancela}" immediate="true" />
+		</h:form>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

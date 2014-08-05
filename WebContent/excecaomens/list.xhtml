@@ -1,0 +1,288 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:c="http://java.sun.com/jstl/core" 	
+>
+
+<ui:composition template="/WEB-INF/template/excecaomens_template.xhtml">
+	<ui:define name="titulo">#{prompt.excecaoMens}</ui:define>
+	<ui:define name="descricao">#{prompt.excecaoMens_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		<c:if test="${cadPlanActions.opcaoEscolhida == '3'}">
+			#{help.excecaoMens_GerarExcecao}
+		</c:if>
+		<c:if test="${cadPlanActions.opcaoEscolhida == '4'}">
+			#{help.excecaoMens_MostrarExcecao}
+		</c:if>
+	</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="excecaoMensActions" />
+		<h:form>
+
+	    <center>
+			<fieldset class="caixaPlanoModelo">
+				<legend>#{prompt.planoSelecionado}</legend>
+	
+				<h:panelGrid columns="5" cellspacing="10px" styleClass="align:left">
+				
+					<h:outputText value="#{prompt.cadplan_codigo}: "/>
+					
+					<h:outputText>
+						<b>#{excecaoMensActions.cadPlanCorrente.codPlan}</b>
+					</h:outputText>
+					
+					<h:outputText>
+						<rich:spacer width="35px"/>
+					</h:outputText>
+					
+					<h:outputText value="#{prompt.cadplan_descricao}: "/>
+					
+					<h:outputText>
+						<b>#{excecaoMensActions.cadPlanCorrente.descrPlan}</b>
+					</h:outputText>
+				
+				</h:panelGrid>
+			
+    		  </fieldset>
+		</center>
+		
+		<br/><br/>
+			
+			<rich:datascroller id="scroller" for="tabelaModelos" align="center" renderIfSinglePage="false" 
+				maxPages="5" >
+				
+			</rich:datascroller>
+				
+			<rich:dataTable id="tabelaModelos" rows="1"  value="#{excecaoMensActions.listaPlanoModelos}"  var="planoModelo" 
+						width="800px" align="center">
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<rich:column colspan="20">
+							<h:outputText value="Modelo" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.modelo_codigo}" />
+						</rich:column>
+						
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.modelo_descricao}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.cadPlan_Modelagem}" value="#{prompt.modelagemFuzzy}" />
+						</rich:column>
+						
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_FlagProducao}" value="#{prompt.modelo_flagProducao}" />
+						</rich:column>						
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TAMLote}" value="#{prompt.modelo_tamLote}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TR}" value="#{prompt.modelo_tr}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_Cobertura}" value="#{prompt.modelo_cobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_EstoqueInicial}" value="#{prompt.modelo_estoqueInicial}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_RecebimentoPendente}" value="#{prompt.modelo_recebimentoPendente}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.plPerMod_Status}" value="#{prompt.planoModelo_status}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.excecaoMens_EscorePoliticaEstoque}" value="#{prompt.planoModelo_escore}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.excecaoMens_ProducaoDiariaMedia}" value="#{prompt.planoModelo_prodDiariaMediaPlanoModelo}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.excecaoMens_EscoreMinimo}" value="#{prompt.planoModelo_escorePlanoPerMod}" />
+						</rich:column>
+						
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.excecaoMens_VarEstoqueMinimo}" value="#{prompt.planoModelo_varEstqPercEscMin}"/>
+						</rich:column>
+						
+						<rich:column colspan="3">
+							<h:outputText title="#{tooltip.excecaoMens_VarProdDiaEscoreMinimo}" value="#{prompt.planoModelo_varProdDiaPercEscMin}"/>
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+						
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{planoModelo.modelo.codModelo}"/>
+				</rich:column>
+
+				<rich:column colspan="2">
+					<h:outputText value="#{planoModelo.modelo.descrModelo}"/>
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{planoModelo.cadPlan.modelagemFuzzy}" rendered="#{not empty planoModelo.cadPlan.modelagemFuzzy}" />
+					<h:outputText value="Nenhum" rendered="#{empty planoModelo.cadPlan.modelagemFuzzy}" />
+				</rich:column>
+				
+				<rich:column colspan="2">
+					<h:outputText value="#{planoModelo.modelo.familia.descrFamilia}" />
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{planoModelo.modelo.flagProducaoModel ? 'Livre' : 'Fixo'}"/>
+				</h:column>
+				
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.modelo.tamLote}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.trOriginal}" />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.modelo.cobertura}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.modelo.estqInicModel}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.modelo.recebimentoPendente}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<h:column>
+					<h:outputText value="#{planoModelo.modeloPlanejado ? 'Planejado' : 'Nao planejado'}"/>
+				</h:column>
+				
+				
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.escore}" >
+						<f:convertNumber  maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico" >
+					<h:outputText value="#{planoModelo.prodDiariaMediaPlanoModelo}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.escorePlanPerModMin}" >
+						<f:convertNumber  maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.varEstqPercEscMin}" >
+						<f:convertNumber  maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico" colspan="3">
+					<h:outputText value="#{planoModelo.varProdDiaPercEscMin}" >
+						<f:convertNumber  maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				
+				
+				<rich:column breakBefore="true" colspan="20" styleClass="space-table" style="height: 20px;">
+					<h:outputText value="" />
+				</rich:column>
+			
+				
+				<rich:column breakBefore="true" colspan="20" styleClass="rich-table-header">
+					<h:outputText value="#{prompt.plpermod_planoMestre}" />
+				</rich:column>
+				
+				
+				<rich:subTable id="tabelaExcecaoMens" value="#{planoModelo.excecaoMenss}" 
+					align="center" headerClass="dr-table-header-continue"  var="excecaoMens">
+					
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.excecaoMens_TipoExcecao}" value="#{prompt.excecao_tipoDeExcecao}"/>
+						</f:facet>
+						<h:outputText value="#{excecaoMens.excecao.tipoDeExcecao}" />
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="5">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.excecaoMens_Descricao}" value="#{prompt.excecao_descricao}" />
+						</f:facet>
+						<h:outputText value="#{excecaoMens.excecao.descrExcecao}" />
+					</rich:column>					
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="5">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.excecaoMens_Origem}" value="#{prompt.execaoMens_periodoOrigem}"/>
+						</f:facet>
+						<h:outputText value="#{excecaoMens.periodoOrigem.periodoPM}"/>
+					</rich:column>					
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="5">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.excecaoMens_Destino}" value="#{prompt.execaoMens_periodoDestino}"/>
+						</f:facet>
+						<h:outputText value="#{excecaoMens.periodoDestino.periodoPM}"/>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="3">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.excecaoMens_Quantidade}" value="#{prompt.excecaoMens_quantidade}"/>
+						</f:facet>
+						<h:outputText value="#{excecaoMens.quantidade}"  />
+					</rich:column>					
+										
+				</rich:subTable>
+				
+			</rich:dataTable>
+			
+		</h:form>
+		
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

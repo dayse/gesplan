@@ -1,0 +1,168 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/familia_template.xhtml">
+	<ui:define name="titulo">#{prompt.familia}</ui:define>
+	<ui:define name="descricao">#{prompt.familia_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.familia_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.areaDeBusca} -</span> #{help.familia_Buscar}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.familia_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.familia_Imprimir} -</span> #{help.familia_Imprimir}
+		<br /><br />
+		<span class="negrito">#{prompt.familia_ImprimirComModelo} -</span> #{help.familia_ImprimirFamiliaComModelo}
+		<br /><br />		
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>	
+	<ui:define name="corpo">
+
+		<h:form>
+		
+		<br/>
+			
+			<h:panelGrid columns="5">
+
+				<h:outputText value="#{prompt.areaDeBusca}" /> 
+				<h:inputText value="#{familiaActions.campoDeBusca}"/>
+					<h:selectOneMenu id="comboBusca" value="#{familiaActions.comboTiposDeBusca.selecao}">
+						<f:selectItems value="#{familiaActions.comboTiposDeBusca.listaSelecao}" />
+					</h:selectOneMenu>
+				<h:commandButton value="#{prompt.buscar}" action="#{familiaActions.buscaFamilia}" />
+				<a4j:commandButton value="#{prompt.voltarListagemCompleta}" 
+							action="#{familiaActions.cancela}" rendered="#{familiaActions.buscaEfetuada}"/>			
+			</h:panelGrid>
+			
+			<br/>
+			<br/>
+		
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="6" align="center"
+				value="#{familiaActions.listaDeFamilias}" var="familia">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<h:column>
+							<h:outputText title="#{tooltip.familia_Codigo}" value="#{prompt.familia_codigo}" />
+
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia_descricao}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.familia_Cobertura}" value="#{prompt.familia_cobertura}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.familia_EstoqueInicial}" value="#{prompt.familia_estqInic}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.familia_TMUC}" value="#{prompt.familia_tmuc}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.editar}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.excluir}" />
+						</h:column>
+
+					</rich:columnGroup>
+				</f:facet>
+				<f:facet name="footer">
+					<h:panelGrid columns="2">
+					
+						<h:outputText value="#{prompt.familia_totalLista} = #{familiaActions.listaDeFamilias.rowCount}"/>
+						
+					</h:panelGrid>
+				</f:facet>
+
+				<h:column>
+					<h:commandLink action="#{familiaActions.mostra}"
+						value="#{familia.codFamilia}" />
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{familia.descrFamilia}"></h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familia.cobertura}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familia.estqInicFam}">
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familia.tmuc}">
+				 		<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<h:column>
+					<h:commandButton action="#{familiaActions.preparaAlteracao}"
+						value="#{prompt.editar}" />
+				</h:column>
+
+				<h:column>
+					<a4j:commandButton value="#{prompt.excluir}" action="#{familiaActions.prepararExclusao}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" />
+				</h:column>
+
+			</rich:dataTable>
+
+
+		</h:form>
+
+		<h:form>
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.familia_confirmarExclusao}" />
+
+				<center><br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{familiaActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao"
+							operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}" 
+					onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')"/>
+
+				</h:panelGrid></center>
+
+			</rich:modalPanel>
+		</h:form>
+		
+		<a4j:keepAlive beanName="familiaActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

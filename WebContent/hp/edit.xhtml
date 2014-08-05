@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/hp_list_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.hp}</ui:define>
+	<ui:define name="descricao">#{prompt.hp_inicioPlanejamento}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.hp_Editar}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="hpActions" />
+		
+		<h:form id="formHPEdit">
+
+			<rich:panel>
+			
+				<br/>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.hp} - #{hpActions.paginaCorrente}" />
+				</f:facet>
+
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+
+				<h:panelGrid columns="4">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.hp_periodoInicial}" />:
+					</h:panelGroup>
+						<h:selectOneMenu id="comboPeriodoInicial" value="#{hpActions.comboPeriodoInicial.selecao}" 
+							required="true" disabled="true">
+							<f:selectItems value="#{hpActions.comboPeriodoInicial.listaSelecao}" />
+						</h:selectOneMenu>
+						<h:message for="comboPeriodoInicial" styleClass="error" />
+						
+				</h:panelGrid>
+				
+				<br/>
+				
+				<h:panelGrid columns="4">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.hp_periodoFinal}" />:
+					</h:panelGroup>
+						<h:selectOneMenu id="comboPeriodoFinal" value="#{hpActions.comboPeriodoFinal.selecao}" required="true">
+							<f:selectItems value="#{hpActions.comboPeriodoFinal.listaSelecao}" />
+						</h:selectOneMenu>
+						<h:message for="comboPeriodoFinal" styleClass="error" />
+						
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoIncluir" value="#{prompt.confirmarInclusao}" action="#{hpActions.salvar}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}" action="#{hpActions.cancelar}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

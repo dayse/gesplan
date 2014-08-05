@@ -1,0 +1,311 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/hp_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.hp}</ui:define>
+	<ui:define name="descricao">#{prompt.hp_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.hp_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.hp_iniciaPlanejamento} -</span> #{help.hp_IniciarPlanejamento}
+		<br /><br />
+		<span class="negrito">#{prompt.hp_intervaloTempoCongelado} -</span> #{help.hp_AlterarTempoCongelado}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}		
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="hpActions"/>
+		
+		<h:form id="formHPList">
+		
+			<h:panelGrid columns="9" cellpadding="7" cellspacing="15">
+			
+				<h:outputText value="" />
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="--------"/>
+				
+				<h:outputText value="Periodo Inicial" />
+
+				<h:outputText value="--------" />
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="--------"/>
+				
+				<h:outputText value="Periodo Final" />
+
+				<h:outputText value="--------" />
+				
+				
+				<h:outputText>
+					<b>#{prompt.cadplan}</b>
+				</h:outputText>
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicPMP.periodoPM}"
+					rendered="#{hpActions.hpCorrente != null}"> 
+					<rich:spacer/>
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicPMP.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicPMP.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText>
+					<rich:spacer width="15px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalPMP.periodoPM}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<rich:spacer/>
+				</h:outputText>
+									
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalPMP.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+			
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalPMP.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">					
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>			
+				
+				<h:outputText>
+					<b>#{prompt.perioPAP}</b>
+				</h:outputText>
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicPAP.periodoPAP}"
+					rendered="#{hpActions.hpCorrente != null}"> 
+					<rich:spacer/>
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicPAP.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicPAP.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText>
+					<rich:spacer width="15px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalPAP.periodoPAP}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<rich:spacer/>
+				</h:outputText>
+									
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalPAP.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+			
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalPAP.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">					
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+				
+				
+				
+				<h:outputText>
+					<b>#{prompt.deModPer}</b>
+				</h:outputText>
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicDemMod.periodoPM}"
+					rendered="#{hpActions.hpCorrente != null}"> 
+					<rich:spacer/>
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicDemMod.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMInicDemMod.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText>
+					<rich:spacer width="15px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalDemMod.periodoPM}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<rich:spacer/>
+				</h:outputText>
+									
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalDemMod.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+			
+				<h:outputText value="#{hpActions.hpCorrente.perioPMFinalDemMod.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">					
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>		
+				
+				
+				
+				<h:outputText>
+					<b>#{prompt.deFamPer}</b>
+				</h:outputText>
+				
+				<h:outputText>
+					<rich:spacer width="5px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicDemFam.periodoPAP}"
+					rendered="#{hpActions.hpCorrente != null}"> 
+					<rich:spacer/>
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicDemFam.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPInicDemFam.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+				
+				<h:outputText>
+					<rich:spacer width="15px"/>
+				</h:outputText>
+				
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalDemFam.periodoPAP}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<rich:spacer/>
+				</h:outputText>
+									
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalDemFam.dataInicial.time}"
+					rendered="#{hpActions.hpCorrente != null}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>					
+			
+				<h:outputText value="#{hpActions.hpCorrente.perioPAPFinalDemFam.dataFinal.time}"
+					rendered="#{hpActions.hpCorrente != null}">					
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>		
+				
+			</h:panelGrid>
+			
+			<br/>
+			<br/>
+			<br/>
+			
+			<center>
+				<h:panelGrid columns="3">
+					<h:outputText value="#{prompt.hp_intervaloTempoCongelado}: " />
+					<h:inputText value="#{hpActions.parametroCorrente.numIntervalosFixos}" size="10" disabled="true" />
+					<a4j:commandButton value="#{prompt.alterar}" 
+							onclick="Richfaces.showModalPanel('panelConfirmacaoAlteracao',{width:650, top:300, height: 130})"/> 
+							
+				</h:panelGrid>
+			</center>
+			
+			<br/>
+			<br/>
+			
+			<center>
+				<h:panelGrid columns="2">
+					<h:outputText value="#{prompt.parametros_IniciaPlanejamento}: "/>
+					<h:outputText id="statusPlanejamento">
+						<b>#{hpActions.statusPlanejamento}</b>
+					</h:outputText>
+				</h:panelGrid>
+			</center>
+			
+		</h:form>
+		
+		<a4j:form id="formAlteracao">
+		
+			<rich:modalPanel id="panelConfirmacaoAlteracao">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.parametrosAlterarIntervalosCongelado}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+				
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoAlteracao')" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup >
+						<h:outputText value="#{prompt.novoValor}: "/>
+					</h:panelGroup>
+						<h:inputText id="intervFixos" value="#{hpActions.parametroCorrente.numIntervalosFixos}">
+							<rich:ajaxValidator event="onkeyup"/>
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<rich:message for="intervFixos" styleClass="error" />
+						
+					<br/>
+					<br/>
+					
+					<h:panelGrid columns="2" cellpadding="5">
+					
+						<a4j:commandButton id="ok" value="#{prompt.alterar}"
+							action="#{hpActions.alteraIntervalos}" styleClass="botao">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+	
+						<a4j:commandButton id="cancelar" value="#{prompt.cancelar}"
+							action="Richfaces.hideModalPanel('panelConfirmacaoAlteracao')">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+						
+					</h:panelGrid>	
+
+				</h:panelGrid>
+
+			</rich:modalPanel>
+		
+		</a4j:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

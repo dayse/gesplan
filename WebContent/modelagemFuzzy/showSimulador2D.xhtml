@@ -1,0 +1,111 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_simulador2d_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descSimulador2D}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_Simulador2D}</ui:define>	
+	<ui:define name="corpo">
+
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_variaveisSelecionadas}:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="#{prompt.modelagemFuzzy_eixoXSimulador2D}" />:	
+				<h:outputText value="#{modelagemFuzzyActions.variavelInputCorrente.nome}" />
+				<h:outputText value="#{prompt.modelagemFuzzy_eixoYSimulador2D}" />:				
+				<h:outputText value="#{modelagemFuzzyActions.variavelOutputCorrente.nome}" />
+				
+					
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			
+			<rich:panel>
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_informeValoresFixos}:
+			</f:facet>
+			
+				<rich:dataTable id="tabelaInputs" var="variavelViewIn"	align="center" 
+					value="#{modelagemFuzzyActions.variaveisInput}" rows="10" width="700px" >
+					<f:facet name="headerTInput">
+						<rich:columnGroup>
+							<rich:column>
+								<h:outputText value="#{prompt.nome}" />
+							</rich:column>
+							<rich:column>
+								<h:outputText value="#{prompt.valor}" />
+							</rich:column>
+						</rich:columnGroup>					
+					</f:facet>		
+					
+					<rich:column>
+						<h:outputText value="#{variavelViewIn.nome}" />
+					</rich:column>
+					
+							
+					<rich:column styleClass="colunaCampoNumericoCentralizado">				
+						<h:inputText id="inputValor" value="#{variavelViewIn.valor}" size="20" required="true"/>
+						<h:message for="inputValor" styleClass="error" />	
+					</rich:column>
+				</rich:dataTable>
+				
+				<rich:dataTable id="tabelaOutputs" var="variavelViewOu"	align="center" 
+					value="#{modelagemFuzzyActions.variaveisOutput}" rows="10" width="700px" >
+					<f:facet name="headerTInput">
+						<rich:columnGroup>
+							<rich:column>
+								<h:outputText value="#{prompt.nome}" />
+							</rich:column>
+							<rich:column>
+								<h:outputText value="#{prompt.valor}" />
+							</rich:column>
+						</rich:columnGroup>					
+					</f:facet>		
+					
+					<rich:column>
+						<h:outputText value="#{variavelViewOu.nome}" />
+					</rich:column>
+					
+							
+					<rich:column styleClass="colunaCampoNumericoCentralizado">				
+						<h:inputText id="outValor" value="#{variavelViewOu.valor}" size="20" required="true"/>
+						<h:message for="outValor" styleClass="error" />	
+					</rich:column>
+				</rich:dataTable>		
+				<h:panelGrid columns="2">
+	        	  <a4j:commandButton value="#{prompt.modelagemFuzzy_executarSimulador2D}" action="#{modelagemFuzzyActions.mostraSimulador2D}" 
+	        	  			reRender="grafico" />
+	        	</h:panelGrid>	
+				
+			</rich:panel>
+			
+			<rich:simpleTogglePanel id="grafico" rendered="#{modelagemFuzzyActions.simuladorExecutado}" >
+			<f:facet name="header" >
+			Sumulação 2D:
+			</f:facet>			
+			
+
+				<gt:grafico_checkbox
+					grafico="#{modelagemFuzzyActions.plotSimulador2D}" 
+					placeholder="placeholder" 
+					width="800" height="300"
+				/>
+			</rich:simpleTogglePanel>
+				
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

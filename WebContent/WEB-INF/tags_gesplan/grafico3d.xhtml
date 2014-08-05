@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:c="http://java.sun.com/jstl/core"  
+      >
+       <ui:composition>
+       <!--[if IE]><script type="text/javascript" src="/gesplan/js/JSSurfacePlot/excanvas.js"></script><![endif]-->
+    <script language="javascript" type="text/javascript" src="/gesplan/js/JSSurfacePlot/SurfacePlot.js"></script>
+    <script language="javascript" type="text/javascript" src="/gesplan/js/JSSurfacePlot/ColourGradient.js"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <!-- Importando script de hack do JS para usar funcoes que utilizam simbolos que nao podem ser
+    		postos em um xhtml. 
+     -->
+    <script language="javascript" type="text/javascript" src="/gesplan/js/js_hacks.js"></script>
+    
+     <script type='text/javascript'>
+			
+      google.load("visualization", "1", {"callback" : function(){ setUp(); }});
+	  	
+        function setUp()
+        {
+          var systemData = [];
+
+		  systemData = #{datasets};
+
+          var numRows = #{numSamples};
+          var numCols = #{numSamples};
+				
+          var tooltipStrings = new Array();
+          var data = new google.visualization.DataTable();
+          ForGrafico3DSetColums(numCols,data);
+
+          data.addRows(numRows);
+          var d = 360 / numRows;
+          var idx = 0;
+				
+         ForGrafico3DSetData(numRows,numCols,data,systemData,tooltipStrings,idx);
+
+         var surfacePlot = new greg.ross.visualisation.SurfacePlot(document.getElementById("#{placeholder}"));
+
+         // Don't fill polygons in IE. It's too slow.
+         var fillPly = !isIE();
+
+         // Define a colour gradient.
+         var colour1 = {red:0, green:0, blue:255};
+         var colour2 = {red:0, green:255, blue:255};
+         var colour3 = {red:0, green:255, blue:0};
+         var colour4 = {red:255, green:255, blue:0};
+         var colour5 = {red:255, green:0, blue:0};
+         var colours = [colour1, colour2, colour3, colour4, colour5];
+
+         // Axis labels.
+         var xAxisHeader = "X";
+         var yAxisHeader = "Y";
+         var zAxisHeader = "Z";
+
+         var options = {xPos: 300, yPos: 50, width: #{width}, height: #{height}, colourGradient: colours,
+		   fillPolygons: fillPly, tooltips: tooltipStrings, xTitle: xAxisHeader,
+		   yTitle: yAxisHeader, zTitle: zAxisHeader};
+				
+        surfacePlot.draw(data, options);
+      }
+			
+      </script>
+		
+
+	      <div id="#{placeholder}" style="height:600,width:600">
+	        <!-- SurfacePlot goes here... -->
+				
+	      </div>
+	
+					
+       </ui:composition>
+</html>

@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/template_ajuda.xhtml">
+	
+	<ui:define name="submenu">
+		
+		<rich:toolBar>
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.incluir}" action="#{usuarioActions.preparaInclusao}" styleClass="linkMenu"/>
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+			<rich:dropDownMenu style="width: 80px; text-align:center;">
+				<f:facet name="label">
+					<h:outputText value="#{prompt.imprimir}" />
+				</f:facet>
+
+	             <rich:menuItem submitMode="server" value="Imprimir em PDF"
+	                    action="#{usuarioActions.imprimir}"  icon="/recursos/imagens/open.gif">
+	             </rich:menuItem>
+
+	             <rich:menuItem submitMode="server" value="Imprimir em Html"
+	                    action="#{usuarioActions.imprimirEmPdfOuHthml}" icon="/recursos/imagens/open.gif" >
+	            <f:setPropertyActionListener value="html" target="#{usuarioActions.opcaoRelatorioEscolhido}" />
+	            </rich:menuItem>
+
+            </rich:dropDownMenu>
+            
+            <rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.voltar}" action="home" styleClass="linkMenu"/>
+				</f:facet>
+            </rich:dropDownMenu>
+			
+		</rich:toolBar>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+<!-- Load custom tag into JSF web application -->
+ <context-param>
+    <param-name>facelets.LIBRARIES</param-name>
+    <param-value>/WEB-INF/gtags.taglib.xml</param-value>
+ </context-param>
+ 
+	<context-param>
+		<param-name>org.richfaces.SKIN</param-name>
+		<param-value>blueSky</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>facelets.DEVELOPMENT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>com.sun.faces.validateXml</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>com.sun.faces.verifyObjects</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<context-param>
+		<param-name>facelets.REFRESH_PERIOD</param-name>
+		<param-value>2</param-value>
+	</context-param>
+	<filter>
+		<display-name>RichFaces Filter</display-name>
+		<filter-name>richfaces</filter-name>
+		<filter-class>org.ajax4jsf.Filter</filter-class>
+		<init-param>
+			<param-name>createTempFiles</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>maxRequestSize</param-name>
+			<param-value>20000000</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>richfaces</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>listener.JPAStartUpListener</listener-class>
+	</listener>
+
+	<session-config>
+    	<session-timeout>30</session-timeout>
+	</session-config>
+	
+	
+	
+	<!--  Filtro  -->
+	<!--  Todos os diretorios, para serem acessados, devem ser incluidos aqui no filtro  -->
+	<!--  Caso contrario, o acesso nao eh permitido.   -->
+	
+	<filter>
+    	<filter-name>Filtro</filter-name>
+    	<filter-class>filtro.Filtro</filter-class>
+  	</filter>
+  	
+  	<filter-mapping>
+    	<filter-name>Filtro</filter-name>
+    	<url-pattern>/avaliacaoFuzzy/*</url-pattern>
+    	<url-pattern>/cadplan/*</url-pattern>
+    	<url-pattern>/capacdia/*</url-pattern>
+    	<url-pattern>/capacrec/*</url-pattern>
+    	<url-pattern>/capactecview/*</url-pattern>
+    	<url-pattern>/deModPer/*</url-pattern>
+    	<url-pattern>/excecao/*</url-pattern>
+    	<url-pattern>/excecaomens/*</url-pattern>
+    	<url-pattern>/familia/*</url-pattern>
+    	<url-pattern>/hp/*</url-pattern>
+    	<url-pattern>/modelagemFuzzy/*</url-pattern>
+    	<url-pattern>/modelo/*</url-pattern>
+    	<url-pattern>/periopap/*</url-pattern>    	
+    	<url-pattern>/periopm/*</url-pattern>
+    	<url-pattern>/plpermod/*</url-pattern>
+    	<url-pattern>/pmp/*</url-pattern>
+    	<url-pattern>/privado/*</url-pattern>
+    	<url-pattern>/recmodel/*</url-pattern>
+    	<url-pattern>/tecmodel/*</url-pattern>
+    	<url-pattern>/recurso/*</url-pattern>
+    	<url-pattern>/tecido/*</url-pattern>
+    	<url-pattern>/testefile/*</url-pattern>
+    	<url-pattern>/usuario/*</url-pattern>
+    	<url-pattern>/home.xhtml</url-pattern>
+    	<url-pattern>/home.faces</url-pattern>
+  	</filter-mapping>
+	
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+	
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>server</param-value>
+	</context-param>
+	
+	<servlet>
+      <servlet-name>GeraRelatorioDeUsuarios</servlet-name>
+      <servlet-class>reports.GeraRelatorioDeUsuarios</servlet-class>
+   </servlet> 
+
+   <servlet>
+      <servlet-name>GeraRelatorioEmHTML</servlet-name>
+      <servlet-class>reports.GeraRelatorioEmHTML</servlet-class>
+   </servlet> 
+
+   <servlet>
+      <servlet-name>GeraRelatorioEmPDF</servlet-name>
+      <servlet-class>reports.GeraRelatorioEmPDF</servlet-class>
+   </servlet> 
+
+   <servlet>
+      <servlet-name>ImageServlet</servlet-name>
+      <servlet-class>net.sf.jasperreports.j2ee.servlets.ImageServlet</servlet-class>
+   </servlet> 
+
+	<!-- 
+		Mapeamento necessario para o caso de usarmos relatorio em HTML para que as
+	    figuras de organizaçao das tabelas sejam encontradas.
+	 -->
+   <servlet-mapping>
+      <servlet-name>ImageServlet</servlet-name>
+      <url-pattern>/image</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>GeraRelatorioDeUsuarios</servlet-name>
+      <url-pattern>/GeraRelatorioDeUsuarios</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>GeraRelatorioEmHTML</servlet-name>
+      <url-pattern>/GeraRelatorioEmHTML</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>GeraRelatorioEmPDF</servlet-name>
+      <url-pattern>/GeraRelatorioEmPDF</url-pattern>
+   </servlet-mapping>
+	
+	<!-- o jsf exige que o welcome-file seja do tipo jsp -->
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>cargabd.jsp</welcome-file>
+	</welcome-file-list>  
+</web-app>

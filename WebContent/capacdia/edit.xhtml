@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capacDia_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.capacDia}</ui:define>
+	<ui:define name="descricao">#{prompt.capacDia_Editar}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.capacDia_Editar}</ui:define>
+	<ui:define name="corpo">
+		
+		<h:form id="formulario">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.capacDia_Alterar}" />
+				</f:facet>
+
+				<h:panelGrid columns="3"> 	
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.periodo} " />:
+			    	</h:panelGroup>
+					<h:inputText id="periodo" value="#{capacDiaActions.capacDiaCorrente.perioPM.periodoPM}"
+						maxlength="#{constantes.lPeriopmPeriodopm}" size="20" required="true" disabled="true"/>
+					<h:message for="periodo" styleClass="error" />
+
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataInicial}" />:
+					</h:panelGroup>
+					<h:outputText id="dataInicial" value="#{capacDiaActions.capacDiaCorrente.perioPM.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+					
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataFinal}" />:
+					</h:panelGroup>
+					<h:outputText value="#{capacDiaActions.capacDiaCorrente.perioPM.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.capacDia_capacProdDiariaEmMin}" />:
+					</h:panelGroup>
+					<h:inputText id="capacProdDiariaEmMin" value="#{capacDiaActions.capacDiaCorrente.capacProdDiariaEmMin}"
+						maxlength="#{constantes.lCapacdiaCapacproddiariaemmin}" size="20" required="true">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="capacProdDiariaEmMin" styleClass="error" />
+
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.capacDia_capacProdDiariaEmMinMg}" />:
+					</h:panelGroup>
+					<h:inputText id="capacProdDiariaEmMinMg" value="#{capacDiaActions.capacDiaCorrente.capacProdDiariaEmMinMg}"
+						maxlength="#{cconstantes.lCapacdiaCapacproddiariaemminmg}" size="20" required="true" disabled="true">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="capacProdDiariaEmMinMg" styleClass="error" />
+					
+				</h:panelGrid>
+				
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}" action="#{capacDiaActions.altera}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}" action="#{capacDiaActions.cancela}" immediate="true" />
+			
+		</h:form>
+
+		<a4j:keepAlive beanName="capacDiaActions" />
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

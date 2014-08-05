@@ -1,0 +1,133 @@
+operatorset OperadoresProducao {
+  and xfl.min();
+  or xfl.max();
+  imp xfl.min();
+  also xfl.bounded_sum();
+  defuz xfl.CenterOfArea();
+ }
+
+type TDemandaMaxt [0.0,8000.0;8000] {
+  mbx xfl.triangle(-0.01,0.0,1500.0);
+  bx xfl.triangle(0.0,1500.0,2500.0);
+  qsbx xfl.triangle(1500.0,2500.0,3500.0);
+  pcbx xfl.triangle(2500.0,3500.0,4000.0);
+  md xfl.triangle(3500.0,4000.0,4500.0);
+  pca xfl.triangle(4000.0,4500.0,5500.0);
+  qsa xfl.triangle(4500.0,5500.0,6500.0);
+  alta xfl.triangle(5500.0,6500.0,7500.0);
+  ma xfl.trapezoid(6500.0,7500.0,8000.0,8000.1);
+ }
+
+type TVarEstqPercent [-100.0,400.0;500] {
+  MtGrNg xfl.triangle(-100.1,-100.0,-50.0);
+  MdNg xfl.triangle(-100.0,-50.0,-25.0);
+  PqNg xfl.triangle(-50.0,-25.0,0.0);
+  nula xfl.triangle(-25.0,0.0,25.0);
+  PqPos xfl.triangle(0.0,25.0,50.0);
+  MdPos xfl.triangle(25.0,50.0,100.0);
+  QsGrPos xfl.triangle(50.0,100.0,175.0);
+  GrPos xfl.triangle(100.0,175.0,250.0);
+  MtGrPos xfl.trapezoid(175.0,250.0,400.0,400.1);
+ }
+
+type TProducaot [0.0,9000.0;9000] {
+  mbx xfl.triangle(-0.1,0.0,1000.0);
+  bx xfl.triangle(0.0,1000.0,2000.0);
+  qsbx xfl.triangle(1000.0,2000.0,2670.0);
+  pcbx xfl.triangle(2000.0,2670.0,3300.0);
+  pcabxmd xfl.triangle(2670.0,3300.0,4000.0);
+  md xfl.triangle(3300.0,4000.0,4670.0);
+  pcacmd xfl.triangle(4000.0,4670.0,5300.0);
+  pca xfl.triangle(4670.0,5300.0,6000.0);
+  qsa xfl.triangle(5300.0,6000.0,7000.0);
+  alta xfl.triangle(6000.0,7000.0,8000.0);
+  ma xfl.trapezoid(7000.0,8000.0,9000.0,9000.1);
+ }
+
+rulebase BRProducao (TDemandaMaxt DemandaMaxt, TVarEstqPercent VarEstqPercent : TProducaot Producaot) using OperadoresProducao {
+  if(DemandaMaxt == mbx & VarEstqPercent == MtGrNg) -> Producaot = bx;
+  if(DemandaMaxt == mbx & VarEstqPercent == MdNg) -> Producaot = bx;
+  if(DemandaMaxt == mbx & VarEstqPercent == PqNg) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == nula) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == PqPos) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == MdPos) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == QsGrPos) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == GrPos) -> Producaot = mbx;
+  if(DemandaMaxt == mbx & VarEstqPercent == MtGrPos) -> Producaot = mbx;
+  if(DemandaMaxt == bx & VarEstqPercent == MtGrNg) -> Producaot = pcbx;
+  if(DemandaMaxt == bx & VarEstqPercent == MdNg) -> Producaot = qsbx;
+  if(DemandaMaxt == bx & VarEstqPercent == PqNg) -> Producaot = qsbx;
+  if(DemandaMaxt == bx & VarEstqPercent == nula) -> Producaot = qsbx;
+  if(DemandaMaxt == bx & VarEstqPercent == PqPos) -> Producaot = bx;
+  if(DemandaMaxt == bx & VarEstqPercent == MdPos) -> Producaot = bx;
+  if(DemandaMaxt == bx & VarEstqPercent == QsGrPos) -> Producaot = mbx;
+  if(DemandaMaxt == bx & VarEstqPercent == GrPos) -> Producaot = mbx;
+  if(DemandaMaxt == bx & VarEstqPercent == MtGrPos) -> Producaot = mbx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == MtGrNg) -> Producaot = pcabxmd;
+  if(DemandaMaxt == qsbx & VarEstqPercent == MdNg) -> Producaot = pcabxmd;
+  if(DemandaMaxt == qsbx & VarEstqPercent == PqNg) -> Producaot = pcbx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == nula) -> Producaot = pcbx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == PqPos) -> Producaot = pcbx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == MdPos) -> Producaot = qsbx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == QsGrPos) -> Producaot = bx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == GrPos) -> Producaot = bx;
+  if(DemandaMaxt == qsbx & VarEstqPercent == MtGrPos) -> Producaot = mbx;
+  if(DemandaMaxt == pcbx & VarEstqPercent == MtGrNg) -> Producaot = pcacmd;
+  if(DemandaMaxt == pcbx & VarEstqPercent == MdNg) -> Producaot = md;
+  if(DemandaMaxt == pcbx & VarEstqPercent == PqNg) -> Producaot = md;
+  if(DemandaMaxt == pcbx & VarEstqPercent == nula) -> Producaot = pcabxmd;
+  if(DemandaMaxt == pcbx & VarEstqPercent == PqPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == pcbx & VarEstqPercent == MdPos) -> Producaot = pcbx;
+  if(DemandaMaxt == pcbx & VarEstqPercent == QsGrPos) -> Producaot = pcbx;
+  if(DemandaMaxt == pcbx & VarEstqPercent == GrPos) -> Producaot = qsbx;
+  if(DemandaMaxt == pcbx & VarEstqPercent == MtGrPos) -> Producaot = bx;
+  if(DemandaMaxt == md & VarEstqPercent == MtGrNg) -> Producaot = pcacmd;
+  if(DemandaMaxt == md & VarEstqPercent == MdNg) -> Producaot = pcacmd;
+  if(DemandaMaxt == md & VarEstqPercent == PqNg) -> Producaot = md;
+  if(DemandaMaxt == md & VarEstqPercent == nula) -> Producaot = md;
+  if(DemandaMaxt == md & VarEstqPercent == PqPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == md & VarEstqPercent == MdPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == md & VarEstqPercent == QsGrPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == md & VarEstqPercent == GrPos) -> Producaot = qsbx;
+  if(DemandaMaxt == md & VarEstqPercent == MtGrPos) -> Producaot = bx;
+  if(DemandaMaxt == pca & VarEstqPercent == MtGrNg) -> Producaot = pca;
+  if(DemandaMaxt == pca & VarEstqPercent == MdNg) -> Producaot = pcacmd;
+  if(DemandaMaxt == pca & VarEstqPercent == PqNg) -> Producaot = pcacmd;
+  if(DemandaMaxt == pca & VarEstqPercent == nula) -> Producaot = pcacmd;
+  if(DemandaMaxt == pca & VarEstqPercent == PqPos) -> Producaot = md;
+  if(DemandaMaxt == pca & VarEstqPercent == MdPos) -> Producaot = md;
+  if(DemandaMaxt == pca & VarEstqPercent == QsGrPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == pca & VarEstqPercent == GrPos) -> Producaot = pcbx;
+  if(DemandaMaxt == pca & VarEstqPercent == MtGrPos) -> Producaot = qsbx;
+  if(DemandaMaxt == qsa & VarEstqPercent == MtGrNg) -> Producaot = alta;
+  if(DemandaMaxt == qsa & VarEstqPercent == MdNg) -> Producaot = qsa;
+  if(DemandaMaxt == qsa & VarEstqPercent == PqNg) -> Producaot = pca;
+  if(DemandaMaxt == qsa & VarEstqPercent == nula) -> Producaot = pca;
+  if(DemandaMaxt == qsa & VarEstqPercent == PqPos) -> Producaot = pca;
+  if(DemandaMaxt == qsa & VarEstqPercent == MdPos) -> Producaot = pcacmd;
+  if(DemandaMaxt == qsa & VarEstqPercent == QsGrPos) -> Producaot = pcacmd;
+  if(DemandaMaxt == qsa & VarEstqPercent == GrPos) -> Producaot = md;
+  if(DemandaMaxt == qsa & VarEstqPercent == MtGrPos) -> Producaot = pcabxmd;
+  if(DemandaMaxt == alta & VarEstqPercent == MtGrNg) -> Producaot = ma;
+  if(DemandaMaxt == alta & VarEstqPercent == MdNg) -> Producaot = alta;
+  if(DemandaMaxt == alta & VarEstqPercent == PqNg) -> Producaot = alta;
+  if(DemandaMaxt == alta & VarEstqPercent == nula) -> Producaot = alta;
+  if(DemandaMaxt == alta & VarEstqPercent == PqPos) -> Producaot = qsa;
+  if(DemandaMaxt == alta & VarEstqPercent == MdPos) -> Producaot = qsa;
+  if(DemandaMaxt == alta & VarEstqPercent == QsGrPos) -> Producaot = pca;
+  if(DemandaMaxt == alta & VarEstqPercent == GrPos) -> Producaot = pcacmd;
+  if(DemandaMaxt == alta & VarEstqPercent == MtGrPos) -> Producaot = md;
+  if(DemandaMaxt == ma & VarEstqPercent == MtGrNg) -> Producaot = ma;
+  if(DemandaMaxt == ma & VarEstqPercent == MdNg) -> Producaot = ma;
+  if(DemandaMaxt == ma & VarEstqPercent == PqNg) -> Producaot = ma;
+  if(DemandaMaxt == ma & VarEstqPercent == nula) -> Producaot = ma;
+  if(DemandaMaxt == ma & VarEstqPercent == PqPos) -> Producaot = alta;
+  if(DemandaMaxt == ma & VarEstqPercent == MdPos) -> Producaot = alta;
+  if(DemandaMaxt == ma & VarEstqPercent == QsGrPos) -> Producaot = alta;
+  if(DemandaMaxt == ma & VarEstqPercent == GrPos) -> Producaot = qsa;
+  if(DemandaMaxt == ma & VarEstqPercent == MtGrPos) -> Producaot = pcacmd;
+ }
+
+system (TDemandaMaxt DemandaMaxt, TVarEstqPercent VarEstqPercent : TProducaot Producaot) {
+  BRProducao(DemandaMaxt, VarEstqPercent : Producaot);
+ }

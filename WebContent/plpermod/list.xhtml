@@ -1,0 +1,448 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/plpermod_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.plpermod_planoMestre}</ui:define>
+	<ui:define name="descricao">#{prompt.plpermod_ajustarPlanoMestre}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.plPerMod_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.plPerMod_Imprimir}
+		<br /><br />
+		<span class="negrito">#{prompt.mudarStatus} -</span> #{help.plPerMod_MudarStatus}
+		<br /><br />
+		<span class="negrito">#{prompt.planoModelo_mudarStatusGeral} -</span> #{help.plPerMod_MudarStatusGeral}
+		<br /><br />
+		<span class="negrito">#{prompt.planoModelo_status} -</span> #{help.plPerMod_EditarStatus}
+		<br /><br />
+		<span class="negrito">#{prompt.valoresAtuais} -</span> #{help.plPerMod_ValoresAtuais}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}		
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="plPerModActions" />
+
+		<h:form id="formPlPerModList">
+		
+	    <center>
+			<fieldset class="caixaPlanoModelo">
+				<legend>#{prompt.planoSelecionado}</legend>
+	
+				<h:panelGrid columns="5" cellspacing="10px" styleClass="align:left">
+				
+					<h:outputText value="#{prompt.cadplan_codigo}: "/>
+					
+					<h:outputText>
+						<b>#{plPerModActions.cadPlanCorrente.codPlan}</b>
+					</h:outputText>
+					
+					<h:outputText>
+						<rich:spacer width="35px"/>
+					</h:outputText>
+					
+					<h:outputText value="#{prompt.cadplan_descricao}: "/>
+					
+					<h:outputText>
+						<b>#{plPerModActions.cadPlanCorrente.descrPlan}</b>
+					</h:outputText>
+				
+				</h:panelGrid>
+			
+    		  </fieldset>
+		</center>
+		
+		<br/><br/>
+			
+			<rich:datascroller id="scroller" for="tabelaModelos" align="center" renderIfSinglePage="false" 
+				maxPages="5" page="#{plPerModActions.pagina}" pageIndexVar="paginaAtual" >
+				<!--  
+				<a4j:support event="onclick" action="#{plPerModActions.atualizarListaPlPerMods}" reRender="tabelaPlPerMod" ajaxSingle="true">
+					<a4j:actionparam value="#{paginaAtual}" assignTo="#{plPerModActions.pagina}" />  
+					<f:setPropertyActionListener target="#{plPerModActions.pagina}" value="#{paginaAtual}"/>
+				</a4j:support>
+				-->  
+			</rich:datascroller>
+				
+			<rich:dataTable id="tabelaModelos" rows="1"  value="#{plPerModActions.listaPlanoModelos}"  var="planoModelo" 
+						width="800px" align="center">
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<rich:column colspan="17">
+							<h:outputText value="Modelo" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.modelo_codigo}" />
+						</rich:column>
+						
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.modelo_descricao}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.cadPlan_Modelagem}" value="#{prompt.modelagemFuzzy}" />
+						</rich:column>
+						
+						<rich:column colspan="2">
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_FlagProducao}" value="#{prompt.modelo_flagProducao}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="#{prompt.modelo_indiceCobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TAMLote}" value="#{prompt.modelo_tamLote}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_TR}" value="#{prompt.modelo_tr}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.modelo_Cobertura}" value="#{prompt.modelo_cobertura}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_EstoqueInicial}" value="#{prompt.modelo_estoqueInicial}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_VendaNaoAtendida}" value="#{prompt.modelo_estoqueEmFalta}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.modelo_RecebimentoPendente}" value="#{prompt.modelo_recebimentoPendente}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.plPerMod_Status}" value="#{prompt.planoModelo_status}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value=""/>
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value=""/>
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+						
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{planoModelo.modelo.codModelo}"/>
+				</rich:column>
+
+				<rich:column colspan="2">
+					<h:outputText value="#{planoModelo.modelo.descrModelo}"/>
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{planoModelo.cadPlan.modelagemFuzzy}" rendered="#{not empty planoModelo.cadPlan.modelagemFuzzy}" />
+					<h:outputText value="Nenhum" rendered="#{empty planoModelo.cadPlan.modelagemFuzzy}" />
+				</rich:column>
+				
+				<rich:column colspan="2">
+					<h:outputText value="#{planoModelo.modelo.familia.descrFamilia}" />
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{planoModelo.flagProducaoModelOriginal ? 'Livre' : 'Fixo'}"/>
+				</h:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.indiceCobOriginal}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.tamLoteOriginal}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.trOriginal}" />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.coberturaOriginal}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.estqInicModelOriginal}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>				
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.estqEmFaltaOriginal}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{planoModelo.recebimentoPendenteOriginal}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<h:column>
+					<h:outputText value="#{planoModelo.modeloPlanejado ? 'Planejado' : 'Nao planejado'}"/>
+				</h:column>
+				
+				<rich:column>
+					<a4j:commandButton value="#{prompt.valoresAtuais}" reRender="gridInfoValoresOriginais"
+						onclick="Richfaces.showModalPanel('panelValoresOriginais',{width:300, top:300,height: 280})">
+							<f:setPropertyActionListener value="#{planoModelo}" target="#{plPerModActions.planoModeloCorrente}"/>
+					</a4j:commandButton>
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.mudarStatus}" action="#{plPerModActions.mudarStatus}"/>
+				</rich:column>
+				
+				
+				<rich:column breakBefore="true" colspan="17" styleClass="space-table" style="height: 20px;">
+					<h:outputText value="" />
+				</rich:column>
+			
+				
+				<rich:column breakBefore="true" colspan="17" styleClass="rich-table-header">
+					<h:outputText value="#{prompt.plpermod_planoMestre}" />
+				</rich:column>
+				
+				
+				<rich:subTable id="tabelaPlPerMod" value="#{planoModelo.plPerModsList}" 
+					rows="10" align="center" headerClass="dr-table-header-continue"  var="plPerMod">
+					
+					
+					<rich:column sortBy="#{plPerMod.perioPM.periodoPM}" styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodos}"/>
+						</f:facet>
+						<h:outputText value="#{plPerMod.perioPM.periodoPM}"/>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.plpermod_dataInicial}"/>
+						</f:facet>
+						<h:outputText value="#{plPerMod.perioPM.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.plpermod_dataFinal}"/>
+						</f:facet>
+						<h:outputText value="#{plPerMod.perioPM.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_VendasProjetadas}" value="#{prompt.plpermod_vendasProjetadas}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.vendasModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="vendasModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_Pedidos}" value="#{prompt.plpermod_pedidos}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.pedidosModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="pedidosModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_PeriodoInicio}" value="#{prompt.plpermod_periodoInicProd}"/>
+						</f:facet>
+						<h:outputText value="#{plPerMod.periodoPMInicioPMP}"/>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_ProducaoModelo}" value="#{prompt.plpermod_recebimentoProducaopc}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.producaoModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="producaoModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="3">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_Disponibilidade}" value="#{prompt.plpermod_disponibilidadeProjetada}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.dispProjModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="dispProjModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_Cobertura}" value="#{prompt.plpermod_cobertura}"/>
+						</f:facet>
+						<h:commandLink action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="coberturaModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+							
+							<h:outputText value="#{plPerMod.coberturaModel}" >
+								<f:convertNumber maxFractionDigits="2" locale="default"/>
+							</h:outputText>							
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_ProducaoLoteModelo}" value="#{prompt.plpermod_producaolt}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.prodLoteModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="prodLoteModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_ProducaoDiaria}" value="#{prompt.plpermod_producaoDiarialt}"/>
+						</f:facet>
+						<h:commandLink value="#{plPerMod.prodDiariaLoteModel}" action="#{plPerModActions.preparaAlteracao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>
+							<f:setPropertyActionListener value="prodDiariaLoteModel" target="#{plPerModActions.opcaoEscolhidaAlteracao}"/>	
+						</h:commandLink>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" colspan="2">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.plPerMod_FlagProducao}" value="#{prompt.plpermod_status}"/>
+						</f:facet>
+						
+						<h:commandLink value="#{plPerMod.flagProducaoModel ? 'Livre' : 'Fixo'}" action="#{plPerModActions.mudarStatusFlagProducao}">
+							<f:setPropertyActionListener value="#{plPerMod}" target="#{plPerModActions.plPerModCorrente}"/>	
+						</h:commandLink>
+						
+					</rich:column>
+					
+				</rich:subTable>
+				
+			</rich:dataTable>
+			
+		</h:form>
+		
+		
+		<h:form id="formValoresOriginais">
+		
+			<rich:modalPanel id="panelValoresOriginais" height="170">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.valoresAtuais}"/>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelValoresOriginais')" />
+				</f:facet>
+
+				<h:panelGrid id="gridInfoValoresOriginais" columns="2">
+				
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_tamLote}: "/>
+					</h:panelGroup>
+						<h:outputText id="tamLote">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.tamLote}</b>
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_tr}: "/>
+					</h:panelGroup>
+						<h:outputText id="tr">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.tr}</b>
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_cobertura}: "/>
+					</h:panelGroup>
+						<h:outputText id="cobertura">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.cobertura}</b>
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_estoqueInicial}: "/>
+					</h:panelGroup>
+						<h:outputText id="estoqueInic">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.estqInicModel}</b>
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_estoqueEmFalta}: "/>
+					</h:panelGroup>
+						<h:outputText id="estoqueEmFalta">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.estqEmFalta}</b>
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.modelo_recebimentoPendente}: "/>
+					</h:panelGroup>
+						<h:outputText id="recebimentoPendente">
+							<b>#{plPerModActions.planoModeloCorrente.modelo.recebimentoPendente}</b>
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+						
+				</h:panelGrid>
+				
+				<br/>
+				
+				<a4j:commandButton id="voltar" value="#{prompt.voltar}"
+					action="Richfaces.hideModalPanel('panelValoresOriginais')">
+					<rich:componentControl for="panelValoresOriginais"
+						operation="hide" event="onclick" />
+				</a4j:commandButton>
+
+			</rich:modalPanel>
+		
+		</h:form>
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

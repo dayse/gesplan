@@ -1,0 +1,91 @@
+/* - - - Custom Theme - - - */ /* ----- Logo ----- */
+h1 a {
+	background-image: url('../imagens/coppe-INT_GESPLAN.png');
+	min-height: 0;
+	height: 79px;
+}
+
+/* ----- Backgrounds ----- */
+/*------ Mudamos o Background de impressao para a cor branca com o objetivo de economizar cartuchos de impressao */
+html {
+	background-image: none;
+	background-color: #fff;
+}
+
+.space-table {
+	background-color: #e0eefb;	
+}
+
+h1 {
+	background-image: none;
+	background-color: #fff;
+}
+
+/*------ Mudamos o Background de impressao para a cor branca com o objetivo de economizar cartuchos de impressao */
+#container {
+	background-color: #fff;
+}
+
+.linkMenu:LINK {
+	color: #000;
+	text-decoration: none;
+}
+
+.dr-table-header {
+	background-color: #BED6F8;
+	background-image:
+		url(/gesplan/a4j/g/3_2_2.SR1org.richfaces.renderkit.html.GradientA/DATB/eAH7!!3Tj2v7mAAZZAV3.faces)
+		;
+	background-position: top left;
+	background-repeat: repeat-x;
+}
+
+.dr-table-header-continue {
+	background-color: #BED6F8;
+	font-weight: bold;
+}
+
+.dr-table-headercell {
+	border-right: solid 1px #C0C0C0;
+	border-bottom: solid 1px #C0C0C0;
+	padding: 4px 4px 4px 4px;
+	color: #000;
+	text-align: center;
+	font-weight: bold;
+	font-size: 11px;
+	font-family: Arial, Verdana, sans-serif;
+}
+
+.rich-table-header {
+	background-color: #BED6F8;
+	background-image:
+		url(/gesplan/a4j/g/3_2_2.SR1org.richfaces.renderkit.html.GradientA/DATB/eAH7!!3Tj2v7mAAZZAV3.faces)
+		;
+	background-position: top left;
+	background-repeat: repeat-x;
+	border-right-width-value: 1px;
+	border-right-style-value: solid;
+	border-right-color-value: #c0c0c0;
+	border-right-width-ltr-source: physical;
+	border-right-width-rtl-source: physical;
+	border-right-style-ltr-source: physical;
+	border-right-style-rtl-source: physical;
+	border-right-color-ltr-source: physical;
+	border-right-color-rtl-source: physical;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #c0c0c0;
+	padding-top: 4px;
+	padding-right: 4px;
+	padding-bottom: 4px;
+	padding-left: 4px;
+	color: #000000;
+	text-align: center;
+	font-weight: bold;
+	font-size: 11px;
+	font-family: Arial, Verdana, sans-serif;
+}
+
+.button{
+	width: 60px;
+}

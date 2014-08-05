@@ -1,0 +1,1495 @@
+//--------------------------------------------------------------------------------//
+//                               COPYRIGHT NOTICE                                 //
+//--------------------------------------------------------------------------------//
+// Copyright (c) 2012, Instituto de Microelectronica de Sevilla (IMSE-CNM)        //
+//                                                                                //
+// All rights reserved.                                                           //
+//                                                                                //
+// Redistribution and use in source and binary forms, with or without             //
+// modification, are permitted provided that the following  conditions are met:   //
+//                                                                                //
+//     * Redistributions of source code must retain the above copyright notice,   //
+//       this list of conditions and the following disclaimer.                    // 
+//                                                                                //
+//     * Redistributions in binary form must reproduce the above copyright        // 
+//       notice, this list of conditions and the following disclaimer in the      //
+//       documentation and/or other materials provided with the distribution.     //
+//                                                                                //
+//     * Neither the name of the IMSE-CNM nor the names of its contributors may   //
+//       be used to endorse or promote products derived from this software        //
+//       without specific prior written permission.                               //
+//                                                                                //
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"    //
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE      //
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE // 
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE  //
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL     //
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR     //
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER     //
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  //
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  //
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.           //
+//--------------------------------------------------------------------------------//
+
+
+binary min {
+ alias mamdani;
+ java {
+ return (a<b? a : b); 
+  }
+ ansi_c {
+ return (a<b? a : b); 
+  }
+ cplusplus {
+ return (a<b? a : b); 
+  }
+ derivative {
+  deriv[0] = (a<b? 1: (a==b? 0.5 : 0));
+  deriv[1] = (a>b? 1: (a==b? 0.5 : 0));
+  }
+ }
+
+binary prod {
+ alias larsen;
+ java {
+ return a*b; 
+  }
+ ansi_c {
+ return a*b; 
+  }
+ cplusplus {
+ return a*b; 
+  }
+ derivative {
+  deriv[0] = b;
+  deriv[1] = a;
+  }
+ }
+
+binary max {
+ java {
+ return (a>b? a : b); 
+  }
+ ansi_c {
+ return (a>b? a : b); 
+  }
+ cplusplus {
+ return (a>b? a : b); 
+  }
+ derivative {
+  deriv[0] = (a>b? 1 : (a==b? 0.5 : 0));
+  deriv[1] = (b>a? 1 : (a==b? 0.5 : 0));
+  }
+ }
+
+binary sum {
+ java {
+ return a+b-a*b; 
+  }
+ ansi_c {
+ return a+b-a*b; 
+  }
+ cplusplus {
+ return a+b-a*b; 
+  }
+ derivative {
+  deriv[0] = 1-b;
+  deriv[1] = 1-a;
+  }
+ }
+
+unary not {
+ java {
+ return 1-a; 
+  }
+ ansi_c {
+ return 1-a; 
+  }
+ cplusplus {
+ return 1-a; 
+  }
+ derivative {
+ deriv = -1; 
+  }
+ }
+
+defuz FuzzyMean {
+ alias Height;
+ java {
+  double num=0, denom=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   num += mf.conc[i].degree() * mf.conc[i].center();
+   denom += mf.conc[i].degree();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ ansi_c {
+  double num=0, denom=0;
+  int i;
+  for(i=0; i<mf.length; i++) {
+   num += mf.degree[i] * mf.conc[i].center();
+   denom += mf.degree[i];
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ cplusplus {
+  double num=0, denom=0;
+  for(int i=0; i<mf.length; i++) {
+   num += mf.conc[i]->degree() * mf.conc[i]->center();
+   denom += mf.conc[i]->degree();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ source {
+
+//+++++++++++++++++++
+ public void derivative(AggregateMemFunc mf, double derror) {
+   double num=0, denom=0;
+   for(int i=0; i<mf.conc.length; i++) {
+     num += mf.conc[i].degree() * mf.conc[i].center();
+     denom += mf.conc[i].degree();
+    }
+   double y = num/denom;
+   for(int i=0; i<mf.conc.length; i++) {
+     mf.conc[i].setDegreeDeriv(derror*(mf.conc[i].center()-y)/denom);
+     mf.conc[i].setCenterDeriv(derror*mf.conc[i].degree()/denom);
+    }
+  }
+//+++++++++++++++++++
+
+  }
+ }
+
+defuz WeightedFuzzyMean {
+ java {
+  double num=0, denom=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   num += mf.conc[i].degree()*mf.conc[i].basis()*mf.conc[i].center();
+   denom += mf.conc[i].degree()*mf.conc[i].basis();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ ansi_c {
+  double num=0, denom=0;
+  int i;
+  for(i=0; i<mf.length; i++) {
+   num += mf.degree[i]*mf.conc[i].basis()*mf.conc[i].center();
+   denom += mf.degree[i]*mf.conc[i].basis();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ cplusplus {
+  double num=0, denom=0;
+  for(int i=0; i<mf.length; i++) {
+   num += mf.conc[i]->degree()*mf.conc[i]->basis()*mf.conc[i]->center();
+   denom += mf.conc[i]->degree()*mf.conc[i]->basis();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ source {
+
+//+++++++++++++++++++
+ public void derivative(AggregateMemFunc mf, double derror) {
+  double num=0, denom=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   num += mf.conc[i].degree() * mf.conc[i].basis() * mf.conc[i].center();
+   denom += mf.conc[i].degree() * mf.conc[i].basis();
+  }
+  double y = num/denom;
+  for(int i=0; i<mf.conc.length; i++) {
+   mf.conc[i].setDegreeDeriv(derror*mf.conc[i].basis()*(mf.conc[i].center()-y)/denom);
+   mf.conc[i].setCenterDeriv(derror*mf.conc[i].degree()*mf.conc[i].basis()/denom);
+   mf.conc[i].setBasisDeriv(derror*mf.conc[i].degree()*(mf.conc[i].center()-y)/denom);
+  }
+ }
+//+++++++++++++++++++
+
+  }
+ }
+
+defuz Quality {
+ java {
+  double num=0, denom=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   num += mf.conc[i].degree() * mf.conc[i].center() / mf.conc[i].basis();
+   denom += mf.conc[i].degree() / mf.conc[i].basis();
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ ansi_c {
+  double num=0, denom=0;
+  int i;
+  for(i=0; i<mf.length; i++) {
+   num += mf.degree[i] * mf.conc[i].center() / mf.conc[i].basis();
+   denom += mf.degree[i] / mf.conc[i].basis();
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ cplusplus {
+  double num=0, denom=0;
+  for(int i=0; i<mf.length; i++) {
+   num += mf.conc[i]->degree() * mf.conc[i]->center() / mf.conc[i]->basis();
+   denom += mf.conc[i]->degree() / mf.conc[i]->basis();
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ }
+
+defuz GammaQuality {
+ parameter gamma;
+ requires {
+ gamma>=0 
+  }
+ java {
+  double num=0, denom=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   double w = Math.pow(mf.conc[i].basis(), gamma);
+   num += mf.conc[i].degree() * mf.conc[i].center() / w;
+   denom += mf.conc[i].degree() / w;
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ ansi_c {
+  double w, num=0, denom=0;
+  int i;
+  for(i=0; i<mf.length; i++) {
+   w = pow( mf.conc[i].basis(), gamma);
+   num += mf.degree[i] * mf.conc[i].center() / w;
+   denom += mf.degree[i] / w;
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ cplusplus {
+  double num=0, denom=0;
+  for(int i=0; i<mf.length; i++) {
+   double w = pow( mf.conc[i]->basis(), gamma);
+   num += mf.conc[i]->degree() * mf.conc[i]->center() / w;
+   denom += mf.conc[i]->degree() / w;
+  }
+  if(denom == 0) return (min+max)/2;
+  return num/denom;
+  }
+ }
+
+defuz MaxLabel {
+ java {
+  double maxdegree=0, center=0;
+  for(int i=0; i<mf.conc.length; i++)
+   if(mf.conc[i].degree() >= maxdegree)
+    { center = mf.conc[i].center(); maxdegree = mf.conc[i].degree(); }
+  return center;
+  }
+ ansi_c {
+  double mx=0, c=0;
+  int i;
+  for(i=0; i<mf.length; i++)
+   if(mf.degree[i] >= mx) { c = mf.conc[i]center(); mx = mf.degree[i]; }
+  return c;
+  }
+ cplusplus {
+  double maxdegree=0, center=0;
+  for(int i=0; i<mf.length; i++)
+   if(mf.conc[i]->degree() >= maxdegree)
+    { center = mf.conc[i]->center(); maxdegree = mf.conc[i]->degree(); }
+  return center;
+  }
+ }
+
+defuz TakagiSugeno {
+ java {
+  double denom=0;
+  for(int i=0; i<mf.conc.length; i++) denom += mf.conc[i].degree();
+  if(denom==0) return (min+max)/2;
+
+  double num=0;
+  for(int i=0; i<mf.conc.length; i++) {
+   double f = mf.conc[i].param(0);
+   for(int j=0; j<mf.input.length; j++) f += mf.conc[i].param(j+1)*mf.input[j];
+   num += mf.conc[i].degree()*f;
+  }
+  return num/denom;
+  }
+ ansi_c {
+  double f,num=0,denom=0;
+  int i,j;
+  for(i=0; i<mf.length; i++) denom += mf.degree[i];
+  if(denom==0) return (min+max)/2;
+
+  for(i=0; i<mf.length; i++) {
+   f = mf.conc[i].param(0);
+   for(j=0; j<mf.inputlength; j++) f += mf.conc[i].param(j+1)*mf.input[j];
+   num += mf.degree[i]*f;
+  }
+  return num/denom;
+  }
+ cplusplus {
+  double num=0,denom=0;
+
+  for(int i=0; i<mf.length; i++) {
+   double f = mf.conc[i]->param(0);
+   for(int j=0; j<mf.inputlength; j++) f += mf.conc[i]->param(j+1)*mf.input[j];
+   num += mf.conc[i]->degree()*f;
+   denom += mf.conc[i]->degree();
+  }
+  if(denom==0) return (min+max)/2;
+  return num/denom;
+  }
+ source {
+//+++++++++++++++++++
+ public void derivative(AggregateMemFunc mf, double derror) {
+  double denom=0;
+  for(int i=0; i<mf.conc.length; i++) denom += mf.conc[i].degree();
+  if(denom==0) return;
+
+  double num=0;
+  double f[] = new double[mf.conc.length];
+  for(int i=0; i<mf.conc.length; i++) {
+   f[i] = mf.conc[i].param(0);
+   for(int j=0; j<mf.input.length; j++) f[i]+=mf.conc[i].param(j+1)*mf.input[j];
+   num += mf.conc[i].degree()*f[i];
+  }
+  double y = num/denom;
+
+  for(int i=0; i<mf.conc.length; i++) {
+   mf.conc[i].setDegreeDeriv(derror*(f[i]-y)/denom);
+   mf.conc[i].setParamDeriv(0,derror*mf.conc[i].degree()/denom);
+   for(int j=0; j<mf.input.length; j++)
+    mf.conc[i].setParamDeriv(j+1,derror*mf.conc[i].degree()*mf.input[j]/denom);
+  }
+ }
+//+++++++++++++++++++
+  }
+ }
+
+mf trapezoid {
+ parameter a, b, c, d;
+ requires {
+ a<b && b<c && c<d && b>=min && c<=max 
+  }
+ java {
+   equal {
+ return (x<a || x>d? 0: (x<b? (x-a)/(b-a) : (x<c?1 : (d-x)/(d-c)))); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<c? 1 : (x>d? 0 : (d-x)/(d-c) )); 
+    }
+   center {
+ return (b+c)/2; 
+    }
+   basis {
+ return (d-a); 
+    }
+  }
+ derivative {
+   equal {
+   deriv[0] = (a<x && x<b ? (x-b)/((b-a)*(b-a)) : (x==a? 0.5/(a-b) : 0));
+   deriv[1] = (a<x && x<b ? (a-x)/((b-a)*(b-a)) : (x==b? 0.5/(a-b) : 0));
+   deriv[2] = (c<x && x<d ? (d-x)/((d-c)*(d-c)) : (x==c? 0.5/(d-c) : 0));
+   deriv[3] = (c<x && x<d ? (x-c)/((d-c)*(d-c)) : (x==d? 0.5/(d-c) : 0));
+    }
+   greatereq {
+   deriv[0] = (a<x && x<b ? (x-b)/((b-a)*(b-a)) : (x==a? 0.5/(a-b) : 0));
+   deriv[1] = (a<x && x<b ? (a-x)/((b-a)*(b-a)) : (x==b? 0.5/(a-b) : 0));
+   deriv[2] = 0;
+   deriv[3] = 0;
+    }
+   smallereq {
+   deriv[0] = 0;
+   deriv[1] = 0;
+   deriv[2] = (c<x && x<d ? (d-x)/((d-c)*(d-c)) : (x==c? 0.5/(d-c) : 0));
+   deriv[3] = (c<x && x<d ? (x-c)/((d-c)*(d-c)) : (x==d? 0.5/(d-c) : 0));
+    }
+   center {
+   deriv[0] = 1;
+   deriv[1] = 1;
+   deriv[2] = 1;
+   deriv[3] = 1;
+    }
+   basis {
+   deriv[0] = -1;
+   deriv[1] = 0;
+   deriv[2] = 0;
+   deriv[3] = 1;
+    }
+  }
+ ansi_c {
+   equal {
+ return (x<a || x>d? 0: (x<b? (x-a)/(b-a) : (x<c?1 : (d-x)/(d-c)))); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<c? 1 : (x>d? 0 : (d-x)/(d-c) )); 
+    }
+   center {
+ return (b+c)/2; 
+    }
+   basis {
+ return (d-a); 
+    }
+  }
+ cplusplus {
+   equal {
+ return (x<a || x>d? 0: (x<b? (x-a)/(b-a) : (x<c?1 : (d-x)/(d-c)))); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<c? 1 : (x>d? 0 : (d-x)/(d-c) )); 
+    }
+   center {
+ return (b+c)/2; 
+    }
+   basis {
+ return (d-a); 
+    }
+  }
+ update {
+  pos = sortedUpdate(pos,desp,adj);
+  if(pos[1]<min) {
+   pos[1]=min;
+   if(pos[2]<=pos[1]) pos[2] = pos[1]+step;
+   if(pos[3]<=pos[2]) pos[3] = pos[2]+step;
+  }
+  if(pos[2]>max) {
+   pos[2]=max;
+   if(pos[1]>=pos[2]) pos[1] = pos[2]-step;
+   if(pos[0]>=pos[1]) pos[0] = pos[1]-step;
+  }
+  }
+ }
+
+mf triangle {
+ parameter a, b, c;
+ requires {
+ a<b && b<c && b>=min && b<=max 
+  }
+ java {
+   equal {
+ return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0)); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) )); 
+    }
+   center {
+ return b; 
+    }
+   basis {
+ return (c-a); 
+    }
+  }
+ derivative {
+   equal {
+   deriv[0] = (a<x && x<b ? (x-b)/((b-a)*(b-a)) : (x==a? 0.5/(a-b) : 0));
+   deriv[1] = (a<x && x<b ? (a-x)/((b-a)*(b-a)) :
+              (b<x && x<c ? (c-x)/((c-b)*(c-b)) :
+              (x==b? 0.5/(a-b) + 0.5/(c-b) : 0)));
+   deriv[2] = (b<x && x<c ? (x-b)/((c-b)*(c-b)) : (x==c? 0.5/(c-b) : 0));
+    }
+   greatereq {
+   deriv[0] = (a<x && x<b ? (x-b)/((b-a)*(b-a)) : (x==a? 0.5/(a-b) : 0));
+   deriv[1] = (a<x && x<b ? (a-x)/((b-a)*(b-a)) : (x==b? 0.5/(a-b) : 0));
+   deriv[2] = 0;
+    }
+   smallereq {
+   deriv[0] = 0;
+   deriv[1] = (b<x && x<c ? (c-x)/((c-b)*(c-b)) : (x==b? 0.5/(c-b) : 0));
+   deriv[2] = (b<x && x<c ? (x-b)/((c-b)*(c-b)) : (x==c? 0.5/(c-b) : 0));
+    }
+   center {
+   deriv[0] = 1;
+   deriv[1] = 1;
+   deriv[2] = 1;
+    }
+   basis {
+   deriv[0] = -1;
+   deriv[1] = 0;
+   deriv[2] = 1;
+    }
+  }
+ ansi_c {
+   equal {
+ return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0)); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) )); 
+    }
+   center {
+ return b; 
+    }
+   basis {
+ return (c-a); 
+    }
+  }
+ cplusplus {
+   equal {
+ return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0)); 
+    }
+   greatereq {
+ return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) )); 
+    }
+   smallereq {
+ return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) )); 
+    }
+   center {
+ return b; 
+    }
+   basis {
+ return (c-a); 
+    }
+  }
+ update {
+  pos = sortedUpdate(pos,desp,adj);
+  if(pos[1]<min) {
+   pos[1]=min;
+   if(pos[2]<=pos[1]) pos[2] = pos[1]+step;
+  }
+  if(pos[1]>max) {
+   pos[1]=max;
+   if(pos[0]>=pos[1]) pos[0] = pos[1]-step;
+  }
+  }
+ }
+
+mf isosceles {
+ parameter a, b;
+ requires {
+ a>=min && a<=max && b>0 
+  }
+ java {
+   equal {
+ return (x<a-b || x>a+b? 0 : (x<a? (x-a+b)/b : (a-x+b)/b )); 
+    }
+   greatereq {
+ return (x<a-b? 0 : (x<a? (x-a)/b +1: 1 )); 
+    }
+   smallereq {
+ return (x>a+b? 0 : (x>a? (a-x)/b +1: 1 )); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ derivative {
+   equal {
+   if(x<a && x>a-b) { deriv[0] = -1/b; deriv[1] = (a-x)/(b*b); }
+   else if(x>a && x<a+b) { deriv[0] = 1/b; deriv[1] = (x-a)/(b*b); }
+   else if(x==a-b) { deriv[0] = -0.5/b; deriv[1] = 0.5/b; }
+   else if(x==a+b) { deriv[0] = 0.5/b; deriv[1] = 0.5/b; }
+   else { deriv[0] = 0; deriv[1] = 0; }
+    }
+   greatereq {
+   if(x<a && x>a-b) { deriv[0] = -1/b; deriv[1] = (a-x)/(b*b); }
+   else if(x==a-b) { deriv[0] = -0.5/b; deriv[1] = 0.5/b; }
+   else if(x==a) { deriv[0] = -0.5/b; deriv[1] = 0; }
+   else { deriv[0] = 0; deriv[1] = 0; }
+    }
+   smallereq {
+   if(x>a && x<a+b) { deriv[0] = 1/b; deriv[1] = (x-a)/(b*b); }
+   else if(x==a+b) { deriv[0] = 0.5/b; deriv[1] = 0.5/b; }
+   else if(x==a)  { deriv[0] = 0.5/b; deriv[1] = 0; }
+   else { deriv[0] = 0; deriv[1] = 0; }
+    }
+   center {
+ deriv[0] = 1; deriv[1] = 0; 
+    }
+   basis {
+ deriv[0] = 0; deriv[1] = 1; 
+    }
+  }
+ ansi_c {
+   equal {
+ return (x<a-b || x>a+b? 0 : (x<a? (x-a+b)/b : (a-x+b)/b )); 
+    }
+   greatereq {
+ return (x<a-b? 0 : (x<a? (x-a)/b +1: 1 )); 
+    }
+   smallereq {
+ return (x>a+b? 0 : (x>a? (a-x)/b +1: 1 )); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ cplusplus {
+   equal {
+ return (x<a-b || x>a+b? 0 : (x<a? (x-a+b)/b : (a-x+b)/b )); 
+    }
+   greatereq {
+ return (x<a-b? 0 : (x<a? (x-a)/b +1: 1 )); 
+    }
+   smallereq {
+ return (x>a+b? 0 : (x>a? (a-x)/b +1: 1 )); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ update {
+  a += desp[0];
+  b += desp[1];
+  if(a<min) a = min;
+  if(a>max) a = max;
+  if(b<=0) b = (b-desp[1])/2;
+  pos[0] = a;
+  pos[1] = b;
+  }
+ }
+
+mf bell {
+ parameter a, b;
+ requires {
+ a>=min && a<=max && b>0 && b<=(max-min)/2 
+  }
+ java {
+   equal {
+ return Math.exp( -(a-x)*(a-x)/(b*b) ); 
+    }
+   greatereq {
+ if(x>a) return 1; return Math.exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   smallereq {
+ if(x<a) return 1; return Math.exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ derivative {
+   equal {
+   double aux = (x-a)/b;
+   deriv[0] = 2*aux*Math.exp(-aux*aux)/b;
+   deriv[1] = 2*aux*aux*Math.exp(-aux*aux)/b;
+    }
+   greatereq {
+   if(x>a) { deriv[0] = 0; deriv[1] = 0; }
+   else {
+    double aux = (x-a)/b;
+    deriv[0] = 2*aux*Math.exp(-aux*aux)/b;
+    deriv[1] = 2*aux*aux*Math.exp(-aux*aux)/b;
+   }
+    }
+   smallereq {
+   if(x<a) { deriv[0] = 0; deriv[1] = 0; }
+   else {
+    double aux = (x-a)/b;
+    deriv[0] = 2*aux*Math.exp(-aux*aux)/b;
+    deriv[1] = 2*aux*aux*Math.exp(-aux*aux)/b;
+   }
+    }
+   center {
+ deriv[0] = 1; deriv[1] = 0; 
+    }
+   basis {
+ deriv[0] = 0; deriv[1] = 1; 
+    }
+  }
+ ansi_c {
+   equal {
+ return exp( -(a-x)*(a-x)/(b*b) ); 
+    }
+   greatereq {
+ if(x>a) return 1; return exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   smallereq {
+ if(x<a) return 1; return exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ cplusplus {
+   equal {
+ return exp( -(a-x)*(a-x)/(b*b) ); 
+    }
+   greatereq {
+ if(x>a) return 1; return exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   smallereq {
+ if(x<a) return 1; return exp( - (x-a)*(x-a)/(b*b) ); 
+    }
+   center {
+ return a; 
+    }
+   basis {
+ return b; 
+    }
+  }
+ update {
+  double grid = 1.0e-10;
+  a += desp[0];
+  b += desp[1];
+  if(a<min) a = min;
+  if(a>max) a = max;
+  if(b<=0) b = pos[1]/2;
+  if(b<=grid) b = grid;
+  if(b>(max-min)/2) b = (max-min)/2;
+  pos[0] = a;
+  pos[1] = b;
+  }
+ }
+
+mf rectangle {
+ parameter a, b;
+ requires {
+ a<b && a>=min && b<=max 
+  }
+ java {
+   equal {
+ return (a<=x && x<=b? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=b? 1 : 0); 
+    }
+   center {
+ return (a+b)/2; 
+    }
+   basis {
+ return (b-a); 
+    }
+  }
+ derivative {
+   center {
+ deriv[0] = 1; deriv[1] = 1; 
+    }
+   basis {
+ deriv[0] = -1; deriv[1] = 1; 
+    }
+  }
+ ansi_c {
+   equal {
+ return (a<=x && x<=b? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=b? 1 : 0); 
+    }
+   center {
+ return (a+b)/2; 
+    }
+   basis {
+ return (b-a); 
+    }
+  }
+ cplusplus {
+   equal {
+ return (a<=x && x<=b? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=b? 1 : 0); 
+    }
+   center {
+ return (a+b)/2; 
+    }
+   basis {
+ return (b-a); 
+    }
+  }
+ update {
+  a += desp[0];
+  b += desp[1];
+  if(a<min) a = min;
+  if(b>max) b = max;
+  if(a>=b) {
+   if(!adj[0]) b = a + step;
+   else if(!adj[1]) a = b - step;
+   else { a = (a+b-step)/2; b = a+step; }
+  }
+  pos[0] = a;
+  pos[1] = b;
+  }
+ }
+
+mf singleton {
+ parameter a;
+ requires {
+ a>=min && a<=max 
+  }
+ java {
+   equal {
+ return (x==a? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=a? 1 : 0); 
+    }
+   center {
+ return a; 
+    }
+  }
+ derivative {
+   center {
+ deriv[0] = 1; 
+    }
+  }
+ ansi_c {
+   equal {
+ return (x==a? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=a? 1 : 0); 
+    }
+   center {
+ return a; 
+    }
+  }
+ cplusplus {
+   equal {
+ return (x==a? 1 : 0); 
+    }
+   greatereq {
+ return (x>=a? 1 : 0); 
+    }
+   smallereq {
+ return (x<=a? 1 : 0); 
+    }
+   center {
+ return a; 
+    }
+  }
+ update {
+  pos[0] += desp[0];
+  if(pos[0]<min) pos[0] = min;
+  if(pos[0]>max) pos[0] = max;
+  }
+ }
+
+mf parametric {
+ parameter p[];
+ java {
+   equal {
+ return 0; 
+    }
+   greatereq {
+ return 0; 
+    }
+   smallereq {
+ return 0; 
+    }
+  }
+ derivative {
+  }
+ ansi_c {
+   equal {
+ return 0; 
+    }
+   greatereq {
+ return 0; 
+    }
+   smallereq {
+ return 0; 
+    }
+  }
+ cplusplus {
+   equal {
+ return 0; 
+    }
+   greatereq {
+ return 0; 
+    }
+   smallereq {
+ return 0; 
+    }
+  }
+ }
+
+family triangular {
+ parameter p[];
+ requires {
+ p.length==0 || (p.length>0 && p[0]>min && p[p.length-1]<max && sorted(p)) 
+  }
+ members {
+ return p.length+2; 
+  }
+ java {
+   equal {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   double c = (i==p.length? max : (i==p.length+1? max+1 : p[i]));
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   double c = (i==p.length? max : (i==p.length+1? max+1 : p[i]));
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   return b;
+    }
+   basis {
+   double a = (i<=1 ? min : p[i-2]);
+   double c = (i>=p.length? max : p[i]);
+   return (c-a);
+    }
+  }
+ derivative {
+   equal {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   double c = (i==p.length? max : (i==p.length+1? max+1 : p[i]));
+   if(i>=2) {
+    if(a<x && x<b) deriv[i-2] = (x-b)/((b-a)*(b-a));
+    else if(x==a)  deriv[i-2] = 0.5/(a-b);
+    else deriv[i-2] = 0;
+   }
+   if(i>=1 && i<=p.length) {
+    if(a<x && x<b) deriv[i-1] = (a-x)/((b-a)*(b-a));
+    else if(b<x && x<c) deriv[i-1] = (c-x)/((c-b)*(c-b));
+    else if(x==b) deriv[i-1] =  0.5/(a-b) + 0.5/(c-b);
+    else  deriv[i-1] = 0;
+   }
+   if(i<p.length) {
+    if(b<x && x<c) deriv[i] = (x-b)/((c-b)*(c-b));
+    else if(x==c) deriv[i] = 0.5/(c-b);
+    else deriv[i] = 0;
+   }
+    }
+   greatereq {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   if(i>=2) {
+    if(a<x && x<b) deriv[i-2] = (x-b)/((b-a)*(b-a));
+    else if(x==a) deriv[i-2] = 0.5/(a-b);
+    else deriv[i-2] = 0;
+   }
+   if(i>=1 && i<=p.length) {
+    if(a<x && x<b) deriv[i-1] = (a-x)/((b-a)*(b-a));
+    else if(x==b) deriv[i-1] = 0.5/(a-b);
+    else  deriv[i-1] = 0;
+   }
+    }
+   smallereq {
+   double b = (i==0? min : (i==p.length+1? max : p[i-1]));
+   double c = (i==p.length? max : (i==p.length+1? max+1 : p[i]));
+   if(i>=1 && i<=p.length) {
+    if(b<x && x<c) deriv[i-1] = (c-x)/((c-b)*(c-b));
+    else if(x==b) deriv[i-1] = 0.5/(c-b);
+    else deriv[i-1] = 0;
+   }
+   if(i<p.length) {
+    if(b<x && x<c) deriv[i] = (x-b)/((c-b)*(c-b));
+    else if(x==c) deriv[i] = 0.5/(c-b);
+    else deriv[i] = 0;
+   }
+    }
+   center {
+   if(i>=1 && i<=p.length) deriv[i-1] = 1;
+    }
+   basis {
+   if(i>1) deriv[i-2] = -1;
+   if(i<p.length) deriv[i] = 1;
+    }
+  }
+ ansi_c {
+   equal {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   double c = (i==length? max : (i==length+1? max+1 : p[i]));
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   double c = (i==length? max : (i==length+1? max+1 : p[i]));
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   return b;
+    }
+   basis {
+   double a = (i<=1 ? min : p[i-2]);
+   double c = (i>=length? max : p[i]);
+   return (c-a);
+    }
+  }
+ cplusplus {
+   equal {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   double c = (i==length? max : (i==length+1? max+1 : p[i]));
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   double a = (i==0? min-1 : (i==1 ? min : p[i-2]));
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   double c = (i==length? max : (i==length+1? max+1 : p[i]));
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   double b = (i==0? min : (i==length+1? max : p[i-1]));
+   return b;
+    }
+   basis {
+   double a = (i<=1 ? min : p[i-2]);
+   double c = (i>=length? max : p[i]);
+   return (c-a);
+    }
+  }
+ update {
+  if(p.length == 0) return;
+  pos = sortedUpdate(pos,desp,adj);
+  if(pos[0]<=min) {
+   pos[0]=min+step;
+   for(int i=1;i<p.length; i++) {
+    if(pos[i]<=pos[i-1]) pos[i] = pos[i-1]+step;
+    else break;
+   }
+  }
+  if(pos[p.length-1]>=max) {
+   pos[p.length-1]=max-step;
+   for(int i=p.length-2; i>=0; i--) {
+    if(pos[i]>=pos[i+1]) pos[i] = pos[i+1]-step;
+    else break;
+   }
+  }
+  }
+ }
+
+family sh_triangular {
+ parameter p[];
+ requires {
+ p.length>1 && p[0]>min && p[p.length-1]<max && sorted(p) 
+  }
+ members {
+ return p.length; 
+  }
+ java {
+   equal {
+   if(i==0 && x<p[0]) return 1;
+   if(i==p.length-1 && x>p[p.length-1]) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   double c = (i==p.length-1? max : p[i+1]);
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   if(i==0) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   if(i==p.length-1) return 1;
+   double b = p[i];
+   double c = (i==p.length-1? max : p[i+1]);
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   return (i==0? (min+p[0])/2 : (i==p.length-1? (max+p[p.length-1])/2 : p[i]));
+    }
+   basis {
+   double a = (i==0 ? min : p[i-1]);
+   double c = (i==p.length-1? max : p[i+1]);
+   return (c-a);
+    }
+  }
+ derivative {
+   equal {
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   double c = (i==p.length-1? max : p[i+1]);
+   if(i>0) {
+    if(x<b) deriv[i-1] = (x-b)/((b-a)*(b-a));
+    else if(x==a)  deriv[i-1] = 0.5/(a-b);
+    else deriv[i-1] = 0;
+   }
+   if(i==0) {
+    if(b<x && x<c) deriv[i] = (c-x)/((c-b)*(c-b));
+    else if(x==b) deriv[i] = 0.5/(c-b);
+    else  deriv[i] = 0;
+   } else if(i==p.length-1) {
+    if(a<x && x<b) deriv[i] = (a-x)/((b-a)*(b-a));
+    else if(x==b) deriv[i] =  0.5/(a-b);
+    else  deriv[i] = 0;
+   } else {
+    if(a<x && x<b) deriv[i] = (a-x)/((b-a)*(b-a));
+    else if(b<x && x<c) deriv[i] = (c-x)/((c-b)*(c-b));
+    else if(x==b) deriv[i] =  0.5/(a-b) + 0.5/(c-b);
+    else  deriv[i] = 0;
+   }
+   if(i<p.length-1) {
+    if(b<x && x<c) deriv[i+1] = (x-b)/((c-b)*(c-b));
+    else if(x==c) deriv[i+1] = 0.5/(c-b);
+    else deriv[i+1] = 0;
+   }
+    }
+   greatereq {
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   if(i>0) {
+    if(a<x && x<b) deriv[i-1] = (x-b)/((b-a)*(b-a));
+    else if(x==a) deriv[i-1] = 0.5/(a-b);
+    else deriv[i-1] = 0;
+
+    if(a<x && x<b) deriv[i] = (a-x)/((b-a)*(b-a));
+    else if(x==b) deriv[i] = 0.5/(a-b);
+    else  deriv[i] = 0;
+   }
+    }
+   smallereq {
+   double b = p[i];
+   double c = (i==p.length-1? max : p[i+1]);
+   if(i<p.length-1) {
+    if(b<x && x<c) deriv[i] = (c-x)/((c-b)*(c-b));
+    else if(x==b) deriv[i] = 0.5/(c-b);
+    else deriv[i] = 0;
+
+    if(b<x && x<c) deriv[i+1] = (x-b)/((c-b)*(c-b));
+    else if(x==c) deriv[i+1] = 0.5/(c-b);
+    else deriv[i+1] = 0;
+   }
+    }
+   center {
+   if(i==0 || i==p.length-1) deriv[i] = 0.5;
+   else deriv[i] = 1;
+    }
+   basis {
+   if(i>0) deriv[i-1] = -1;
+   if(i<p.length-1) deriv[i+1] = 1;
+    }
+  }
+ ansi_c {
+   equal {
+   if(i==0 && x<p[0]) return 1;
+   if(i==length-1 && x>p[length-1]) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   double c = (i==length-1? max : p[i+1]);
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   if(i==0) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   if(i==length-1) return 1;
+   double b = p[i];
+   double c = (i==length-1? max : p[i+1]);
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   return (i==0? (min+p[0])/2 : (i==length-1? (max+p[length-1])/2 : p[i]));
+    }
+   basis {
+   double a = (i==0 ? min : p[i-1]);
+   double c = (i==length-1? max : p[i+1]);
+   return (c-a);
+    }
+  }
+ cplusplus {
+   equal {
+   if(i==0 && x<p[0]) return 1;
+   if(i==length-1 && x>p[length-1]) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   double c = (i==length-1? max : p[i+1]);
+   return (a<x && x<=b? (x-a)/(b-a) : (b<x && x<c? (c-x)/(c-b) : 0));
+    }
+   greatereq {
+   if(i==0) return 1;
+   double a = (i==0? min : p[i-1]);
+   double b = p[i];
+   return (x<a? 0 : (x>b? 1 : (x-a)/(b-a) ));
+    }
+   smallereq {
+   if(i==length-1) return 1;
+   double b = p[i];
+   double c = (i==length-1? max : p[i+1]);
+   return (x<b? 1 : (x>c? 0 : (c-x)/(c-b) ));
+    }
+   center {
+   return (i==0? (min+p[0])/2 : (i==length-1? (max+p[length-1])/2 : p[i]));
+    }
+   basis {
+   double a = (i==0 ? min : p[i-1]);
+   double c = (i==length-1? max : p[i+1]);
+   return (c-a);
+    }
+  }
+ update {
+  pos = sortedUpdate(pos,desp,adj);
+  if(pos[0]<=min) {
+   pos[0]=min+step;
+   for(int i=1;i<p.length; i++) {
+    if(pos[i]<=pos[i-1]) pos[i] = pos[i-1]+step;
+    else break;
+   }
+  }
+  if(pos[p.length-1]>=max) {
+   pos[p.length-1]=max-step;
+   for(int i=p.length-2; i>=0; i--) {
+    if(pos[i]>=pos[i+1]) pos[i] = pos[i+1]-step;
+    else break;
+   }
+  }
+  }
+ }
+
+crisp addN {
+ parameter N;
+ requires {
+ N>0 
+  }
+ inputs {
+ return (int) N; 
+  }
+ java {
+  double a = 0;
+  for(int i=0; i<N; i++) a+=x[i];
+  return a;
+  }
+ ansi_c {
+  int i;
+  double a = 0;
+  for(i=0; i<N; i++) a+=x[i];
+  return a;
+  }
+ cplusplus {
+  double a = 0;
+  for(int i=0; i<N; i++) a+=x[i];
+  return a;
+  }
+ }
+
+crisp add2 {
+ inputs {
+ return 2; 
+  }
+ java {
+ return x[0] + x[1]; 
+  }
+ ansi_c {
+ return x[0] + x[1]; 
+  }
+ cplusplus {
+ return x[0] + x[1]; 
+  }
+ }
+
+crisp addDeg {
+ inputs {
+ return 2; 
+  }
+ java {
+  double d = x[0] + x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ ansi_c {
+  double d = x[0] + x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ cplusplus {
+  double d = x[0] + x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ }
+
+crisp addRad {
+ inputs {
+ return 2; 
+  }
+ java {
+  double d = x[0] + x[1];
+  if(d>Math.PI) d -= 2*Math.PI;
+  if(d<-Math.PI) d += 2*Math.PI;
+  return d;
+  }
+ ansi_c {
+  double d = x[0] + x[1];
+  if(d>M_PI) d -= 2*M_PI;
+  if(d<-M_PI) d += 2*M_PI;
+  return d;
+  }
+ cplusplus {
+  double d = x[0] + x[1];
+  if(d>M_PI) d -= 2*M_PI;
+  if(d<-M_PI) d += 2*M_PI;
+  return d;
+  }
+ }
+
+crisp diff2 {
+ inputs {
+ return 2; 
+  }
+ java {
+ return x[0] - x[1]; 
+  }
+ ansi_c {
+ return x[0] - x[1]; 
+  }
+ cplusplus {
+ return x[0] - x[1]; 
+  }
+ }
+
+crisp diffDeg {
+ inputs {
+ return 2; 
+  }
+ java {
+  double d = x[0] - x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ ansi_c {
+  double d = x[0] - x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ cplusplus {
+  double d = x[0] - x[1];
+  if(d>180) d -= 360;
+  if(d<-180) d += 360;
+  return d;
+  }
+ }
+
+crisp diffRad {
+ inputs {
+ return 2; 
+  }
+ java {
+  double d = x[0] - x[1];
+  if(d>Math.PI) d -= 2*Math.PI;
+  if(d<-Math.PI) d += 2*Math.PI;
+  return d;
+  }
+ ansi_c {
+  double d = x[0] - x[1];
+  if(d>M_PI) d -= 2*M_PI;
+  if(d<-M_PI) d += 2*M_PI;
+  return d;
+  }
+ cplusplus {
+  double d = x[0] - x[1];
+  if(d>M_PI) d -= 2*M_PI;
+  if(d<-M_PI) d += 2*M_PI;
+  return d;
+  }
+ }
+
+crisp prod {
+ inputs {
+ return 2; 
+  }
+ java {
+ return x[0]*x[1]; 
+  }
+ ansi_c {
+ return x[0]*x[1]; 
+  }
+ cplusplus {
+ return x[0]*x[1]; 
+  }
+ }
+
+crisp div {
+ inputs {
+ return 2; 
+  }
+ java {
+ return x[0]/x[1]; 
+  }
+ ansi_c {
+ return x[0]/x[1]; 
+  }
+ cplusplus {
+ return x[0]/x[1]; 
+  }
+ }
+
+crisp select {
+ parameter N;
+ requires {
+ N>=1 
+  }
+ inputs {
+ return (int) N + 1; 
+  }
+ java {
+ return x[ (int)x[0] + 1 ]; 
+  }
+ ansi_c {
+ return x[ (int)x[0] + 1 ]; 
+  }
+ cplusplus {
+ return x[ (int)x[0] + 1 ]; 
+  }
+ }
+

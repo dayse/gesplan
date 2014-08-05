@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/recurso_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.recurso}</ui:define>
+	<ui:define name="descricao">#{prompt.recurso_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.recurso_Mostrar}</ui:define>
+	<ui:define name="corpo">
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{recurso.descrRecurso}
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+				<h:outputText value="#{prompt.codigo}" />:<h:outputText
+					value="#{recursoActions.recurso.codRecurso}" />
+					
+				<h:outputText value="#{prompt.descricao}" />:<h:outputText
+					value="#{recursoActions.recurso.descrRecurso}" />
+				<h:outputText value="#{prompt.UM}" />:<h:outputText
+					value="#{recursoActions.recurso.UM}" />
+					
+				<h:outputText value="#{prompt.custoUnit}" />:<h:outputText
+					value="#{recursoActions.recurso.custoUnit}" >
+					<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />	
+				</h:outputText>
+				
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			<h:commandButton value="#{prompt.voltar}" immediate="true" action="listRecurso"/>
+
+		</h:form>
+		<a4j:keepAlive beanName="recursoActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

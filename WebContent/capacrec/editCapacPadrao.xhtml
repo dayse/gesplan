@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/capacrec_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.capacRec}</ui:define>
+	<ui:define name="descricao">#{prompt.EditarCapacPadrao}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.capacRec_EditarCapacPadrao}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form id="formulario">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.EditarCapacPadrao}" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.capacRec_capacDiaria}" />:
+					</h:panelGroup>
+					<h:inputText id="capacRecPadrao" value="#{capacRecActions.capacidadePadrao}"
+						maxlength="#{constantes.lCapacrecCapacdiaria}" size="20"
+						disabled="false" >						
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="capacRecPadrao" styleClass="error" />
+					
+				
+				</h:panelGrid>
+			</rich:panel>
+			<br />
+			<br />
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}"
+				action="#{capacRecActions.alteraCapacPadrao}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="#{capacRecActions.cancela}" immediate="true" />
+		</h:form>
+		
+		<a4j:keepAlive beanName="capacRecActions" />
+	</ui:define>
+</ui:composition>
+</html>

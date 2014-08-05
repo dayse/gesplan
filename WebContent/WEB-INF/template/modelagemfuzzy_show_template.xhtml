@@ -1,0 +1,99 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/template_ajuda.xhtml">
+	<ui:define name="submenu">
+		<rich:toolBar>
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraModelagem}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoModelagem}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+            
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraRegras}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoRegras}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+            
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraOperadores}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoOperadores}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+            
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraLimites}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoLimites}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraMF}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoMf}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraMonitor}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoMonitor}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>
+			
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraGraficoMF}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoGraficoMf}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraSimulador2D}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoSimulador2d}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.modelagemFuzzy_mostraGrafico3D}" action="#{modelagemFuzzyActions.mostraDados}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{modelagemFuzzyActions.opcaoMostraModelagem}" value="#{modelagemFuzzyActions.opcaoGrafico3d}"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>			
+						
+			
+			
+            
+            <rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.voltar}" action="#{modelagemFuzzyActions.cancela}" styleClass="linkMenu"/>
+				</f:facet>
+            </rich:dropDownMenu>
+			
+		</rich:toolBar>
+	</ui:define>
+</ui:composition>
+</html>

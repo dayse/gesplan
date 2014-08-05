@@ -1,0 +1,9 @@
+[PropertyInfo]
+maintainExtremeMF,boolean,false,false, , ,false,<default>
+newRulebase,Rulebase,false,false, , ,false,<default>
+rulebase,Rulebase,false,false, , ,true,<default>
+[IconNames]
+
+
+
+

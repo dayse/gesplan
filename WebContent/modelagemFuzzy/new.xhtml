@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descInclusaoModelagem}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_Incluir}</ui:define>
+	<ui:define name="corpo">
+	
+		<h:form>
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelagemFuzzy_Incluir}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.codigo}" />:
+			   		</h:panelGroup>
+			   		
+					<h:inputText id="nome" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeModelagemFuzzy}"
+						maxlength="#{constantes.lModelagemfuzzyNomeModelagemFuzzy}" size="20" required="true" >
+					</h:inputText>
+					<a4j:outputPanel ajaxRendered="true"><rich:messages for="nome" styleClass="error" /></a4j:outputPanel>
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.descricao}" />:
+					</h:panelGroup>
+					
+					<h:inputText id="descricao" value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.descrModelagemFuzzy}"
+						maxlength="#{constantes.lModelagemfuzzyDescrModelagemFuzzy}" size="20" required="true">
+					</h:inputText>	
+					<a4j:outputPanel ajaxRendered="true"><rich:messages for="descricao" styleClass="error" /></a4j:outputPanel>
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.finalidadeModelagem}" />:
+					</h:panelGroup>
+					<h:selectOneMenu id="comboModelagemFuzzy" value="#{modelagemFuzzyActions.comboModelagemFuzzy.selecao}" required="true">
+							<f:selectItems value="#{modelagemFuzzyActions.comboModelagemFuzzy.listaSelecao}" />
+					</h:selectOneMenu>
+					
+				</h:panelGrid>
+			</rich:panel>
+			
+			<h:panelGrid columns="2">
+				<a4j:commandButton action="uploadModelagemFuzzy" value="#{prompt.fazer_upload}" />
+        		<a4j:commandButton action="listModelagemFuzzy" value="#{prompt.cancelar}" immediate="true"/>
+        	</h:panelGrid>
+        
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+	</ui:define>
+</ui:composition>
+</html>

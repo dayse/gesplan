@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+
+	<persistence-unit name="gesplan">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<properties>
+			<property name="hibernate.archive.autodetection" value="class" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/gesplan" />
+			<property name="hibernate.connection.username" value="admingesplan" />
+			<property name="hibernate.connection.password" value="admingesplan" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+			<!--
+				Estamos agora trabalhando com schema diferente do public.
+				O padrao sera usar o schema gesplan(que deve ser criado na mao no PGAdmin ou
+				via script:)
+				Se quiser voltar a trabalhar com public é so trocar o default_schema pelo que
+				usa o public, conforme abaixo:
+			<property name="hibernate.default_schema" value="public" />  
+			-->
+			<property name="hibernate.default_schema" value="gesplan_dados" />  
+			
+			<!-- 
+				propriedade para criar as tabelas no banco de dados automaticamente
+				ESSA PROPRIEDADE DEVE SER EXECUTADA SOMENTE NA PRIMEIRA VEZ
+			<property name="hibernate.hbm2ddl.auto" value="validate | update | create | create-drop" />
+
+				acesso ao banco no servidor do INT
+			<property name="hibernate.connection.url" value="jdbc:postgresql://200.20.196.18:5432/GESPLAN_DESENVOLVIMENTO" />
+
+			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/GESPLAN_DESENVOLVIMENTO" />
+
+			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			 -->
+
+
+			 
+			<!--
+				Alternativamente é possível configurar o Hibernate para que ele
+				utilize um Pool de conexões denominado C3P0. Trata-se de um pool de
+				conexões bem melhor do que o que vem embutido no Hibernate.
+			-->
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+
+			<!--
+				O número mínimo de conexões JDBC que C3P0 manterá abertas, isto é,
+				prontas para uso.
+			-->
+			<property name="hibernate.c3p0.min_size" value="1" />
+
+			<!--
+				O número máximo de conexões no pool. Uma exceção será propagada em
+				tempo de execução se este número for superado.
+			-->
+			<property name="hibernate.c3p0.max_size" value="1" />
+
+			<!--
+				O tempo que leva para uma conexão sem uso ser removida do pool:
+				neste caso, 10 minutos ou 600 segundos.
+			-->
+			<property name="hibernate.c3p0.timeout" value="600" />
+
+			<!--
+				O número máximo de prepared statements que sofrerão cache. O cache
+				de PreparedStatements é essencial para se obter o melhor desempenho
+				com o Hibernate.
+			-->
+			<property name="hibernate.c3p0.max_statements" value="50" />
+
+			<!--
+				O tempo em segundos que leva para que uma conexão fora de uso seja
+				automaticamente validada. Neste caso, 6 minutos.
+			-->
+			<property name="hibernate.c3p0.idle_test_period" value="360" />
+
+		</properties>
+	</persistence-unit>
+</persistence>

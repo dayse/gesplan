@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_DescGraficoMF}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_GraficoMF}</ui:define>
+	<ui:define name="corpo">
+
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_selecioneVariavelLinguistica}:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="#{prompt.codigo}" />:				
+				
+				<h:outputText value="#{modelagemFuzzyActions.modelagemFuzzyCorrente.nomeModelagemFuzzy}" />
+				
+				<h:outputText value="Variavel Para Gerar o Grafico" />:
+				<h:selectOneMenu id="comboVariaveisGraficoMF" value="#{modelagemFuzzyActions.comboVariaveisGraficoMF.selecao}"
+				 valueChangeListener="#{modelagemFuzzyActions.mostrarGraficoMF}" immediate="true" rendered="true" >
+						<f:selectItems value="#{modelagemFuzzyActions.comboVariaveisGraficoMF.listaSelecao}" />                      
+             			<a4j:support event="onchange" reRender="grafico"  immediate="true" ajaxSingle="true"/>   
+				</h:selectOneMenu>				
+					
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="grafico" >
+			<f:facet name="header" >
+			Grafico com a variavel: #{modelagemFuzzyActions.variavelGraficoMF}
+			</f:facet>			
+			
+
+				<gt:grafico_checkbox
+					grafico="#{modelagemFuzzyActions.plotMF}" 
+					placeholder="placeholder" 
+					width="800" height="300"
+				/>
+			</rich:simpleTogglePanel>
+				
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

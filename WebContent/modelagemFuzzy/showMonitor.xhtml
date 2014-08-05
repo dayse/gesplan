@@ -1,0 +1,144 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_monitor_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descMonitor}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.modelagemFuzzy_Monitor}
+		<br /><br />
+		<span class="negrito">#{prompt.modelagemFuzzy_executarMonitor} -</span> #{help.modelagemFuzzy_ExecutarMonitor}
+		<br /><br />	
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>	
+	<ui:define name="corpo">
+
+	
+		<h:form>			
+			<rich:panel>
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_informeValoresInput}:
+			</f:facet>
+			
+				<rich:dataTable id="tabelaInputs" var="variavelViewIn"	align="center" 
+					value="#{modelagemFuzzyActions.variaveisInput}" rows="10" width="700px" >
+				<f:facet name="header">
+						<rich:columnGroup>
+							<rich:column colspan="2">
+								<h:outputText value="#{prompt.modelagemFuzzy_variavelInput}" />
+							</rich:column>
+							<rich:column breakBefore="true">
+								<h:outputText title="#{tooltip.monitor_VariavelEntrada}" value="#{prompt.nome}" />
+							</rich:column>
+							<rich:column>
+								<h:outputText title="#{tooltip.monitor_ValorEntrada}" value="#{prompt.valor}" />
+							</rich:column>
+						</rich:columnGroup>					
+					</f:facet>		
+					
+					<rich:column>
+						<h:outputText value="#{variavelViewIn.nome}" />
+					</rich:column>
+					
+							
+					<rich:column styleClass="colunaCampoNumericoCentralizado">				
+						<h:inputText id="inputValor" value="#{variavelViewIn.valor}" size="20" required="true"/>
+						<h:message for="inputValor" styleClass="error" />	
+					</rich:column>
+				</rich:dataTable>
+				
+			</rich:panel>
+			<rich:simpleTogglePanel >
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_GrauAtivacaoRegras}:
+			</f:facet>
+			<rich:datascroller id="scrTabelaRegras" for="tabelaRegras" align="center" renderIfSinglePage="false"/>
+				<rich:dataTable id="tabelaRegras" var="regra"	align="center" 
+					value="#{modelagemFuzzyActions.regrasViewModelagem}" rows="10"  width="700px" >
+				<f:facet name="header">
+						<rich:columnGroup>
+							<rich:column colspan="2">
+								<h:outputText value="#{prompt.modelagemFuzzy_GrauAtivacaoRegras}" />
+							</rich:column>
+							<rich:column breakBefore="true">
+								<h:outputText title="#{tooltip.monitor_Indice}" value="#{prompt.indice}" />
+							</rich:column>
+							<rich:column>
+								<h:outputText title="#{tooltip.monitor_GrauAtivacao}" value="#{prompt.modelagemFuzzy_GrauAtivacaoRegra}" />
+							</rich:column>
+						</rich:columnGroup>					
+					</f:facet>		
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<h:outputText value="#{regra.indice}" />
+					</rich:column>
+					
+							
+					<rich:column styleClass="colunaCampoNumericoCentralizado">				
+						<h:outputText value="#{regra.valor}" />
+					</rich:column>
+				</rich:dataTable>		
+				
+			</rich:simpleTogglePanel>
+			<rich:panel>
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_VariaveisOutput}:
+			</f:facet>			
+				<rich:dataTable id="tabelaOutputs" var="variavelViewOut"	align="center" 
+					value="#{modelagemFuzzyActions.variaveisOutput}" rows="10" width="700px" >
+				<f:facet name="header">
+						<rich:columnGroup>
+							
+							<rich:column colspan="2">
+								<h:outputText value="#{prompt.modelagemFuzzy_variavelOutput}" />
+							</rich:column>
+							<rich:column breakBefore="true">
+								<h:outputText title="#{tooltip.monitor_VariavelSaida}" value="#{prompt.nome}" />
+							</rich:column>
+							<rich:column>
+								<h:outputText title="#{tooltip.monitor_ValorSaida}" value="#{prompt.valor}" />
+							</rich:column>
+						</rich:columnGroup>					
+					</f:facet>		
+					
+					<rich:column>
+						<h:outputText value="#{variavelViewOut.nome}" />
+					</rich:column>
+					
+							
+					<rich:column styleClass="colunaCampoNumericoCentralizado">				
+						<h:outputText value="#{variavelViewOut.valor}" />
+					</rich:column>
+				</rich:dataTable>		
+				
+				<h:panelGrid columns="2">
+	        	  <a4j:commandButton value="#{prompt.modelagemFuzzy_executarMonitor}" action="#{modelagemFuzzyActions.mostraMonitor}" 
+	        	  />	        	  
+	        	</h:panelGrid>	
+				
+			</rich:panel>
+				
+			<rich:simpleTogglePanel id="grafico" >
+			<f:facet name="header" >
+			#{prompt.modelagemFuzzy_graficoConjuntoResultante}
+			</f:facet>			
+			
+
+				<gt:grafico_checkbox
+					grafico="#{modelagemFuzzyActions.plotMonitor}" 
+					placeholder="placeholder" 
+					width="800" height="300"
+				/>
+			</rich:simpleTogglePanel>
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+
+	</ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,27 @@
+[
+	{
+		"nome": "Administrador",
+		"login": "admin",
+		"senha": "123"
+	},
+	{
+		"nome": "Aluno",
+		"login": "aluno",
+		"senha": "123"
+	},
+	{
+		"nome": "Clinico",
+		"login": "clinico",
+		"senha": "123"
+	},
+	{
+		"nome": "Engenheiro",
+		"login": "engenheiro",
+		"senha": "123"
+	},
+	{
+		"nome": "Tecnico",
+		"login": "tecnico",
+		"senha": "123"
+	}
+]

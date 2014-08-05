@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/template_ajuda.xhtml">
+	
+	<ui:define name="submenu">
+		
+		<rich:toolBar>
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.planoModelo_mudarStatusGeral}" action="#{plPerModActions.mudarStatusGeral}" styleClass="linkMenu"/>
+				</f:facet>
+			</rich:dropDownMenu>	
+					
+			<rich:dropDownMenu style="width: 80px; text-align:center;">
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.imprimir}"  action="#{plPerModActions.imprimir}" styleClass="linkMenu">
+					 <f:setPropertyActionListener value="#{plPerModActions.cadPlanCorrente.codPlan}" target="#{plPerModActions.cadPlanCorrente.codPlan}"/>
+					</h:commandLink>
+				</f:facet>
+			</rich:dropDownMenu>
+                
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.grafico}"  action="#{plPerModActions.exibirGraficoDemandaMaxEProducaoEEstProjPorPeriodo}" styleClass="linkMenu">
+					 <f:setPropertyActionListener value="#{plPerModActions.planoModeloCorrente}" target="#{planoModelo}"/>
+					</h:commandLink>
+				</f:facet>
+			</rich:dropDownMenu>
+                
+            <rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.voltar}" action="listCadPlan" styleClass="linkMenu"/>
+				</f:facet>
+            </rich:dropDownMenu>
+			
+		</rich:toolBar>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

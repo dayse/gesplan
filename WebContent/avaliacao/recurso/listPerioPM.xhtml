@@ -1,0 +1,153 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/avaliacaoRecursoPerioPM_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.analiseCapacidadeRecurso}</ui:define>
+	<ui:define name="descricao">#{prompt.selecaoPerioPM}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.avaliacaoRec_SelecionarCapacidade}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="avaliacaoActions"/>
+		
+		<h:form id="formAvaliacao">
+			<rich:simpleTogglePanel id="caixaSelecoes" >
+			<f:facet name="header" >
+			Plano/Recurso Selecionado:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano " style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.cadPlanCorrente.descrPlan}"/>
+					
+				
+				<h:outputText ><br/></h:outputText>
+				<h:outputText ><br/></h:outputText>
+				<h:outputText ><br/></h:outputText>
+				
+				<h:outputText value="#{prompt.recurso_Codigo}" style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.recursoCorrente.codRecurso}"/>
+				
+				<h:outputText value="#{prompt.recurso_Descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.recursoCorrente.descrRecurso}"/>
+					
+				<h:outputText value="#{prompt.recurso_UM} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.recursoCorrente.UM}"/>
+					
+
+				<h:outputText value="#{prompt.recurso_custoUnit} "/>:
+				
+						<h:outputText value="#{avaliacaoActions.recursoCorrente.custoUnit}">
+								<f:convertNumber  minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					
+
+					
+			</h:panelGrid>
+			
+			</rich:simpleTogglePanel>
+			
+			<br/>
+			<rich:datascroller id="scroller" for="tabelaPerioPM" align="center" renderIfSinglePage="false" 
+				page="#{avaliacaoActions.paginaPerioPM}" pageIndexVar="paginaAtual"/>
+			
+			<rich:dataTable id="tabelaPerioPM"  value="#{avaliacaoActions.listaPerioPM}"  var="perioPM" 
+				 align="center" rows="1" width="550px" >
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<rich:column>
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodo}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.perioPM_DiasUteisMatriz}" value="#{prompt.numDiasUteisMatriz}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.perioPM_DiasUteisU2}" value="#{prompt.perioPM_NumDiasUteisU2}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="" />
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{perioPM.periodoPM}"/>
+				</rich:column>
+
+				<h:column>
+					<h:outputText value="#{perioPM.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{perioPM.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{perioPM.numDiasUteisMatriz}" >
+						<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default"  />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{perioPM.numDiasUteisU2}" >
+						<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default"  />
+					 </h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:commandButton value="#{prompt.selecionar}" action="#{avaliacaoActions.preparaListagemAvaliacaoRecurso}"/>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:commandButton value="#{prompt.rateio}" action="#{avaliacaoActions.calcularRateio}"/>
+				</rich:column>
+
+			</rich:dataTable>
+			
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

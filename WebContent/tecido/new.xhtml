@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/tecido_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecido}</ui:define>
+	<ui:define name="descricao">#{prompt.descInclusaoTecido}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.tecido_Incluir}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form>
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.tecidoIncluir}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.codigo}" />:
+			        </h:panelGroup>
+					<h:inputText id="codigo" value="#{tecidoActions.tecido.codTecido}"
+						maxlength="#{constantes.lTecidoCodTecido}" size="20"
+						required="true" />
+					<h:message for="codigo" styleClass="error" />
+
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.descricao}" />:
+				    </h:panelGroup>
+					<h:inputText id="descricao"
+						value="#{tecidoActions.tecido.descrTecido}"
+						maxlength="#{constantes.lTecidoDescrTecido}" size="20" />
+					<h:message for="descricao" styleClass="error" />
+
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.UM}" />:
+				    </h:panelGroup>
+					<h:inputText id="UM" value="#{tecidoActions.tecido.UM}"
+						maxlength="#{constantes.lTecidoUM}" size="20" required="true">
+					</h:inputText>
+					<h:message for="UM" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.custoUnit}" />:
+					</h:panelGroup>
+					<h:inputText id="custoUnit"
+						value="#{tecidoActions.tecido.custoUnit}"
+						maxlength="#{constantes.lTecidoCustoUnit}" size="20"
+						required="true">
+						<f:validateDoubleRange minimum="0" />
+						<f:convertNumber minFractionDigits="2"  maxFractionDigits="2" locale="default" />
+					</h:inputText>
+					<h:message for="custoUnit" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.tecidoFatorDeRendimento}" />:
+				    </h:panelGroup>
+					<h:inputText id="fatorDeRendimento"
+						value="#{tecidoActions.tecido.fatorDeRendimento}"
+						maxlength="#{constantes.lTecidoFatorDeRendimento}" size="20"
+						required="true">
+						<f:validator validatorId="valorMaiorQueZero"/>
+						<f:convertNumber minFractionDigits="0"  maxFractionDigits="0" locale="default" />
+					</h:inputText>
+					<h:message for="fatorDeRendimento" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.tecidoLeadTimeUnidade2}" />:
+				    </h:panelGroup>
+					<h:inputText id="leadTimeUnidade2"
+						value="#{tecidoActions.tecido.leadTimeUnidade2}"
+						maxlength="#{constantes.lTecidoLeadTimeUnidade2}" size="20"
+						required="true">
+						<f:validateDoubleRange minimum="0" />
+						<f:convertNumber minFractionDigits="0"  maxFractionDigits="0" locale="default" />
+					</h:inputText>
+					<h:message for="leadTimeUnidade2" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.tecidoProducaoDiariaMaxUnidade2}" />:
+				    </h:panelGroup>
+					<h:inputText id="producaoDiariaMaxUnidade2"
+						value="#{tecidoActions.tecido.producaoDiariaMaxUnidade2}"
+						maxlength="#{constantes.lTecidoProducaoDiariaMaximaUnidade2}" size="20"
+						required="true">
+						<f:validateDoubleRange minimum="0" />
+						<f:convertNumber minFractionDigits="2"  maxFractionDigits="2" locale="default" />
+					</h:inputText>
+					<h:message for="producaoDiariaMaxUnidade2" styleClass="error" />
+
+
+				</h:panelGrid>
+			</rich:panel>
+			
+			<h:commandButton id="botaoIncluir"
+				value="#{prompt.confirmarInclusao}" action="#{tecidoActions.inclui}" />
+				
+			<h:commandButton id="botaoVoltar" value="#{prompt.cancelar}"
+				action="#{tecidoActions.cancela}" immediate="true" />
+				
+		</h:form>
+		<a4j:keepAlive beanName="tecidoActions" />
+	</ui:define>
+</ui:composition>
+</html>

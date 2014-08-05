@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/avaliacaoMaquinaGrafico_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.analiseCapacidadeMaq}</ui:define>
+	<ui:define name="descricao">#{prompt.avaliacaoMaq_graficoNecessidadeCapacidadePeriodo}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.avaliacaoMaq_Grafico}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="avaliacaoActions" />
+
+		
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			Plano Selecionado:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano " style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.cadPlanCorrente.descrPlan}"/>
+			</h:panelGrid>
+			
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="grafico" >
+			<f:facet name="header" >
+			#{prompt.grafico}
+			</f:facet>					
+
+				
+					
+			<gt:grafico_checkbox
+			grafico="#{avaliacaoActions.plotMaquina}" 
+			placeholder="placeholder" 
+			width="600" height="300"
+			/>
+			</rich:simpleTogglePanel>
+				
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+
+</html>

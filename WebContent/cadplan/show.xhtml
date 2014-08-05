@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/cadplan_list_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.cadplan}</ui:define>
+	<ui:define name="descricao">#{prompt.cadplan_descList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.cadPlan_Mostrar}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="cadPlanActions" />
+		
+		<h:form id="formCadPlanShow">
+
+			<rich:panel>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.cadplan}" />
+				</f:facet>
+
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_codigo}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.codPlan}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_descricao}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.descrPlan}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_escoreMin}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.escoreMin}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_escoreMedio}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.escoreMedio}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_varEstqPer}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.varEstqPer}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_varProdDiaPer}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.varProdDiaPer}" />
+						
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cadplan_ranking}" />:
+					</h:panelGroup>
+						<h:outputText value="#{cadPlanActions.cadPlanCorrente.ranking}" />
+						
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoVoltar" value="#{prompt.voltar}"
+				action="#{cadPlanActions.cancelar}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

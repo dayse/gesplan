@@ -1,0 +1,211 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/avaliacaoMaquina_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.analiseCapacidadeMaq}</ui:define>
+	<ui:define name="descricao">#{prompt.analiseResultadosPeriodo}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.avaliacaoMaq_SelecionarPeriodo}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.avaliacaoMaq_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="avaliacaoActions"/>
+		
+		<h:form id="formAvaliacaoList">
+
+			<rich:simpleTogglePanel id="caixaSelecoes" >
+			<f:facet name="header" >
+			Plano/Periodo Selecionado:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano " style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.cadPlanCorrente.descrPlan}"/>
+					
+				
+				<h:outputText ><br/></h:outputText>
+				<h:outputText ><br/></h:outputText>
+				<h:outputText ><br/></h:outputText>
+				
+				<h:outputText value="#{prompt.periodo}" style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.perioPMCorrente.periodoPM}"/>
+				
+				<h:outputText value="#{prompt.dataInicial}"/>:
+						<h:outputText value="#{avaliacaoActions.perioPMCorrente.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/> 
+						</h:outputText>
+						
+				<h:outputText value="#{prompt.dataFinal}"/>:
+						<h:outputText value="#{avaliacaoActions.perioPMCorrente.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy"/> 
+						</h:outputText>
+					
+			</h:panelGrid>
+			
+			</rich:simpleTogglePanel>
+			
+			<br/>
+			
+			
+			<rich:dataTable id="tabelaAvaliacao" value="#{avaliacaoActions.listaAnaliseMaquina}" var="analiseMaquina"
+				align="center" width="550px">
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+						
+						<rich:column colspan="4">
+							<h:outputText value="#{prompt.avaliacao_necCapTotalPeriodo}" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.avaliacaoMaq_NecessidadeTotal}" value="#{prompt.avaliacaoMaq_necessidadeTotalMin}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.avaliacaoMaq_Capacidade}" value="#{prompt.avaliacaoMaq_capacidade}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.avaliacaoMaq_Diferenca}" value="#{prompt.avaliacaoMaq_comprometimentoMin}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.avaliacaoMaq_Comprometimento}" value="#{prompt.avaliacao_comprometimentoPerc}" />
+						</rich:column>
+					
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				<rich:columnGroup rendered="#{avaliacaoActions.renderizarResultados}">
+				
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<h:outputText value="#{analiseMaquina.necessidadeTotal}" >
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<h:outputText value="#{analiseMaquina.capacidade}" >
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<h:outputText value="#{analiseMaquina.comprometimentoMinutos}" >
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<h:outputText value="#{analiseMaquina.comprometimentoPercentual}">
+							<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+				</rich:columnGroup>
+				
+			</rich:dataTable>
+			<br/>
+			<rich:dataTable id="tabelaPlPerMod"  value="#{avaliacaoActions.listaPlPerMods}"  var="plPerMod" 
+				 align="center" width="550px">
+				
+				 <f:facet name="header">
+				 
+				 	<rich:columnGroup>
+				 	
+				 		<rich:column colspan="6">
+							<h:outputText value="#{prompt.modelos}" />
+						</rich:column>
+				 	
+					 	<rich:column breakBefore="true">
+					 		<h:outputText title="#{tooltip.modelo_Codigo}" value="#{prompt.modelo_codigo}"/>
+					 	</rich:column>
+					 	
+					 	<rich:column>
+					 		<h:outputText title="#{tooltip.modelo_Descricao}" value="#{prompt.modelo_descricao}"/>
+					 	</rich:column>
+					 	
+					 	<rich:column>
+					 		<h:outputText title="#{tooltip.avaliacaoMaq_ProducaoDiariaLote}" value="#{prompt.plpermod_producaoDiarialt}"/>
+					 	</rich:column>
+					 	
+					 	<rich:column>
+					 		<h:outputText title="#{tooltip.avaliacaoMaq_ProducaoDiariaMinutos}" value="#{prompt.plpermod_producaoDiariaMin}"/>
+					 	</rich:column>
+					 	
+					 	<rich:column>
+					 		<h:outputText title="#{tooltip.avaliacaoMaq_InicioProducao}" value="#{prompt.plpermod_periodoInicProd}"/>
+					 	</rich:column>
+					 	
+					 	<rich:column>
+					 		<h:outputText title="#{tooltip.avaliacaoMaq_Participacao}" value="#{prompt.avaliacao_participacaoPerc}"/>
+					 	</rich:column>
+					 	
+				 	</rich:columnGroup>
+				 
+				 </f:facet>
+				 
+				 <rich:columnGroup rendered="#{avaliacaoActions.renderizarResultados}">
+				 
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.planoModelo.modelo.codModelo}"/>
+					 </rich:column>
+					 
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.planoModelo.modelo.descrModelo}"/>
+					 </rich:column>
+					 
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.prodDiariaLoteModel}">
+						 	<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						 </h:outputText>
+					 </rich:column>
+					
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.prodDiariaLoteMin}">
+						 		<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						 </h:outputText>
+					 </rich:column>
+					 
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.periodoPMInicioPMP}" />
+					 </rich:column>
+					 
+					 <rich:column styleClass="colunaCampoNumericoCentralizado" >
+						 <h:outputText value="#{plPerMod.participacaoPercentual}">
+						 	<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+						 </h:outputText>
+					 </rich:column>
+				 
+				 </rich:columnGroup>
+				
+			</rich:dataTable>
+			
+			
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>
+
+</html>

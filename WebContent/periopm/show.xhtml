@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/periopm_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.perioPM}</ui:define>
+	<ui:define name="descricao">#{prompt.perioPM_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.perioPM_Mostrar}</ui:define>
+	<ui:define name="corpo">
+		
+		<h:form>
+			
+			<rich:simpleTogglePanel>
+			
+					<h:panelGrid columns="3">
+					
+						<h:outputText value="#{prompt.periodo}" /> : 
+							<h:outputText value="#{perioPMActions.perioPMCorrente.periodoPM}" />
+							
+						<h:outputText value="#{prompt.dataInicial}"/> : 
+							<h:outputText value="#{perioPMActions.perioPMCorrente.dataInicial.time}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/> 
+							</h:outputText>
+							
+						<h:outputText value="#{prompt.dataFinal}" /> : 
+							<h:outputText value="#{perioPMActions.perioPMCorrente.dataFinal.time}" >
+								<f:convertDateTime pattern="dd/MM/yyyy"/> 
+							</h:outputText>
+							
+						<h:outputText value="#{prompt.numDiasUteisMatriz}" /> : 
+							<h:outputText value="#{perioPMActions.perioPMCorrente.numDiasUteisMatriz}" >
+								<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default" />
+							</h:outputText>
+							
+						<h:outputText value="#{prompt.perioPM_NumDiasUteisU2}" /> : 
+							<h:outputText value="#{perioPMActions.perioPMCorrente.numDiasUteisU2}" >
+								<f:convertNumber minFractionDigits="1" maxFractionDigits="1" locale="default" />
+							</h:outputText>
+							
+					</h:panelGrid>
+					
+			</rich:simpleTogglePanel>
+			
+			<h:commandButton value="#{prompt.voltar}" immediate="true" action="#{perioPMActions.cancelar}"/>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

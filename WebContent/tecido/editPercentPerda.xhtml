@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/tecido_percentual_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecido}</ui:define>
+	<ui:define name="descricao">#{prompt.tecidoEditarPercentPerda}</ui:define>
+
+	<ui:define name="corpo">
+
+		<h:form id="formulario">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.tecidoEditarPercentPerda}" />
+				</f:facet>
+
+				<h:panelGrid columns="3">
+					
+					<h:panelGroup>
+						<h:outputText value="Percentual de Perda" />:
+					</h:panelGroup>
+					<h:inputText id="percentPerda" value="#{parametrosActions.parametrosCorrente.percentualDePerda}"
+						maxlength="#{constantes.lRecursoCodRecurso}" size="20"
+						disabled="false" />
+					<h:message for="percentPerda" styleClass="error" />
+					
+				
+				</h:panelGrid>
+			</rich:panel>
+			<br />
+			<br />
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}"
+				action="#{parametrosActions.alteraPercentPerda}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="#{parametrosActions.cancelaPercentPerda}" immediate="true" />
+		</h:form>
+	    <!--       	<a4j:keepAlive beanName="tecidoActions" />      -->
+		<a4j:keepAlive beanName="parametrosActions" />
+	</ui:define>
+</ui:composition>
+</html>

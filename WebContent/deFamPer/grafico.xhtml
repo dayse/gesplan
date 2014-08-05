@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/defamper_grafico_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.demandasPorFamilia}</ui:define>
+	<ui:define name="descricao">#{prompt.deFamPer_DescricaoGrafico}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.deFamPer_Grafico}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="deFamPerActions" />
+		
+		
+		
+		
+		
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+				<f:facet name="header" >
+				#{prompt.familia_selecionada}:
+				</f:facet>
+				
+				<h:panelGrid columns="3">
+				
+					<h:outputText value="#{prompt.familia_codigo}"/>:	
+				
+						<h:outputText  value="#{deFamPerActions.familiaCorrente.codFamilia}"/>
+					
+					<h:outputText value="#{prompt.familia_descricao} "/>:
+					
+						<h:outputText value="#{deFamPerActions.familiaCorrente.descrFamilia}"/>
+						
+						
+				</h:panelGrid>
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="grafico" >
+				<f:facet name="header" >
+				#{prompt.grafico}
+				</f:facet>			
+				
+				<gt:grafico_checkbox
+				grafico="#{deFamPerActions.plotDeFamPer}" 
+				placeholder="placeholder" 
+				width="600" height="300"
+				/>
+			</rich:simpleTogglePanel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+
+</html>

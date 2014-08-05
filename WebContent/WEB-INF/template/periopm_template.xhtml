@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/template_ajuda.xhtml">
+	
+	<ui:define name="submenu">
+		
+		<rich:toolBar>
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.incluirUltimo}" action="#{perioPMActions.preparaInclusao}" styleClass="linkMenu"/>
+				</f:facet>
+			</rich:dropDownMenu>
+							
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.excluirPrimeiro}" action="#{perioPMActions.exclui}" styleClass="linkMenu"
+					onclick="if (!confirm('Confirmar a operacao de exclusao?')){return false};">
+						<f:setPropertyActionListener target="#{perioPMActions.opcaoExclusao}" value="0"/>
+					</h:commandLink>
+				</f:facet>
+			</rich:dropDownMenu>
+							
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.excluirUltimo}" action="#{perioPMActions.exclui}" styleClass="linkMenu"
+					onclick="if (!confirm('Confirmar a operacao de exclusao?')){return false};">
+						<f:setPropertyActionListener target="#{perioPMActions.opcaoExclusao}" value="1"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>
+							
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.excluirTodos}" action="#{perioPMActions.exclui}" styleClass="linkMenu"
+					onclick="if (!confirm('Confirmar a operacao de exclusao?')){return false};">
+						<f:setPropertyActionListener target="#{perioPMActions.opcaoExclusao}" value="2"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>				
+			         
+            <rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.voltar}" action="home" styleClass="linkMenu"/>
+				</f:facet>
+            </rich:dropDownMenu>
+			
+		</rich:toolBar>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

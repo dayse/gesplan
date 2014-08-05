@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/template_principal.xhtml">
+
+	<ui:define name="menu"/>
+	<ui:define name="corpo">
+	
+	<h:form>
+	
+		<center>
+		
+		<fieldset class="caixaLogin">
+		
+		<legend>#{prompt.areaDeLogin}</legend>
+		
+			<br/>
+		
+			<h:panelGrid columns="3">
+	
+				<h:panelGroup>
+					<h:outputText value="#{prompt.login}" />
+				</h:panelGroup>
+	
+				<h:inputText id="login" value="#{autenticadorActions.login}" size="20"
+					required="true">
+				</h:inputText>
+				<h:message for="login" styleClass="error" warnClass="warn" />
+	
+				<h:panelGroup>
+					<h:outputText value="#{prompt.senha}" />
+				</h:panelGroup>
+				
+				<h:inputSecret id="senha" value="#{autenticadorActions.senha}"
+					size="20" required="true">
+				</h:inputSecret>
+				
+				<h:message for="senha" styleClass="error" warnClass="warn" />
+				
+			</h:panelGrid>
+
+			<br/>
+
+			<h:commandButton value="#{prompt.ok}" action="#{autenticadorActions.autenticar}" styleClass="button"/>
+		
+		</fieldset>
+	
+		</center>
+		
+	</h:form>
+
+  </ui:define>
+
+</ui:composition>
+
+</html>

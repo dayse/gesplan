@@ -1,0 +1,197 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"  	
+>
+
+<ui:composition template="/WEB-INF/template/plpermod_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.plpermod_planoMestre}</ui:define>
+	<ui:define name="descricao">Editar #{plPerModActions.LABEL_PAGINA_EDICAO} do Modelo</ui:define>
+	<ui:define name="descricao_ajuda">
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'vendasModel'}">
+			#{help.plPerMod_EditarVendas}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'coberturaModel'}">
+			#{help.plPerMod_EditarCobertura}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'pedidosModel'}">
+			#{help.plPerMod_EditarPedidos}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'dispProjModel'}">
+			#{help.plPerMod_EditarDisponibilidade}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'prodLoteModel'}">
+			#{help.plPerMod_EditarProducao}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'producaoModel'}">
+			#{help.plPerMod_EditarRecebimento}
+		</c:if>
+		<c:if test="${plPerModActions.opcaoEscolhidaAlteracao == 'prodDiariaLoteModel'}">
+			#{help.plPerMod_EditarProducaoDiaria}
+		</c:if>
+	</ui:define>
+	
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="plPerModActions" />
+		
+		<h:form id="editPlPerMod">
+			
+
+			<center>
+				
+				<fieldset class="caixaPlanoModelo">
+					<legend>#{prompt.planoSelecionado}</legend>
+		
+					<h:panelGrid columns="5" cellspacing="10px">
+					
+						<h:outputText value="#{prompt.plano}: "/>
+						
+						<h:outputText>
+							<b>#{plPerModActions.cadPlanCorrente.codPlan}</b>
+						</h:outputText>
+						
+						<h:outputText>
+							<rich:spacer width="40px"/>
+						</h:outputText>
+						
+						<h:outputText value="#{prompt.modelo}: "/>
+						
+						<h:outputText>
+							<b>#{plPerModActions.plPerModCorrente.planoModelo.modelo.codModelo} - #{plPerModActions.plPerModCorrente.planoModelo.modelo.descrModelo}</b>
+						</h:outputText>
+					
+					</h:panelGrid>
+				
+	    		  </fieldset>
+	    		  
+			</center>
+			
+			<br/>
+			
+			<rich:panel>
+			
+				<br/>
+
+				<f:facet name="header">
+					<h:outputText value="#{prompt.cadplan_planoDeProducao}" />
+				</f:facet>
+				
+
+				<h:panelGrid columns="4" cellspacing="5">
+
+			       	<!--  CAMPO NAO EDITAVEL -->
+			       	<h:panelGroup>
+						<h:outputText value="#{prompt.periodo}" />:
+					</h:panelGroup>
+						<h:inputText id="periodo" value="#{plPerModActions.plPerModCorrente.perioPM.periodoPM}"  
+							size="20" disabled="true"/>
+						<h:message for="periodo" styleClass="error" />
+						
+			       	<!--  CAMPO NAO EDITAVEL -->
+					<h:panelGroup>
+						<h:outputText value="#{prompt.dataInicial}" />:
+					</h:panelGroup>
+						<rich:calendar id="dataInicialCal" datePattern="dd/MM/yyyy" 
+							value="#{plPerModActions.plPerModCorrente.perioPM.dataInicial.time}" disabled="true"/>
+						<h:message for="dataInicialCal" styleClass="error" />	
+						
+			       	<!--  CAMPO NAO EDITAVEL -->
+					<h:panelGroup>
+						<h:outputText value="#{prompt.dataFinal}" />
+					</h:panelGroup>
+						<rich:calendar id="dataFinalCal" datePattern="dd/MM/yyyy" 
+							value="#{plPerModActions.plPerModCorrente.perioPM.dataFinal.time}" disabled="true"/>
+						<h:message for="dataFinalCal" styleClass="error" />
+					
+					<!--  Campo Passivel de sofrer Alteracao -->
+					<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_vendaProjetada}" />:
+					</h:panelGroup>
+                   		<h:inputText id="vendaProj" value="#{plPerModActions.plPerModCorrente.vendasModel}" 
+                   			size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'vendasModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="vendaProj" styleClass="error" />
+
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_pedidos}" />:
+					</h:panelGroup>
+						<h:inputText id="pedidos" value="#{plPerModActions.plPerModCorrente.pedidosModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'pedidosModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="pedidos" styleClass="error" />
+						
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_recebimentoProducaopc}" />:
+					</h:panelGroup>
+						<h:inputText id="producaopc" value="#{plPerModActions.plPerModCorrente.producaoModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'producaoModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="producaopc" styleClass="error" />
+
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_producaoPeriodolt}" />:
+					</h:panelGroup>
+						<h:inputText id="producaolt" value="#{plPerModActions.plPerModCorrente.prodLoteModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'prodLoteModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="producaolt" styleClass="error" />
+
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_producaoDiarialtDia}" />:
+					</h:panelGroup>
+						<h:inputText id="producaoltdia" value="#{plPerModActions.plPerModCorrente.prodDiariaLoteModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'prodDiariaLoteModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="producaoltdia" styleClass="error" />
+
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_disponibilidadeProjetada}" />:
+					</h:panelGroup>
+						<h:inputText id="dispproj" value="#{plPerModActions.plPerModCorrente.dispProjModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'dispProjModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="dispproj" styleClass="error" />
+
+					<!--  Campo Passivel de sofrer Alteracao -->
+				   	<h:panelGroup>
+						<h:outputText value="#{prompt.plpermod_cobertura}" />:
+					</h:panelGroup>
+						<h:inputText id="cobertura" value="#{plPerModActions.plPerModCorrente.coberturaModel}" 
+							size="20" required="true" disabled="#{plPerModActions.opcaoEscolhidaAlteracao eq 'coberturaModel' ? false : true}">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="cobertura" styleClass="error" />
+						
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoAlterar" value="#{prompt.confirmarEdicao}" action="#{plPerModActions.altera}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}" action="#{plPerModActions.cancelar}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

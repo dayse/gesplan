@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
+
+	<application>
+		<message-bundle>mensagens</message-bundle>
+	</application>
+
+	<application>
+		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
+	</application>
+
+	<lifecycle>
+		<phase-listener>ouvinte.PhaseListenerCustomizado</phase-listener>
+	</lifecycle>
+
+	<!-- Regras de navegacao GLOBAIS -->
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>cargabd</from-outcome>
+			<to-view-id>/cargabd.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>home</from-outcome>
+			<to-view-id>/home.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>forbbiden</from-outcome>
+			<to-view-id>/forbidden.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listAvaliacaoFuzzy</from-outcome>
+			<to-view-id>/avaliacaoFuzzy/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listCadPlanAvaliacao</from-outcome>
+			<to-view-id>/avaliacao/listCadPlanAvaliacao.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listCadPlan</from-outcome>
+			<to-view-id>/cadplan/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listCapacDia</from-outcome>
+			<to-view-id>/capacdia/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listCapacRec</from-outcome>
+			<to-view-id>/capacrec/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listCapacTecView</from-outcome>
+			<to-view-id>/capactecview/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listExcecao</from-outcome>
+			<to-view-id>/excecao/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listExcecaoMens</from-outcome>
+			<to-view-id>/excecaomens/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listFamilia</from-outcome>
+			<to-view-id>/familia/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listDeModPer</from-outcome>
+			<to-view-id>/deModPer/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listDeFamPer</from-outcome>
+			<to-view-id>/deFamPer/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listHP</from-outcome>
+			<to-view-id>/hp/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listPerioPAP</from-outcome>
+			<to-view-id>/periopap/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listPerioPM</from-outcome>
+			<to-view-id>/periopm/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listPlPerMod</from-outcome>
+			<to-view-id>/plpermod/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listPMP</from-outcome>
+			<to-view-id>/pmp/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listModelo</from-outcome>
+			<to-view-id>/modelo/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listModelagemFuzzy</from-outcome>
+			<to-view-id>/modelagemFuzzy/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listRecurso</from-outcome>
+			<to-view-id>/recurso/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listRecModel</from-outcome>
+			<to-view-id>/recmodel/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listTecido</from-outcome>
+			<to-view-id>/tecido/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listTecModel</from-outcome>
+			<to-view-id>/tecmodel/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listTesteFile</from-outcome>
+			<to-view-id>/testefile/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listUsuario</from-outcome>
+			<to-view-id>/usuario/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- FIM-Regras de navegacao GLOBAIS -->
+
+
+	<!-- Regras de navegacao (Avaliacao) -->
+	<navigation-rule>
+		<from-view-id>/avaliacao/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listPerioPMMaquina</from-outcome>
+			<to-view-id>/avaliacao/maquina/listPerioPM.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listPerioPMTecido</from-outcome>
+			<to-view-id>/avaliacao/tecido/listPerioPM.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listAvaliacaoTecido</from-outcome>
+			<to-view-id>/avaliacao/tecido/listTecido.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listAvaliacaoRecurso</from-outcome>
+			<to-view-id>/avaliacao/recurso/listRecurso.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao) -->
+
+
+	<!-- Regras de navegacao (Avaliacao Maquina) -->
+	<navigation-rule>
+		<from-view-id>/avaliacao/maquina/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listPerioPMMaquina</from-outcome>
+			<to-view-id>/avaliacao/maquina/listPerioPM.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>list</from-outcome>
+			<to-view-id>/avaliacao/maquina/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoAvaliacaoMaquina</from-outcome>
+			<to-view-id>/avaliacao/maquina/grafico.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao Maquina) -->
+
+
+	<!-- Regras de navegacao (Avaliacao Tecido) -->
+	<navigation-rule>
+		<from-view-id>/avaliacao/tecido/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listPerioPMTecido</from-outcome>
+			<to-view-id>/avaliacao/tecido/listPerioPM.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listAvaliacaoTecido</from-outcome>
+			<to-view-id>/avaliacao/tecido/listTecido.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoAvaliacaoTecido</from-outcome>
+			<to-view-id>/avaliacao/tecido/grafico.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>list</from-outcome>
+			<to-view-id>/avaliacao/tecido/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao Tecido) -->
+
+	<!-- Regras de navegacao (Avaliacao TesteFile) -->
+	<navigation-rule>
+		<from-view-id>/testefile/*</from-view-id>
+		<navigation-case>
+			<from-outcome>list</from-outcome>
+			<to-view-id>/testefile/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao TesteFile) -->
+
+
+	<!-- Regras de navegacao (Avaliacao Recurso) -->
+	<navigation-rule>
+		<from-view-id>/avaliacao/recurso/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listPerioPMRecurso</from-outcome>
+			<to-view-id>/avaliacao/recurso/listPerioPM.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>listAvaliacaoRecurso</from-outcome>
+			<to-view-id>/avaliacao/recurso/listRecurso.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoAvaliacaoRecurso</from-outcome>
+			<to-view-id>/avaliacao/recurso/grafico.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>list</from-outcome>
+			<to-view-id>/avaliacao/recurso/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao Recurso) -->
+	
+	<!-- Regras de navegacao (Avaliacao Fuzzy) -->
+	<navigation-rule>
+		<from-view-id>/avaliacaoFuzzy/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listAvaliacaoFuzzy</from-outcome>
+			<to-view-id>/avaliacaoFuzzy/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>selecModelagemAvaliacaoFuzzy</from-outcome>
+			<to-view-id>/avaliacaoFuzzy/selecModelagem.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>detalharAvaliacaoFuzzy</from-outcome>
+			<to-view-id>/avaliacaoFuzzy/detalhar.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoPlPerModAvaliacaoFuzzy</from-outcome>
+			<to-view-id>/avaliacaoFuzzy/grafico.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (Avaliacao Fuzzy) -->
+
+
+	<!-- Regras de navegacao (CadPlan) -->
+	<navigation-rule>
+		<from-view-id>/cadplan/*</from-view-id>
+		<navigation-case>
+			<from-outcome>newCadPlan</from-outcome>
+			<to-view-id>/cadplan/new.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newCadPlanFuzzy</from-outcome>
+			<to-view-id>/cadplan/newFuzzy.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>showCadPlan</from-outcome>
+			<to-view-id>/cadplan/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editCadPlan</from-outcome>
+			<to-view-id>/cadplan/edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (CadPlan) -->
+
+
+	<!-- Regras de navegacao (CapacDia) -->
+	<navigation-rule>
+		<from-view-id>/capacdia/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listCapacDia</from-outcome>
+			<to-view-id>/capacdia/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editCapacPadrao</from-outcome>
+			<to-view-id>/capacdia/editCapacPadrao.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editCapacDia</from-outcome>
+			<to-view-id>/capacdia/edit.xhtml</to-view-id>
+		</navigation-case>
+
+	</navigation-rule>
+	<!-- Regras de navegacao (CapacDia) -->
+
+	<!-- Regras de navegacao (CapacRec) -->
+	<navigation-rule>
+		<from-view-id>/capacrec/*</from-view-id>
+		<navigation-case>
+			<from-outcome>editCapacPadrao</from-outcome>
+			<to-view-id>/capacrec/editCapacPadrao.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editCapacRec</from-outcome>
+			<to-view-id>/capacrec/edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (CapacRec) -->
+
+	<!-- Regras de navegacao (CapacTecView) -->
+	<navigation-rule>
+		<from-view-id>/capactec/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listCapacTecView</from-outcome>
+			<to-view-id>/capactecview/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (CapacTecView) -->
+
+	<!-- Regras de navegacao (DeModPer) -->
+	<navigation-rule>
+		<from-view-id>/deModPer/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listDeModPer</from-outcome>
+			<to-view-id>/deModPer/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoDeModPer</from-outcome>
+			<to-view-id>/deModPer/grafico.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (DeModPEr) -->
+
+	<!-- Regras de navegacao (DeFamPer) -->
+	<navigation-rule>
+		<from-view-id>/deFamPer/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listDeFamPer</from-outcome>
+			<to-view-id>/deFamPer/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoDeFamPer</from-outcome>
+			<to-view-id>/deFamPer/grafico.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- Regras de navegacao (DeFamPer) -->
+	
+	
+	<!-- Regras de navegacao (Familia) -->
+	<navigation-rule>
+		<from-view-id>/familia/*</from-view-id>
+		<navigation-case>
+			<from-outcome>showFamilia</from-outcome>
+			<to-view-id>/familia/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editFamilia</from-outcome>
+			<to-view-id>/familia/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newFamilia</from-outcome>
+			<to-view-id>/familia/new.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<!-- Regras de navegacao (HP) -->
+	<navigation-rule>
+		<from-view-id>/hp/*</from-view-id>
+		<navigation-case>
+			<from-outcome>editHP</from-outcome>
+			<to-view-id>/hp/edit.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM - Regras de navegacao (HP) -->
+
+	<!-- Regras de navegacao (Modelo) -->
+	<navigation-rule>
+		<from-view-id>/modelo/*</from-view-id>
+		<navigation-case>
+			<from-outcome>showModelo</from-outcome>
+			<to-view-id>/modelo/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editModelo</from-outcome>
+			<to-view-id>/modelo/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newModelo</from-outcome>
+			<to-view-id>/modelo/new.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (Modelo) -->
+	
+	<!-- Regras de navegacao (ModelagemFuzzy) -->
+	<navigation-rule>
+		<from-view-id>/modelagemFuzzy/*</from-view-id>
+		<navigation-case>
+			<from-outcome>newModelagemFuzzy</from-outcome>
+			<to-view-id>/modelagemFuzzy/new.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editModelagemFuzzy</from-outcome>
+			<to-view-id>/modelagemFuzzy/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>showModelagemFuzzy</from-outcome>
+			<to-view-id>/modelagemFuzzy/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoMFModelagem</from-outcome>
+			<to-view-id>/modelagemFuzzy/showGraficoMF.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>uploadModelagemFuzzy</from-outcome>
+			<to-view-id>/modelagemFuzzy/upload.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>preparaSimulador2DModelagem</from-outcome>
+			<to-view-id>/modelagemFuzzy/preparaSimulador2D.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>mostraSimulador2DModelagem</from-outcome>
+			<to-view-id>/modelagemFuzzy/showSimulador2D.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>monitorModelagem</from-outcome>
+			<to-view-id>/modelagemFuzzy/showMonitor.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>showGrafico3D</from-outcome>
+			<to-view-id>/modelagemFuzzy/showGrafico3D.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (ModelagemFuzzy) -->
+
+	<!-- Regras de navegacao (PerioPAP) -->
+	<navigation-rule>
+		<from-view-id>/periopap/*</from-view-id>
+		<navigation-case>
+			<from-outcome>showPerioPAP</from-outcome>
+			<to-view-id>/periopap/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editPerioPAP</from-outcome>
+			<to-view-id>/periopap/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editAgregador</from-outcome>
+			<to-view-id>/periopap/editAgregador.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (PerioPAP) -->
+
+	<!-- Regras de navegacao (PerioPM) -->
+	<navigation-rule>
+		<from-view-id>/periopm/*</from-view-id>
+		<navigation-case>
+			<from-outcome>showPerioPM</from-outcome>
+			<to-view-id>/periopm/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editPerioPM</from-outcome>
+			<to-view-id>/periopm/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newPerioPM</from-outcome>
+			<to-view-id>/periopm/new.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (PerioPM) -->
+
+	<!-- Regras de navegacao (PlPerMod) -->
+	<navigation-rule>
+		<from-view-id>/plpermod/*</from-view-id>
+		<navigation-case>
+			<from-outcome>editPlPerMod</from-outcome>
+			<to-view-id>/plpermod/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>graficoPlPerMod</from-outcome>
+			<to-view-id>/plpermod/grafico.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (PlPerMod) -->
+
+	<!-- Regras de navegacao (Recurso) -->
+	<navigation-rule>
+		<from-view-id>/recurso/*</from-view-id>
+		<navigation-case>
+			<from-outcome>showRecurso</from-outcome>
+			<to-view-id>/recurso/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editRecurso</from-outcome>
+			<to-view-id>/recurso/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newRecurso</from-outcome>
+			<to-view-id>/recurso/new.xhtml</to-view-id>
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>listRecModel</from-outcome>
+			<to-view-id>/recmodel/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (Recurso) -->
+
+
+	<!-- Regras de navegacao (RecModel) -->
+	<navigation-rule>
+		<from-view-id>/recmodel/*</from-view-id>
+		<navigation-case>
+			<from-outcome>editRecModel</from-outcome>
+			<to-view-id>/recmodel/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newRecModel</from-outcome>
+			<to-view-id>/recmodel/new.xhtml</to-view-id>
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>listRecModel</from-outcome>
+			<to-view-id>/recmodel/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (RecModel) -->
+
+
+	<!-- Regras de navegacao (Tecido) -->
+	<navigation-rule>
+		<from-view-id>/tecido/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listTecido</from-outcome>
+			<to-view-id>/tecido/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>showTecido</from-outcome>
+			<to-view-id>/tecido/show.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editTecido</from-outcome>
+			<to-view-id>/tecido/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newTecido</from-outcome>
+			<to-view-id>/tecido/new.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editPercentPerda</from-outcome>
+			<to-view-id>/tecido/editPercentPerda.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (Tecido) -->
+
+	<!-- Regras de navegacao (TecModel) -->
+	<navigation-rule>
+		<from-view-id>/tecmodel/*</from-view-id>
+		<navigation-case>
+			<from-outcome>listTecModel</from-outcome>
+			<to-view-id>/tecmodel/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editTecModel</from-outcome>
+			<to-view-id>/tecmodel/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>newTecModel</from-outcome>
+			<to-view-id>/tecmodel/new.xhtml</to-view-id>
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>listCapacTecView</from-outcome>
+			<to-view-id>/capactecview/list.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (TecModel) -->
+
+	<!-- Regras de navegacao (Usuario) -->
+	<navigation-rule>
+		<from-view-id>/usuario/*</from-view-id>
+		<navigation-case>
+			<from-outcome>newUsuario</from-outcome>
+			<to-view-id>/usuario/new.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>editUsuario</from-outcome>
+			<to-view-id>/usuario/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>showUsuario</from-outcome>
+			<to-view-id>/usuario/show.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!-- FIM-Regras de navegacao (Usuario) -->
+
+	<!-- Definicao dos Managed Beans no escopo de requisicao -->
+
+	<managed-bean>
+		<managed-bean-name>autenticadorActions</managed-bean-name>
+		<managed-bean-class>actions.controle.AutenticadorActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>avaliacaoActions</managed-bean-name>
+		<managed-bean-class>actions.AvaliacaoActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>capacDiaActions</managed-bean-name>
+		<managed-bean-class>actions.CapacDiaActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>cargaActions</managed-bean-name>
+		<managed-bean-class>actions.CargaActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>capacRecActions</managed-bean-name>
+		<managed-bean-class>actions.CapacRecActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>capacTecViewActions</managed-bean-name>
+		<managed-bean-class>actions.CapacTecViewActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+
+	<managed-bean>
+		<managed-bean-name>cadPlanActions</managed-bean-name>
+		<managed-bean-class>actions.CadPlanActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>deModPerActions</managed-bean-name>
+		<managed-bean-class>actions.DeModPerActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>deFamPerActions</managed-bean-name>
+		<managed-bean-class>actions.DeFamPerActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>excecaoActions</managed-bean-name>
+		<managed-bean-class>actions.ExcecaoActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>excecaoMensActions</managed-bean-name>
+		<managed-bean-class>actions.ExcecaoMensActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>familiaActions</managed-bean-name>
+		<managed-bean-class>actions.FamiliaActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>hpActions</managed-bean-name>
+		<managed-bean-class>actions.HPActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>modeloActions</managed-bean-name>
+		<managed-bean-class>actions.ModeloActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>parametrosActions</managed-bean-name>
+		<managed-bean-class>actions.ParametrosActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>perioPAPActions</managed-bean-name>
+		<managed-bean-class>actions.PerioPAPActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>perioPMActions</managed-bean-name>
+		<managed-bean-class>actions.PerioPMActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>plPerModActions</managed-bean-name>
+		<managed-bean-class>actions.PlPerModActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>pmpActions</managed-bean-name>
+		<managed-bean-class>actions.PMPActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>recursoActions</managed-bean-name>
+		<managed-bean-class>actions.RecursoActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>recModelActions</managed-bean-name>
+		<managed-bean-class>actions.RecModelActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>tecidoActions</managed-bean-name>
+		<managed-bean-class>actions.TecidoActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>tecModelActions</managed-bean-name>
+		<managed-bean-class>actions.TecModelActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>usuarioActions</managed-bean-name>
+		<managed-bean-class>actions.UsuarioActions</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+
+	<!-- Definicao dos Managed Beans no escopo de sessao -->
+
+	<managed-bean>
+		<managed-bean-name>sessaoDoUsuario</managed-bean-name>
+		<managed-bean-class>actions.controle.SessaoDoUsuario</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
+	<managed-bean>
+		<managed-bean-name>testeFileActions</managed-bean-name>
+		<managed-bean-class>actions.TesteFileActions</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>modelagemFuzzyActions</managed-bean-name>
+		<managed-bean-class>actions.ModelagemFuzzyActions</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<!-- Definicao dos Managed Beans no escopo de aplicacao -->
+
+	<managed-bean>
+		<managed-bean-name>constantes</managed-bean-name>
+		<managed-bean-class>util.Constantes</managed-bean-class>
+		<managed-bean-scope>application</managed-bean-scope>
+	</managed-bean>
+
+	<!-- Definicao de validadores -->
+
+	<validator>
+		<validator-id>valorMaiorQueZero</validator-id>
+		<validator-class>validadores.ValorMaiorQueZero</validator-class>
+	</validator>
+
+</faces-config>

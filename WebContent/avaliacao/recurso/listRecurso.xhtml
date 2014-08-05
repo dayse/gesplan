@@ -1,0 +1,106 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/avaliacaoRecursoRecurso_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.analiseCapacidadeRecurso}</ui:define>
+	<ui:define name="descricao">#{prompt.selecaoRecursos}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.avaliacaoRec_SelecionarDisponibilidade}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="avaliacaoActions"/>
+		
+		<h:form id="formRecursoList">
+		
+			<rich:simpleTogglePanel id="caixaSelecoes" >
+			<f:facet name="header" >
+			Plano Selecionado:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano " style="font-weight: bold;"/>:	
+			
+					<h:outputText  value="#{avaliacaoActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{avaliacaoActions.cadPlanCorrente.descrPlan}"/>
+					
+				
+			</h:panelGrid>
+			
+			</rich:simpleTogglePanel>
+			
+			<br/>
+			
+			<rich:datascroller id="scroller" for="tabelaRecurso" align="center" renderIfSinglePage="false" maxPages="5"/>
+			
+			<rich:dataTable id="tabelaRecurso" var="recurso" align="center" rows="1" width="550px"
+				value="#{avaliacaoActions.listaRecurso}" >
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_Codigo}" value="#{prompt.codigo}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_Descricao}" value="#{prompt.descricao}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_UM}" value="#{prompt.UM}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.recurso_CustoUnitario}" value="#{prompt.custoUnit}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText value="" />
+						</h:column>
+
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				<rich:column>
+					<h:outputText value="#{recurso.codRecurso}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{recurso.descrRecurso}"/>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{recurso.UM}"/>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{recurso.custoUnit}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default"  />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column>
+					<h:commandButton value="#{prompt.disponibilidadeRecurso}" action="#{avaliacaoActions.analisarDisponibilidadeRecurso}" />
+				</rich:column>
+				
+			</rich:dataTable>	
+				
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

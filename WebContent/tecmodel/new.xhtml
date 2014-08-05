@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/tecmodel_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.tecmodel}</ui:define>
+	<ui:define name="descricao">#{prompt.tecmodel_Incluir}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.tecmodel_Incluir}</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="tecModelActions" />
+		<a4j:keepAlive beanName="tecidoActions" />
+		
+		<h:form id="formTecModelNew">
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelo}" />
+				</f:facet>
+				
+				<h:panelGrid columns="1">
+					<f:facet name="header">
+						<h:messages globalOnly="true" style="color: red" />
+					</f:facet>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="3" id="panel_modelo">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelo}" />
+				    </h:panelGroup>
+					<h:selectOneMenu id="comboModelos" value="#{tecModelActions.comboModelos.selecao}" 
+				  valueChangeListener="#{tecModelActions.setaTRDefaultDoModeloSelecionado}" immediate="true" required="true">
+						<f:selectItems value="#{tecModelActions.comboModelos.listaSelecao}"/>                   
+             			<a4j:support event="onchange" reRender="panel_infosRestantes"  immediate="true" ajaxSingle="true"/>   
+					</h:selectOneMenu>
+					<h:message for="comboModelos" styleClass="error" />
+				</h:panelGrid>
+				
+				<h:panelGrid columns="3" id="panel_infosRestantes">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.codigoTecido}" />:
+			        </h:panelGroup>
+					<h:inputText id="codigoTec"
+					             value="#{tecModelActions.tecModelCorrente.tecido.codTecido}" 
+								 maxlength="#{constantes.lTecidoCodTecido}" size="20" disabled="true" />
+					<h:message for="codigoTec" styleClass="error" />
+					
+					
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.tecidoDescricao}" />:
+					</h:panelGroup>
+					<h:inputText id="descrTec" 
+						value="#{tecModelActions.tecModelCorrente.tecido.descrTecido}"
+						maxlength="#{constantes.lTecidoDescrTecido}" size="20" disabled="true"/>
+					<h:message for="descrTec" styleClass="error" />
+
+
+					
+				
+				    <h:panelGroup>
+					<h:outputText value="#{prompt.tecmodel_ConsumoPorLoteMT}" />:
+					</h:panelGroup>
+						<h:inputText id="consumoPorLoteMT" value="#{tecModelActions.tecModelCorrente.consumoPorLoteMt}" 
+							maxlength="#{constantes.lTecModelConsumoPortLoteMt}" size="20" required="true">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="consumoPorLoteMT" styleClass="error" />
+				
+				
+				    <h:panelGroup>
+					<h:outputText value="#{prompt.tecmodel_TempoDefasagemUsoTec}" />:
+					</h:panelGroup>
+						<h:inputText id="TempoDefasagemUsoTec" value="#{tecModelActions.tecModelCorrente.tempoDefasagemUsoTec}" 
+							maxlength="#{constantes.lTecModelDefasagemUsoTec}" size="20" required="true">
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<h:message for="TempoDefasagemUsoTec" styleClass="error" />
+				
+				
+				</h:panelGrid>
+
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoIncluir" value="#{prompt.confirmarInclusao}"
+				action="#{tecModelActions.inclui}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}"
+				action="#{tecModelActions.cancela}" immediate="true" />
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,62 @@
+/* - - - - - - - - - - - - - - - - - - - - -
+
+Title : Wufoo Form Framework
+Author : Infinity Box Inc.
+URL : http://wufoo.com
+
+Last Updated : March 2, 2010
+
+- - - - - - - - - - - - - - - - - - - - - */
+
+.wufoo{
+	font-family:"Lucida Grande", Tahoma, Arial, sans-serif;
+}
+
+.wufoo li{
+	width:64%;
+}
+
+.areaDeBusca{
+	text-align: right;
+}
+
+.colunaCampoNumerico {
+	text-align: right;
+}
+
+.colunaCampoNumericoCentralizado {
+	text-align: center;
+}
+
+.colunaCamposNumericosAninhados {
+	text-align: top;
+	
+}
+
+.colunaCampoVendaPedido {
+	text-align: right;
+}
+
+.colunaBotaoDeBusca{
+	text-align: right;
+}
+
+.caixaLogin {
+	padding: 10px; 
+  	margin: 11px 1px 10px 1px; 
+  	width: 500px;
+}
+
+.caixaPlanoModelo {
+	padding: 10px; 
+  	margin: 11px 1px 0px 0px; 
+  	width: 500px;
+  	height: 40px;
+}
+
+.caixaPlanoModeloWide {
+	padding: 10px; 
+  	margin: 11px 1px 0px 0px; 
+  	width: 550px;
+  	height: 100px;
+}

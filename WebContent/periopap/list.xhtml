@@ -1,0 +1,117 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/periopap_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.perioPAPs}</ui:define>
+	<ui:define name="descricao">#{prompt.perioPAP_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.perioPAP_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.perioPAP_agrupaPeriodosPM} -</span> #{help.perioPAP_AgruparPeriodos}
+		<br /><br />
+		<span class="negrito">#{prompt.perioPAP_renicializaPeriodosPAP} -</span> #{help.perioPAP_ReinicializaPeriodos}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="perioPAPActions"/>
+
+		<h:form>
+
+			<br/>
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5" align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="10" align="center" value="#{perioPAPActions.listaPerioPAP}" var="perioPAP" >
+				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<h:column>
+							<h:outputText title="#{tooltip.perioPAP_Periodo}" value="#{prompt.perioPAPs}" />
+						</h:column>
+
+						<h:column>
+							<h:outputText title="#{tooltip.perioPAP_PeriodoInicial}" value="#{prompt.perioPAP_PeriodoPMInic}" />
+						</h:column>
+
+						<h:column>
+							<h:outputText title="#{tooltip.perioPAP_PeriodoFinal}" value="#{prompt.perioPAP_PeriodoPMFinal}" />
+						</h:column>
+		
+						<h:column>
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}" />
+						</h:column>
+						
+						<h:column>
+							<h:outputText title="#{tooltip.perioPAP_DiasUteisMatriz}" value="#{prompt.numDiasUteisMatriz}" />
+						</h:column>
+											
+						<h:column>
+							<h:outputText value="" />
+						</h:column>
+
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:commandLink value="#{perioPAP.periodoPAP}" action="#{perioPAPActions.mostra}"  />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{perioPAP.periodoPMInic}" />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{perioPAP.periodoPMFinal}" />
+				</rich:column>
+				
+				<h:column>
+					<h:outputText value="#{perioPAP.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<h:column>
+					<h:outputText value="#{perioPAP.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+				</h:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{perioPAP.numDiasUteis}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+
+				<h:column>
+					<h:commandButton action="#{perioPAPActions.preparaAlteracao}" value="#{prompt.editar}" />
+				</h:column>
+
+				
+				<f:facet name="footer">
+					#{prompt.perioPAP_Numero} = #{perioPAPActions.listaPerioPAP.rowCount}
+				</f:facet>
+
+			</rich:dataTable>
+
+		</h:form>
+	
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/modelagemfuzzy_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.modelagemFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.modelagemFuzzy_descSimulador2D}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.modelagemFuzzy_PreparaSimulador2D}</ui:define>		
+	<ui:define name="corpo">
+	
+		<h:form>
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelagemFuzzy_escolherEixoXSimulador2D}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_variavelInput}" />:
+					</h:panelGroup>
+					
+					<h:selectOneMenu id="comboVariaveisInput" value="#{modelagemFuzzyActions.comboVariaveisInput.selecao}" required="true">
+							<f:selectItems value="#{modelagemFuzzyActions.comboVariaveisInput.listaSelecao}" />
+					</h:selectOneMenu>
+					<rich:messages for="comboVariaveisInput" styleClass="error" />			
+					
+				</h:panelGrid>
+			</rich:panel>
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.modelagemFuzzy_escolherEixoYSimulador2D}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+				
+					<h:panelGroup>
+						<h:outputText value="#{prompt.modelagemFuzzy_variavelOutput}" />:
+					</h:panelGroup>
+					
+					<h:selectOneMenu id="comboVariaveisOutput" value="#{modelagemFuzzyActions.comboVariaveisOutput.selecao}" required="true">
+							<f:selectItems value="#{modelagemFuzzyActions.comboVariaveisOutput.listaSelecao}" />
+					</h:selectOneMenu>
+					<rich:messages for="comboVariaveisOutput" styleClass="error" />			
+					
+				</h:panelGrid>
+			</rich:panel>
+			
+			<h:panelGrid columns="2">
+        	  <a4j:commandButton value="#{prompt.proximo}" action="#{modelagemFuzzyActions.preparaSimulador2D}" />
+        	</h:panelGrid>
+        
+		</h:form>
+		<a4j:keepAlive beanName="modelagemFuzzyActions" />
+	</ui:define>
+</ui:composition>
+</html>

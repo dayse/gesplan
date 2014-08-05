@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+<facelet-taglib>
+    <namespace>gtags</namespace>
+    <tag>
+	<tag-name>testeGrafico</tag-name>
+	<source>tags_gesplan/testeGrafico.xhtml</source>
+    </tag>
+    <tag>
+	<tag-name>grafico</tag-name>
+	<source>tags_gesplan/grafico.xhtml</source>
+    </tag>
+    <tag>
+	<tag-name>grafico_checkbox</tag-name>
+	<source>tags_gesplan/grafico_checkbox.xhtml</source>
+    </tag>
+    <tag>
+	<tag-name>grafico3d</tag-name>
+	<source>tags_gesplan/grafico3d.xhtml</source>
+    </tag>
+</facelet-taglib>

@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/excecao_template.xhtml">
+	<ui:define name="titulo">#{prompt.excecao}</ui:define>
+	<ui:define name="descricao">#{prompt.excecao_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.excecao_Cadastro}
+		<br /><br />
+		<span class="negrito paragrafo">#{prompt.excecao_mudarStatusGeral} -</span> #{help.excecao_MudarStatusGeral}
+		<br /><br />
+		<span class="negrito paragrafo">#{prompt.excecao_status} -</span> #{help.excecao_MudarStatus}			
+	</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="excecaoActions" />
+		<h:form>
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="10" align="center"
+				value="#{excecaoActions.listaDeExcecoes}" var="excecao">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputText title="#{tooltip.excecaoMens_TipoExcecao}" value="#{prompt.excecao_tipoDeExcecao}" />
+						</rich:column>
+						<h:column>
+							<h:outputText title="#{tooltip.excecaoMens_Descricao}" value="#{prompt.excecao_descricao}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.excecao_Status}" value="#{prompt.excecao_status}" />
+						</h:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{excecao.tipoDeExcecao}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{excecao.descrExcecao}" />
+				</rich:column>
+
+				<rich:column >
+				  	<h:commandLink action="#{excecaoActions.mudarStatusExcecao}"
+						value="#{excecao.statusExcecao ? 'Ativa' : 'Inativa'}" />
+				</rich:column>				
+				
+			</rich:dataTable>
+
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

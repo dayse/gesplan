@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<ui:composition template="/WEB-INF/template/template_principal.xhtml">
+		<ui:define name="cabecalho">
+			<div class="cabecalho">
+				<h:form>
+					<h2>
+						<span>
+							<ui:insert name="titulo" />
+						</span>
+						<a4j:commandLink onclick="Richfaces.showModalPanel('panelConfirmacao',{width:500, top:80})">
+							<span class="oculto">Ajuda</span>
+						</a4j:commandLink>
+					</h2>
+				</h:form>
+
+			</div>
+			
+			<div class="descricao">
+				<p><ui:insert name="descricao" /></p>
+			</div>
+
+			<rich:modalPanel id="panelConfirmacao" autosized="true">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.ajuda}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacao')" />
+				</f:facet>
+
+				<p class="descricao_ajuda"><ui:insert name="descricao_ajuda" /></p>
+					
+				<h:commandButton id="cancelar" value="#{prompt.fechar}"
+					action="Richfaces.hideModalPanel('panelConfirmacaoExclusao')">
+					<rich:componentControl for="panelConfirmacao"
+					operation="hide" event="onclick" />
+				</h:commandButton>
+			</rich:modalPanel>
+
+		</ui:define>
+	</ui:composition>
+</html>

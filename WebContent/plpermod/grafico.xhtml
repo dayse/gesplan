@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:gt="gtags"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/plpermod_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.plpermod_planoMestre}</ui:define>
+	<ui:define name="descricao">#{prompt.plpermod_ajustarPlanoMestre}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.plPerMod_Grafico}</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="plPerModActions" />
+
+
+
+	
+		<h:form>
+			<rich:simpleTogglePanel>
+			<f:facet name="header" >
+			#{prompt.modelo_Selecionado}:
+			</f:facet>
+			
+			<h:panelGrid columns="3">
+			
+				<h:outputText value="Codigo do plano "/>:	
+			
+					<h:outputText  value="#{plPerModActions.cadPlanCorrente.codPlan}"/>
+				
+				<h:outputText value="#{prompt.cadplan_descricao} "/>:
+				
+					<h:outputText value="#{plPerModActions.cadPlanCorrente.descrPlan}"/>
+					
+		
+				<h:outputText value="#{prompt.modelo_codigo}" />:				
+				
+					<h:outputText value="#{plPerModActions.planoModeloCorrente.modelo.codModelo}" />
+				
+				<h:outputText value="#{prompt.modelo_descricao}" />:
+					<h:outputText value="#{plPerModActions.planoModeloCorrente.modelo.descrModelo}" />
+					
+			</h:panelGrid>
+			</rich:simpleTogglePanel>
+			
+			<rich:simpleTogglePanel id="grafico" >
+			<f:facet name="header" >
+			#{prompt.grafico}
+			</f:facet>			
+			
+
+				
+			<gt:grafico_checkbox
+			 		grafico="#{plPerModActions.plotPlPerMod}"
+					placeholder="placeholder" 
+					width="600" height="300"
+					/>
+			
+			</rich:simpleTogglePanel>
+				
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+
+</html>

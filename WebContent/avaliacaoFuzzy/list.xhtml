@@ -1,0 +1,142 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/avaliacaofuzzy_template.xhtml">
+	<ui:define name="titulo">#{prompt.avaliacaoFuzzy}</ui:define>
+	<ui:define name="descricao">#{prompt.avaliacaoFuzzy_DescricaoList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.avaliacaoFuzzy_Cadastro}
+		<br />
+		<span class="negrito paragrafo">#{prompt.cadplan_escoreMedio} -</span> #{help.avaliacaoFuzzy_EscoreMedio}
+		<br />
+		<span class="negrito paragrafo">#{prompt.cadplan_escoreMin} -</span> #{help.avaliacaoFuzzy_EscoreMinimo}
+		<br />
+		<span class="negrito paragrafo">#{prompt.cadplan_varEstqPer} -</span> #{help.avaliacaoFuzzy_VariacaoEstoque}
+		<br />
+		<span class="negrito paragrafo">#{prompt.cadplan_varProdDiaPer} -</span> #{help.avaliacaoFuzzy_VariacaoProducaoDiaria}
+		<br />
+		<span class="negrito paragrafo">#{prompt.cadplan_ranking} -</span> #{help.avaliacaoFuzzy_Ranking}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}		
+	</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="cadPlanActions" />
+		<h:form>
+
+			<rich:datascroller id="scroller" for="lista" maxPages="5"
+				align="center" renderIfSinglePage="false"/>
+			<rich:dataTable id="lista" rows="10" align="center"
+				value="#{cadPlanActions.listaCadPlan}" var="cadPlan">
+				<f:facet name="header">
+					<rich:columnGroup>
+						<rich:column>
+							<h:outputText title="#{tooltip.cadPlan_Codigo}" value="#{prompt.cadplan_codigo}" />
+						</rich:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_Descricao}" value="#{prompt.cadplan_descricao}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_EscoreMedio}" value="#{prompt.cadplan_escoreMedio}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.avaliacaoPMPFuzzy_EscoreModeloEscMin}" value="#{prompt.cadplan_escoreModeloEscMin}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_EscoreMinimo}" value="#{prompt.cadplan_escoreMin}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_VariacaoEstoque}" value="#{prompt.cadplan_varEstqPer}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_ProducaoDiaria}" value="#{prompt.cadplan_varProdDiaPer}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.cadPlan_Ranking}" value="#{prompt.cadplan_ranking}" />
+						</h:column>
+						<h:column>
+							<h:outputText title="#{tooltip.avaliacaoPMPFuzzy_StatusEscore}" value="#{prompt.cadplan_escoreCalculado}" />
+						</h:column>
+						
+						
+						<h:column>
+							<h:outputText value="#{prompt.calcularEscores}" />
+						</h:column>
+						<h:column>
+							<h:outputText value="#{prompt.detalhar}" />
+						</h:column>
+
+					</rich:columnGroup>
+				</f:facet>
+
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{cadPlan.codPlan}" />
+				</rich:column>
+
+				<rich:column>
+					<h:outputText value="#{cadPlan.descrPlan}" />
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.escoreMedio}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.escoreModeloEscMinimo}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.escoreMin}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.varEstqPer}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.varProdDiaPer}"  >
+						<f:convertNumber maxFractionDigits="1" locale="default" />
+					</h:outputText>
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{cadPlan.ranking}"  >
+						<f:convertNumber maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column>
+					<h:outputText value="#{cadPlan.escoreCalculado ? 'Calculado' : 'Não Calculado'}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.calcularEscores}" action="#{cadPlanActions.preparaCalcularEscores}" />
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.detalhar}" action="#{cadPlanActions.detalhar}" />
+				</rich:column>
+				
+			</rich:dataTable>
+
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

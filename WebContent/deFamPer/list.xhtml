@@ -1,0 +1,246 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:ajax="https://ajax4jsf.dev.java.net/ajax">
+
+<ui:composition template="/WEB-INF/template/defamper_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.demandasPorFamilia}</ui:define>
+	<ui:define name="descricao">#{prompt.descricaoListDemandasPorFamilia}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.deFamPer_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.deFamPer_TotalizarTodosDeFamPers} -</span> #{help.deFamPer_Agregar}
+		<br /><br />
+		<span class="negrito">#{prompt.editar} -</span> #{help.deFamPer_Editar}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+	
+		<a4j:keepAlive beanName="deFamPerActions" />
+
+		<h:form id="formDeFamPerList">
+		
+			
+			<br/>
+			<br/>
+			
+			
+			<rich:datascroller id="scroller" for="tabelaFamilias" align="center" renderIfSinglePage="false" 
+				maxPages="5" pageIndexVar="paginaAtual" page="#{deFamPerActions.pagina}" >
+				
+			</rich:datascroller>
+			
+										 
+			<rich:dataTable id="tabelaFamilias" rows="1"  align="center" 
+			     value="#{deFamPerActions.listaDeFamilias}"  var="familiaCorrente" width="450px" >
+			     				
+				<f:facet name="header">
+					
+					<rich:columnGroup>
+					
+						<rich:column colspan="6">
+							<h:outputText value="#{prompt.familia}" />
+						</rich:column>
+						
+						<rich:column breakBefore="true">
+							<h:outputText title="#{tooltip.familia_Codigo}" value="#{prompt.familia_codigo}" />
+						</rich:column>
+						
+						<rich:column  >
+							<h:outputText title="#{tooltip.familia_Descricao}" value="#{prompt.familia_descricao}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.familia_Cobertura}" value="#{prompt.familia_cobertura}" />
+						</rich:column>
+						
+						<rich:column >
+							<h:outputText title="#{tooltip.familia_EstoqueInicial}" value="#{prompt.familia_estqInic}" />
+						</rich:column>
+						
+						<rich:column  >
+							<h:outputText title="#{tooltip.familia_TMUC}" value="#{prompt.familia_tmuc}" />
+						</rich:column>
+											
+						<rich:column >
+							<h:outputText value="#{prompt.grafico}" />
+						</rich:column>
+																								
+					</rich:columnGroup >
+					
+				</f:facet>
+						
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:outputText value="#{familiaCorrente.codFamilia}"/>
+				</rich:column>
+
+				<h:column >
+					<h:outputText value="#{familiaCorrente.descrFamilia}"/>
+				</h:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familiaCorrente.cobertura}">
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familiaCorrente.estqInicFam}" >
+						<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column  styleClass="colunaCampoNumerico">
+					<h:outputText value="#{familiaCorrente.tmuc}" >
+						<f:convertNumber minFractionDigits="2" maxFractionDigits="2" locale="default" />
+					</h:outputText>
+				</rich:column>
+				
+				<rich:column>
+					<h:commandButton value="#{prompt.grafico}"
+						action="#{deFamPerActions.exibirGrafico}" />
+				</rich:column>
+				
+						
+				 <rich:column breakBefore="true" colspan="6" styleClass="space-table" style="height: 25px;">
+					<h:outputText value="" />
+				 </rich:column>
+				
+				<rich:column breakBefore="true" colspan="6" styleClass="rich-table-header">
+					<h:outputText value="Demandas por Familia" />
+				</rich:column>
+					 
+	 		
+				
+			 
+				<rich:subTable id="tabelaDeFamPer" value="#{familiaCorrente.deFamPers}" var="deFamPer" 
+					  align="center" headerClass="dr-table-header-continue" >
+					
+					<rich:column sortBy="#{deFamPer.perioPAP.periodoPAP}" styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_Periodo}" value="#{prompt.periodos}"/>
+						</f:facet>
+						<h:outputText value="#{deFamPer.perioPAP.periodoPAP}"/>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataInicial}" value="#{prompt.dataInicial}"/>
+						</f:facet>
+						<h:outputText value="#{deFamPer.perioPAP.dataInicial.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado">
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.perioPM_DataFinal}" value="#{prompt.dataFinal}"/>
+						</f:facet>
+						<h:outputText value="#{deFamPer.perioPAP.dataFinal.time}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.deFamPer_VendasProjetadas}" value="#{prompt.vendas}"/>
+						</f:facet>
+						<h:outputText value="#{deFamPer.vendasProjetadasFamilia}">
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column styleClass="colunaCampoNumericoCentralizado" >
+						<f:facet name="header">
+							<h:outputText title="#{tooltip.deFamPer_Pedidos}" value="#{prompt.pedidos}"/>
+						</f:facet>
+						<h:outputText value="#{deFamPer.pedidosFamilia}">
+							<f:convertNumber minFractionDigits="0" maxFractionDigits="0" locale="default" />
+						</h:outputText>
+					</rich:column>
+					
+					<rich:column  styleClass="colunaCampoNumericoCentralizado">
+							<a4j:commandButton value="#{prompt.editar}" reRender="gridInfoDemanda"
+							onclick="Richfaces.showModalPanel('panelConfirmacaoAlteracao',{width:300, top:300})">
+								<f:setPropertyActionListener value="#{deFamPer}" target="#{deFamPerActions.demanda}"/>
+							</a4j:commandButton>
+					</rich:column>
+										
+				</rich:subTable>
+				
+			</rich:dataTable>
+					
+		</h:form>
+		
+		
+		<h:form id="formularioAlteracao">
+		
+			<rich:modalPanel id="panelConfirmacaoAlteracao" height="120" width="500" >
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.alteracaoDemanda}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoAlteracao')" />
+				</f:facet>
+
+				<h:panelGrid id="gridInfoDemanda" columns="3">
+				
+					<h:panelGroup >
+							<h:outputText value="#{prompt.vendas}: "/>
+					</h:panelGroup>
+						<h:inputText id="vendas" value="#{deFamPerActions.demanda.vendasProjetadasFamilia}" >
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<rich:message for="vendas" styleClass="error" />
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.pedidos}: "/>
+					</h:panelGroup>
+						<h:inputText id="pedidos" value="#{deFamPerActions.demanda.pedidosFamilia}" >
+							<f:validateDoubleRange minimum="0"/>
+						</h:inputText>
+						<rich:message for="pedidos" styleClass="error" />
+						
+					<br/>
+					
+					<h:panelGrid columns="2">
+					
+						<a4j:commandButton id="ok" value="#{prompt.alterar}"
+							  action="#{deFamPerActions.altera}"  styleClass="botao">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+	
+						<a4j:commandButton id="cancelar" value="#{prompt.cancelar}"
+							action="#{deFamPerActions.cancelar}">
+							<rich:componentControl for="panelConfirmacaoAlteracao"
+								operation="hide" event="onclick" />
+						</a4j:commandButton>
+						
+					</h:panelGrid>	
+
+				</h:panelGrid>
+
+			</rich:modalPanel>
+		
+		</h:form>
+		
+		
+		
+	</ui:define>
+
+</ui:composition>
+
+</html>

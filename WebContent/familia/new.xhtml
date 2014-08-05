@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/familia_list_template.xhtml">
+	<ui:define name="titulo">#{prompt.familia}</ui:define>
+	<ui:define name="descricao">#{prompt.descInclusaoFamilia}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.familia_Incluir}</ui:define>
+	<ui:define name="corpo">
+
+		<h:form>
+ 
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.familiaIncluir}" />
+				</f:facet>
+				<h:panelGrid columns="3">
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.familia_codigo}" />:
+			    </h:panelGroup>
+					<h:inputText id="codigo" value="#{familiaActions.familia.codFamilia}"
+						maxlength="#{constantes.lFamiliaCodfamilia}" size="20" required="true" />
+					<h:message for="codigo" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.familia_descricao}" />:
+				</h:panelGroup>
+					<h:inputText id="descricao" value="#{familiaActions.familia.descrFamilia}"
+						maxlength="#{constantes.lFamiliaDescrfamilia}" size="20" />
+					<h:message for="descricao" styleClass="error" />
+					<h:panelGroup>
+						<h:outputText value="#{prompt.cobertura}" />:
+				</h:panelGroup>
+					<h:inputText id="cobertura" value="#{familiaActions.familia.cobertura}"
+						maxlength="#{constantes.lFamiliaCobertura}" size="20" required="true">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="cobertura" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.familia_estqInic}" />:
+					</h:panelGroup>
+					<h:inputText id="estoque" value="#{familiaActions.familia.estqInicFam}"
+						maxlength="#{constantes.lFamiliaEstqinicfam}" size="20" required="true">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="estoque" styleClass="error" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.familia_tmuc}" />:
+					</h:panelGroup>
+					<h:inputText id="tmuc" value="#{familiaActions.familia.tmuc}"
+						maxlength="#{constantes.lFamiliaTmuc}" size="20" required="true">
+						<f:validateDoubleRange minimum="0" />
+					</h:inputText>
+					<h:message for="tmuc" styleClass="error" />
+					
+					
+				</h:panelGrid>
+			</rich:panel>
+			<h:commandButton id="botaoIncluir"
+				value="#{prompt.confirmarInclusao}"
+				action="#{familiaActions.inclui}" />
+			<h:commandButton id="botaoVoltar" value="#{prompt.cancelar}"
+				action="#{familiaActions.cancela}" immediate="true" />
+		</h:form>
+		<a4j:keepAlive beanName="familiaActions" />
+	</ui:define>
+</ui:composition>
+</html>

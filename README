@@ -1,0 +1,70 @@
+	* (c) 2013 - 2014 INT - National Institute of Technology & COPPE - Alberto Luiz Coimbra Institute 
+- Graduate School and Research in Engineering.
+
+	This research has been supported by FAPERJ - Project E-26/110.322/2007.
+
+	The authors may be contacted by the email address: dayse.arruda@int.gov.br
+	If you need more information, please go to project's sites:
+		http://gesplanblog.int.gov.br
+		
+	GesPlan is a decision support system used to deal with the problem of master production scheduling.
+	We propose a modeling based on concepts and resources offered by Fuzzy Inference Systems approach.
+		  
+	We apply XFuzzy 3.3 as fuzzy engine to generate and evaluate alternative plans.
+	XFuzzy is a free design environment for fuzzy logic based systems distributed by IMSE-CNM.
+
+	
+	* LICENÇA
+	
+	Esse projeto é distribuído sob a licença MIT, veja o arquivo LICENSE para mais informações.
+		
+	
+	* PREPARAÇÃO DO BANCO DE DADOS
+	
+	Para o funcionamento do sistema é necessária a preparação do SGBD PostegreeSQL para ter as seguintes características:
+	
+		1 - Criar um novo Login Role cujo login seja "admingesplan" e cuja senha seja "admingesplan";
+		2 - Criar um banco de dados com o nome "gesplan", encode UTF-8 e que possa ser acessado pelo login/senha do passo 1;
+		3 - Criar dentro do banco "gesplan" um schema chamado "gesplan_dados".
+		4 - Para criar as tabelas - ou zerá-las quando as mesmas já tiverem conteúdo - basta acessar o arquivo persistence.xml e retirar do bloco de comentários o comando para criação/exclusão de tabelas (create/drop) e em seguida iniciar/reiniciar o servidor Apache TomCat onde a aplicação foi implantada.
+		
+			O Comando de criação e limpeza de tabelas possui a seguinte sintaxe:
+				<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			IMPORTANTE: Após o uso desta linha de comando, a mesma deve ser posta novamente entre comentários, caso contrário a cada nova reinicialização do servidor Apache Tomcat as tabelas do banco de dados serão zeradas.
+	
+	* POPULANDO O BANCO DE DADOS
+	
+	Tendo atendido todas as características apresentadas até aqui, o banco de dados estará pronto para ser populado, ou seja, pronto para ser preenchido com informações relativas a um estudo de caso. 		
+	Para popular uma base de dados com um estudo de caso experimental simples basta seguir os seguintes procedimentos:
+	
+		1 - Verificar se o Banco está realmente pronto, caso contrário refazer os passos descritos no início deste arquivo;
+		2 - Inicializar o Apache Tomcat e acessar o endereço http://localhost:8080/gesplan/cargabd.faces
+		3 - Escolher o tipo de carga a ser feita e no campo senha digitar "senha_carga";
+		4 - Ao término do processo de carga, clicar no link "Ir para Login";
+		5 - O navegador será redirecionado para a página principal do sistema, onde o sistema poderá ser acessado pelo uso de um dos seguintes usuários/senhas:
+		
+			#######################################
+			# Login   # Senha   # Nível de Acesso #
+			#-------------------------------------#
+			# admin   # 123456  # Administrador   #
+			# felipe  # felipe  # Aluno           #
+			# gabriel # gabriel # Engenheiro      #
+			# marcos  # marcos  # Gestor          #
+			#######################################
+	
+	Ao término destes passos o banco deverá está populado e o sistema acessível para uso. 
+	
+	Cabe ressaltar que existe três níveis de carga do sistema:
+		
+		- Carga Básica: inclui apenas um usuário de cada nível de acesso e os parâmetros "default" de planejamento.
+		
+		- Carga de Estudo de Caso: São incluídas todas as entidades relativas o ciclo inicial de planejamento.
+		
+		- Carga de Alterações de Estudo de Caso: acrescenta ao estudo de caso novos dados relativos a defasagem de 1 (um) período.
+		
+	Cada uma das cargas incorpora as cargas de nível mais baixo. Para testar qualquer uma das cargas basta repetir o passo 4 da "Preparação do banco de dados" e todos os passos descritos em "Populando o banco de dados".
+	
+	Vale lembrar que é necessário ter instalado o servidor Apache Tomcat e o SGBD PostgreeSQL, nesta versão do Gesplan estamos utilizando o Apache Tomcat 6.0 e o PostgreeSQL 8.4 no nosso ambiente de desenvolvimento.
+			
+	Para maiores detalhes sobre o sistema, sua arquitetura e modelagem consulte os relatórios e manuais nos sites do projeto:
+		- http://gesplanblog.int.gov.br/

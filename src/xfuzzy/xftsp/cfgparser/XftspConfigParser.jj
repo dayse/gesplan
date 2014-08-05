@@ -1,0 +1,387 @@
+//--------------------------------------------------------------------------------//
+//                               COPYRIGHT NOTICE                                 //
+//--------------------------------------------------------------------------------//
+// Copyright (c) 2012, Instituto de Microelectronica de Sevilla (IMSE-CNM)        //
+//                                                                                //
+// All rights reserved.                                                           //
+//                                                                                //
+// Redistribution and use in source and binary forms, with or without             //
+// modification, are permitted provided that the following  conditions are met:   //
+//                                                                                //
+//     * Redistributions of source code must retain the above copyright notice,   //
+//       this list of conditions and the following disclaimer.                    // 
+//                                                                                //
+//     * Redistributions in binary form must reproduce the above copyright        // 
+//       notice, this list of conditions and the following disclaimer in the      //
+//       documentation and/or other materials provided with the distribution.     //
+//                                                                                //
+//     * Neither the name of the IMSE-CNM nor the names of its contributors may   //
+//       be used to endorse or promote products derived from this software        //
+//       without specific prior written permission.                               //
+//                                                                                //
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"    //
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE      //
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE // 
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE  //
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL     //
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR     //
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER     //
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,  //
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  //
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.           //
+//--------------------------------------------------------------------------------//
+
+options {
+ LOOKAHEAD = 1;
+ STATIC = false;
+}
+
+PARSER_BEGIN(XftspConfigParser)
+/*
+ * Parser for xftsp configuration files
+ */
+
+package xfuzzy.xftsp.cfgparser;
+
+import xfuzzy.lang.*;
+import xfuzzy.xfdm.*;
+import xfuzzy.xfsl.*;
+import xfuzzy.xftsp.*;
+import java.io.*;
+import java.util.Vector;
+
+/**
+ * javaCC parser for xftsp configuration files. Creates an XftspConfig object 
+ * and fills it in from the config file.
+ * 
+ * Comments and other general grammar works as in other xfuzzy configuration 
+ * files.
+ *
+ * @author fedemp
+ **/
+public class XftspConfigParser {
+
+        private int error;
+	private String errorMsg;
+	private boolean end;
+	
+	private XftspConfig cfg;
+
+
+	public XftspConfigParser() {
+	       this.error = 0;
+	       this.errorMsg = "";
+	       this.cfg = null;
+	}
+
+	public XftspConfig parse(File file) {
+               initParse(file);
+	       this.cfg = new XftspConfig();
+	       try { tryXftspConfigFile(); 
+	       } catch(ParseException ex) { 
+	       	 return null; 
+	       }
+	       if(error == 0) 
+	       		return this.cfg;
+	       else
+	                return null;
+	}
+
+
+	 public String resume() {
+	   String eol = System.getProperty("line.separator", "\n");
+	   String msg = this.errorMsg + this.error;
+	   if(this.error == 1) msg += " error."; else msg += " errors.";
+	   return msg+eol;
+	 }
+
+
+	 /* Private methods */
+
+ private void initParse(File file) {
+  error = 0;
+  errorMsg = "";
+
+  InputStream stream;
+  try { stream = new FileInputStream(file); }
+  catch (Exception e) {
+   errorMsg += "Can't open file "+file.getAbsolutePath();
+   error ++;
+   return;
+  }
+
+  ReInit(stream);
+ }
+	 
+
+ private double[] getParams(Vector v) {
+  double[] param = new double[v.size()];
+  for(int i=0; i<param.length; i++)
+   param[i] = Double.parseDouble((String) v.elementAt(i) );
+  return param;
+ }
+
+
+ private void exception(ParseException e) {
+  String eol = System.getProperty("line.separator", "\n");
+  Token t = e.currentToken.next;
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. ";
+  this.errorMsg += "Parse error at line "+t.beginLine+" : ";
+  this.errorMsg += "Encountered \""+t.image+"\""+" while expecting ";
+
+  int expected[] = new int[e.expectedTokenSequences.length];
+  for(int i=0; i<expected.length; i++)
+   expected[i] = e.expectedTokenSequences[i][0];
+  if(expected.length == 1) this.errorMsg += e.tokenImage[expected[0]]+"."+eol;
+  else {
+   this.errorMsg += "one of :\n       "+e.tokenImage[expected[0]];
+   for(int i=1; i<expected.length; i++)
+    this.errorMsg += ",\n       "+e.tokenImage[expected[i]];
+   this.errorMsg += "."+eol;
+  }
+ }
+
+
+ private void exception(TokenMgrError e) {
+  String eol = System.getProperty("line.separator", "\n");
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. "+e.getMessage()+eol;
+ }
+
+
+
+ private void exception(Exception e) {
+  String eol = System.getProperty("line.separator", "\n");
+  this.error ++;
+  this.errorMsg += "Configuration ["+this.error+"]. "+e.getMessage()+eol;
+ }
+
+
+ /* Xftsp configuration processing */
+
+    private void processXftspSeriesName(Token tid) throws XflException {
+	// if(cfg == null ) return;
+	cfg.series_name = tid.image;
+    }
+
+    private void processXftspTrainingFile(Token tid) throws XflException {
+	// if ( cfg == null ) return;
+	String filename = tid.image.substring(1,tid.image.length()-1);
+	File file = new File(filename);
+	if( !file.exists() ) {
+	    System.out.println("Error, training file not found: " + filename);
+	    throw new XflException(31); 
+	}
+	cfg.training_series_file = file;
+    }
+
+    private void processXftspTestFile(Token tid) throws XflException {
+	// if ( cfg == null ) return;
+	String filename = tid.image.substring(1,tid.image.length()-1);
+	File file = new File(filename);
+	if( !file.exists() ) {
+	    System.out.println("Error, test file not found: " + filename);	    
+	    throw new XflException(31);
+	}
+	cfg.test_series_file = file;
+    }
+
+    private void processXftspIdAlgorithm(Token tid, double[] param) throws XflException {
+	// if ( xfdmcfg == null ) return;
+	cfg.id_algorithm = XfdmAlgorithm.create(tid.image,param);
+    }
+    
+    private void processXftspOptAlgorithm(Token tid, double[] param) throws XflException {
+	// if ( cfg == null ) return;
+	cfg.opt_algorithm = XfslAlgorithm.create(tid.image,param);
+    }
+
+    private void processXftspOption(Token tid, double[] param) throws XflException {
+	// if(xfslcfg == null) return;
+	if ( tid.image.equals("keep_pattern_files") ) {
+            cfg.keep_pattern_files = true;
+	} 	else if ( tid.image.equals("generate_optimization_logs") ) {
+            cfg.generate_optimization_logs = true;
+	} else if ( tid.image.equals("tolerance") ) {
+	    cfg.tolerance = param[0];
+	} else if ( tid.image.equals("max_exploration") ) {
+	    cfg.max_exploration = (int)param[0];
+	} else if ( tid.image.equals("max_prediction_horizon") ) {
+	    cfg.max_prediction_horizon = (int)param[0];
+	}
+    }
+
+    private void processXftspSelection(Token tid) throws XflException {
+    	String filename = tid.image.substring(1,tid.image.length()-1);
+     	File file = new File(filename);
+	if( !file.exists() )  {
+	    System.out.println("Error, selection file not found: " + filename);	    
+	    throw new XflException(31);
+	}
+	cfg.selection_file = file;
+	
+     // TODO: load sel. file
+    }
+
+    private void processXftspNRVE(Token tid) throws XflException {
+    	String filename = tid.image.substring(1,tid.image.length()-1);
+     	File file = new File(filename);
+	if( !file.exists() ) {
+	    System.out.println("Error, NRVE file not found: " + filename);	    
+	    throw new XflException(31);
+	}
+	cfg.nrve_file = file;
+	
+     // TODO: load sel. file
+    }
+
+}
+
+PARSER_END(XftspConfigParser)
+
+SKIP :
+{
+  " "
+| "\t"
+| <SINGLE_LINE_COMMENT: "//"> : COMMENT
+| <SINGLE_LINE_COMMENT2: "#"> : COMMENT
+| <MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/">
+}
+
+TOKEN : /* keywords */
+{
+  <XFTSP_SERIES_NAME: "xftsp_series_name">
+| <XFTSP_TRAINING_FILE: "xftsp_training_file">
+| <XFTSP_TEST_FILE: "xftsp_test_file">
+| <XFTSP_OPTION: "xftsp_option">
+| <XFTSP_ID_ALGORITHM: "xftsp_id_algorithm">
+| <XFTSP_OPT_ALGORITHM: "xftsp_opt_algorithm">
+| <XFTSP_SELECTION: "xftsp_selection">
+| <XFTSP_NRVE: "xftsp_nrve">
+| <EOL: ("\n"|"\r"|"\r\n")>
+}
+
+<COMMENT> SKIP:
+{
+ <OTHER: ~["\n","\r"]>
+}
+
+<COMMENT> TOKEN:
+{
+ <CEOL: ("\n"|"\r"|"\r\n")> : DEFAULT
+}
+
+TOKEN: /* identificadores */
+{
+  <ID : ["a"-"z","A"-"Z","_","."] (["a"-"z","A"-"Z","0"-"9","_","-","."])* >
+| <FILE: "\"" (~["\""])+ "\"">
+| <PARAM: <ID> "." <ID> "." ( "ANY" | <INTEGER>) >
+| <NUMBER : <FLOAT>(["e","E"](["+","-"])?<INTEGER>)? >
+| <#INTEGER: ( ["0"-"9"] )+ >
+| <#FLOAT: ("-")? <INTEGER> | ("-")? <INTEGER>"."<INTEGER> | "."<INTEGER> >
+| <ERROR: ~["a"-"z","A"-"Z","0"-"9","_","(",")",",","/","#","\n","\r","-","&","<",">"]>
+}
+
+
+void endline() :
+{}
+{
+ <EOF> { end = true; } | <EOL> | <CEOL>
+}
+
+
+void tryDirective() :
+{}
+{
+ try { directive() }
+ catch (ParseException e) { exception(e); skipline(); }
+ catch (XflException e) { exception(e); /* skipline(); */ }
+ catch (Exception e) { exception(e); skipline(); }
+}
+
+void directive() throws XflException, Exception:
+{
+	Token tid, tn, tx, ty, tk;
+	double[] param;
+	Vector v;
+}
+{
+  <XFTSP_SERIES_NAME> "(" tid = <ID> ")" endline()
+	{
+	 processXftspSeriesName(tid);
+	}
+| <XFTSP_TRAINING_FILE> "(" tid = <FILE> ")" endline()
+	{
+	 processXftspTrainingFile(tid);
+	}
+| <XFTSP_TEST_FILE> "(" tid = <FILE> ")" endline()
+	{
+	 processXftspTestFile(tid);
+	}
+| <XFTSP_OPTION> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 processXftspOption(tid, param);
+	}
+| <XFTSP_ID_ALGORITHM> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 processXftspIdAlgorithm(tid, param);
+	}
+| <XFTSP_OPT_ALGORITHM> "(" tid=<ID> param=listOfParamsWithComma() ")" endline()
+        {
+	 processXftspOptAlgorithm(tid, param);
+	}
+| <XFTSP_SELECTION> "(" tid = <FILE> ")" endline()
+	{
+	 processXftspSelection(tid);
+	}
+| <XFTSP_NRVE> "(" tid = <FILE> ")" endline()
+	{
+	 processXftspNRVE(tid);
+	}
+| endline()
+}
+
+double[] listOfParamsWithComma() :
+{
+        Token tn;
+        Vector v = new Vector();
+}
+{
+ ("," tn=<NUMBER> { v.addElement(tn.image); } )* 
+	{
+	 return getParams(v);
+	}
+}
+
+double[] listOfParams() :
+{
+        Token tn;
+        Vector v = new Vector();
+}
+{
+ (tn=<NUMBER> { v.addElement(tn.image); }
+ ("," tn=<NUMBER> { v.addElement(tn.image); } )* )? 
+	{
+	 return getParams(v);
+	}
+}
+
+/* Parser main methods */
+
+JAVACODE
+void tryXftspConfigFile() {
+ end = false;
+ while(!end) {
+  try { tryDirective(); }
+  catch (ParseException e) { exception(e); skipline(); }
+  catch (TokenMgrError e) { exception(e); end = true; }
+ }
+}
+
+JAVACODE
+void skipline() {
+ Token t;
+ do { t = getNextToken(); }
+ while(t.kind != EOF && t.kind != EOL && t.kind != CEOL);
+}

@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/periopap_list_template.xhtml">
+
+	<ui:define name="titulo">#{prompt.perioPAP}</ui:define>
+	<ui:define name="descricao">#{prompt.perioPAP_Alterar}</ui:define>
+	<ui:define name="descricao_ajuda">#{help.perioPAP_Editar}</ui:define>
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="perioPAPActions" />
+		
+		<h:form id="formulario">
+
+			<rich:panel>
+				<f:facet name="header">
+					<h:outputText value="#{prompt.perioPAP}" />
+				</f:facet>
+
+				<h:panelGrid columns="3"> 	
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.perioPAP_Agregado}" />:
+			    	</h:panelGroup>
+					<h:inputText id="periodo" value="#{perioPAPActions.perioPAPCorrente.periodoPAP}"
+						maxlength="#{constantes.lPeriopapPeriodopap}" size="20" required="true" disabled="true"/>
+					<h:message for="periodo" styleClass="error" />
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.perioPAP_periodoPMInic} " />:
+			    	</h:panelGroup>
+					<h:selectOneMenu id="comboPerioPMInic" value="#{perioPAPActions.comboPerioPMsInicial.selecao}" required="true" disabled="true">
+						<f:selectItems value="#{perioPAPActions.comboPerioPMsInicial.listaSelecao}" />
+					</h:selectOneMenu>
+					<h:message for="comboPerioPMInic" styleClass="error" />	
+
+					<h:panelGroup>
+						<h:outputText value="#{prompt.perioPAP_periodoPMFinal} " />:
+			    	</h:panelGroup>
+					<h:selectOneMenu id="comboPerioPMFinal" value="#{perioPAPActions.comboPerioPMsFinal.selecao}" required="true"
+					 valueChangeListener="#{perioPAPActions.calculaDataFinalENumDiasUteis}">
+						<f:selectItems value="#{perioPAPActions.comboPerioPMsFinal.listaSelecao}" />
+						 <a4j:support event="onchange" reRender="dataFinal,numDiasUteisMatriz"/>	
+					</h:selectOneMenu>
+					<h:message for="comboPerioPMFinal" styleClass="error" />	
+						
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataInicial}" />:
+					</h:panelGroup>
+					<h:outputText id="dataInicial" value="#{perioPAPActions.perioPAPCorrente.dataInicial.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+					<h:panelGroup >
+						<h:outputText value="#{prompt.dataFinal}" />:
+					</h:panelGroup>
+					<h:outputText id="dataFinal" value="#{perioPAPActions.perioPAPCorrente.dataFinal.time}" >
+						<f:convertDateTime pattern="dd/MM/yyyy"/> 
+					</h:outputText>
+					<h:outputText value="" />
+					
+					<h:panelGroup>
+						<h:outputText value="#{prompt.numDiasUteisMatriz}" />:
+					</h:panelGroup>
+					<h:outputText id="numDiasUteisMatriz" value="#{perioPAPActions.perioPAPCorrente.numDiasUteis}"/>
+					<h:outputText value="" />
+					
+				</h:panelGrid>
+				
+			</rich:panel>
+
+			<br />
+			<br />
+
+			<h:commandButton id="botaoVoltar" value="#{prompt.confirmarEdicao}" action="#{perioPAPActions.altera}" />
+			<h:commandButton id="botaoCancelar" value="#{prompt.cancelar}" action="#{perioPAPActions.cancela}" immediate="true" />
+			
+		</h:form>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>

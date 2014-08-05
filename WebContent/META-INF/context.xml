@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Context
+    privileged="true"
+    reloadable="true">
+
+  <!-- Pool de conexões -->
+  <!--url="jdbc:oracle:oci:@127.0.0.1:1521:XE"-->
+  <Resource
+    name="jdbc/familia"
+    type="javax.sql.DataSource"
+    driverClassName="org.postgresql.Driver"
+    url="jdbc:postgresql://localhost:5432/cursojpa"
+    username="JPA1"
+    password="JPA1"
+    maxActive="20"
+    maxIdle="10"
+    maxWait="-1"
+    validationQuery=""/>
+  
+  <WatchedResource>WEB-INF/faces-config.xml</WatchedResource>
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <WatchedResource>META-INF/context.xml</WatchedResource>
+  
+</Context>

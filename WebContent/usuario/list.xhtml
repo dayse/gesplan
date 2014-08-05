@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<ui:composition template="/WEB-INF/template/usuario_template.xhtml">
+	
+	<ui:define name="titulo">#{prompt.usuario}</ui:define>
+	<ui:define name="descricao">#{prompt.usuario_descList}</ui:define>
+	<ui:define name="descricao_ajuda">
+		#{help.usuario_Cadastro}
+		<br /><br />
+		<span class="negrito">#{prompt.excluir} -</span> #{help.usuario_Excluir}
+		<br /><br />
+		<span class="negrito">#{prompt.imprimir} -</span> #{help.usuario_Imprimir}
+		<br /><br />
+		<span class="negrito">#{help.observacao_AlertaPadrao} </span> #{help.observacao_AcessoOutrosHelp}
+	</ui:define>
+	<ui:define name="mensagemSistema" />
+
+	<ui:define name="corpo">
+
+		<a4j:keepAlive beanName="usuarioActions" />
+		
+		<h:form id="formUsuarioList">
+			
+			<br/>
+
+			<rich:dataTable id="tabelaUsuarios" var="usuario"	align="center" 
+				value="#{usuarioActions.listaUsuarios}" rows="10" width="550px">
+
+				<f:facet name="header">
+				
+					<rich:columnGroup>
+					
+						<rich:column>
+							<h:outputText title="#{tooltip.usuario_Nome}" value="#{prompt.usuario_nome}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.usuario_Login}" value="#{prompt.usuario_login}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText title="#{tooltip.usuario_TipoUsuario}" value="#{prompt.usuario_tipo}" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="" />
+						</rich:column>
+						
+						<rich:column>
+							<h:outputText value="" />
+						</rich:column>
+						
+					</rich:columnGroup>
+					
+				</f:facet>
+				
+				
+				<rich:column>
+					<h:commandLink value="#{usuario.nome}" action="#{usuarioActions.mostra}" />
+				</rich:column>
+				
+				<rich:column> 
+					<h:outputText value="#{usuario.login}" />
+				</rich:column>
+				
+				<rich:column> 
+					<h:outputText value="#{usuario.tipoUsuario.tipoUsuario}" />
+				</rich:column>
+
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<h:commandButton value="#{prompt.editar}" action="#{usuarioActions.preparaAlteracao}" />
+				</rich:column>
+				
+				<rich:column styleClass="colunaCampoNumericoCentralizado">
+					<a4j:commandButton value="#{prompt.excluir}" action="#{usuarioActions.preparaExclusao}"
+						onclick="Richfaces.showModalPanel('panelConfirmacaoExclusao',{width:300, top:300})" 
+						disabled="#{usuarioActions.exclusaoUsuarioLogado}"/>
+				</rich:column>
+
+				<f:facet name="footer">
+					<h:outputText value="#{prompt.numeroDeUsuarios} = #{usuarioActions.listaUsuarios.rowCount}"/>
+				</f:facet>
+
+			</rich:dataTable>
+
+			<br />
+			<b><h:outputText value="#{prompt.msgDetalharUsuario}" style="font:13px" /></b>
+
+		</h:form>
+
+		<h:form id="formExclusao">
+		
+			<rich:modalPanel id="panelConfirmacaoExclusao" height="120"
+				width="500">
+
+				<f:facet name="header">
+					<h:panelGroup>
+						<h:outputText value="#{prompt.atencao}"></h:outputText>
+					</h:panelGroup>
+				</f:facet>
+
+				<f:facet name="controls">
+					<h:graphicImage class="close"
+						onclick="Richfaces.hideModalPanel('panelConfirmacaoExclusao')" />
+				</f:facet>
+
+				<h:outputText value="#{prompt.usuario_confirmarExclusao}"/>
+
+				<center>
+				
+				<br />
+				<br />
+
+				<h:panelGrid columns="2">
+
+					<h:commandButton id="ok" value="#{prompt.sim}"
+						action="#{usuarioActions.exclui}" styleClass="botao">
+						<rich:componentControl for="panelConfirmacaoExclusao" operation="hide" event="onclick" />
+					</h:commandButton>
+
+					<h:commandButton id="cancelar" value="#{prompt.nao}"
+						action="Richfaces.hideModalPanel('panelConfirmacaoExclusao')">
+						<rich:componentControl for="panelConfirmacaoExclusao" operation="hide" event="onclick" />
+					</h:commandButton>
+
+				</h:panelGrid>
+				
+				</center>
+
+			</rich:modalPanel>
+			
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>

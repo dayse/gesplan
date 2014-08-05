@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/template/template_ajuda.xhtml">
+	
+	<ui:define name="submenu">
+		
+		<rich:toolBar>
+
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.hp_iniciaPlanejamento}" action="#{hpActions.iniciaPlanejamento}" styleClass="linkMenu"/>
+				</f:facet>
+			</rich:dropDownMenu>	
+						
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.hp_alteraHPPMP}" action="#{hpActions.preparaAlteracaoPerioPM}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{hpActions.opcaoEscolhida}" value="0"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>
+				
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.hp_alteraHPPAP}" action="#{hpActions.preparaAlteracaoPerioPAP}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{hpActions.opcaoEscolhida}" value="1"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>	
+						
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.hp_alteraHPDemandaModelo}" action="#{hpActions.preparaAlteracaoPerioPM}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{hpActions.opcaoEscolhida}" value="2"/>
+					</h:commandLink>
+				</f:facet>
+			</rich:dropDownMenu>			
+				
+			<rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.hp_alteraHPDemandaFamilia}" action="#{hpActions.preparaAlteracaoPerioPAP}" styleClass="linkMenu">
+						<f:setPropertyActionListener target="#{hpActions.opcaoEscolhida}" value="3"/>
+					</h:commandLink>	
+				</f:facet>
+			</rich:dropDownMenu>		
+					
+            <rich:dropDownMenu>
+				<f:facet name="label">
+					<h:commandLink value="#{prompt.voltar}" action="home" styleClass="linkMenu"/>
+				</f:facet>
+            </rich:dropDownMenu>
+			
+		</rich:toolBar>
+		
+	</ui:define>
+	
+</ui:composition>
+
+</html>
