@@ -124,7 +124,7 @@ public class CargaUsuario extends CargaBase{
 		usuarioAdmin.setTipoUsuario(tipoUsuarioAdmin);
 		
 		Usuario usuarioAluno = usuarios.get(1);
-		usuarioAluno.setTipoUsuario(tipoUsuarioAdmin);
+		usuarioAluno.setTipoUsuario(tipoUsuarioAluno);
 		
 		Usuario usuarioGestor = usuarios.get(2);
 		usuarioGestor.setTipoUsuario(tipoUsuarioGestor);

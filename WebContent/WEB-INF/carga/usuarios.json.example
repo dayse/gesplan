@@ -2,26 +2,21 @@
 	{
 		"nome": "Administrador",
 		"login": "admin",
-		"senha": "123"
+		"senha": "123456"
 	},
 	{
-		"nome": "Aluno",
-		"login": "aluno",
-		"senha": "123"
+		"nome": "felipe",
+		"login": "felipe",
+		"senha": "felipe"
 	},
 	{
-		"nome": "Clinico",
-		"login": "clinico",
-		"senha": "123"
+		"nome": "marcos",
+		"login": "marcos",
+		"senha": "marcos"
 	},
 	{
-		"nome": "Engenheiro",
-		"login": "engenheiro",
-		"senha": "123"
-	},
-	{
-		"nome": "Tecnico",
-		"login": "tecnico",
-		"senha": "123"
+		"nome": "gabriel",
+		"login": "gabriel",
+		"senha": "gabriel"
 	}
 ]

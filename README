@@ -39,7 +39,7 @@
 	
 		1 - Verificar se o Banco está realmente pronto, caso contrário refazer os passos descritos no início deste arquivo;
 		2 - Inicializar o Apache Tomcat e acessar o endereço http://localhost:8080/gesplan/cargabd.faces
-		3 - Escolher o tipo de carga a ser feita e no campo senha digitar "senha_carga";
+		3 - Escolher o tipo de carga a ser feita e no campo senha digitar "123456";
 		4 - Ao término do processo de carga, clicar no link "Ir para Login";
 		5 - O navegador será redirecionado para a página principal do sistema, onde o sistema poderá ser acessado pelo uso de um dos seguintes usuários/senhas:
 		
